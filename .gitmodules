@@ -1,0 +1,3 @@
+[submodule "xg-puppet"]
+	path = xg-puppet
+	url = git@github.com:calumrussell/xg-puppet.git
