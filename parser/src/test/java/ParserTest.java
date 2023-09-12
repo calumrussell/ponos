@@ -1,4 +1,4 @@
-import match.Match;
+import match.MatchFacade;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +21,7 @@ public class ParserTest {
 
         String line = reader.readLine();
         JSONObject match = new JSONObject(line);
-        Match formattedMatch = new Match(match);
-        System.out.println(formattedMatch.getPassMap());
-        assert true == false;
+        MatchFacade formattedMatchFacade = new MatchFacade(match);
+        System.out.println(formattedMatchFacade.toMatchOutput());
     }
 }
