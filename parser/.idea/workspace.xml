@@ -5,19 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd87c009-84ab-4466-8df5-d521cdec748b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/match/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/match/MatchFacade.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/match/MatchRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/match/TeamStatsRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/match/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/match/Match.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/Match.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/output/Match.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/output/TeamStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/TeamStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/match/MatchFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/MatchFacade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/match/TeamStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/TeamStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/ParserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ParserTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

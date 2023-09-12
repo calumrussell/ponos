@@ -8,23 +8,36 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.Set;
 
 public class MatchFacade {
 
     private Integer matchId;
     private Integer homeId;
     private Integer awayId;
-    private HashMap<Integer, String> playerIds;
+    private HashMap<Integer, String> homePlayerIds;
+    private HashMap<Integer, String> awayPlayerIds;
     private HashMap<Integer, Integer> passMap;
 
     private void initPlayerIds(JSONObject matchCentre) {
-        this.playerIds = new HashMap<Integer, String>();
-        JSONObject playersJson = (JSONObject) matchCentre.get("playerIdNameDictionary");
-        for (Iterator<String> it = playersJson.keys(); it.hasNext(); ) {
-            String playerIdString = it.next();
-            Integer playerId = Integer.parseInt(playerIdString);
-            String name = playersJson.getString(playerIdString);
-            this.playerIds.put(playerId, name);
+        this.homePlayerIds= new HashMap<Integer, String>();
+        JSONObject homeJson = matchCentre.getJSONObject("home");
+        JSONArray homePlayersJSON = homeJson.getJSONArray("players");
+        for (Object player: homePlayersJSON) {
+            JSONObject player_json = (JSONObject) player;
+            String player_name = player_json.getString("name");
+            Integer player_id = player_json.getInt("playerId");
+            this.homePlayerIds.put(player_id, player_name);
+        }
+
+        this.awayPlayerIds= new HashMap<Integer, String>();
+        JSONObject awayJson = matchCentre.getJSONObject("away");
+        JSONArray awayPlayersJSON = awayJson.getJSONArray("players");
+        for (Object player: awayPlayersJSON) {
+            JSONObject player_json = (JSONObject) player;
+            String player_name = player_json.getString("name");
+            Integer player_id = player_json.getInt("playerId");
+            this.awayPlayerIds.put(player_id, player_name);
         }
     }
 
@@ -57,13 +70,31 @@ public class MatchFacade {
         this.awayId = away.getInt("teamId");
     }
 
-    public String toJsonOutput() throws JsonProcessingException {
+    public String toMatchJsonOutput() throws JsonProcessingException {
         Match output = new Match(this);
         return output.toJSON();
     }
 
     public Match toMatchOutput () {
         return new Match(this);
+    }
+
+    public TeamStats toHomeTeamStatsOutput () {
+        return new TeamStats(this.homeId, this);
+    }
+
+    public String toHomeTeamStatsJsonOutput() throws JsonProcessingException {
+        TeamStats output = new TeamStats(this.homeId, this);
+        return output.toJSON();
+    }
+
+    public TeamStats toAwayTeamStatsOutput () {
+        return new TeamStats(this.awayId, this);
+    }
+
+    public String toAwayTeamStatsJsonOutput() throws JsonProcessingException {
+        TeamStats output = new TeamStats(this.awayId, this);
+        return output.toJSON();
     }
 
     public MatchFacade(JSONObject match) {
@@ -90,4 +121,17 @@ public class MatchFacade {
     public HashMap<Integer, Integer> getPassMap() {
         return passMap;
     }
+
+    public Set<Integer> getHomePlayerIds() {
+        return homePlayerIds.keySet();
+    }
+
+    public Set<Integer> getAwayPlayerIds() {
+        return awayPlayerIds.keySet();
+    }
+
+    public Set<Integer> getPlayers(Integer teamId) {
+        return this.homeId.equals(teamId) ? this.getHomePlayerIds() : this.getAwayPlayerIds();
+    }
+
 }

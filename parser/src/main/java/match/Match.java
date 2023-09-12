@@ -17,12 +17,6 @@ public class Match {
         return mapper.writeValueAsString(this);
     }
 
-    public Match(Integer id, Integer homeId, Integer awayId) {
-        this.id = id;
-        this.homeId = homeId;
-        this.awayId = awayId;
-    }
-
     public Match() {}
 
     public Match(MatchFacade matchFacade) {

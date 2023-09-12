@@ -22,6 +22,6 @@ public class ParserTest {
         String line = reader.readLine();
         JSONObject match = new JSONObject(line);
         MatchFacade formattedMatchFacade = new MatchFacade(match);
-        System.out.println(formattedMatchFacade.toMatchOutput());
+        System.out.println(formattedMatchFacade.toHomeTeamStatsJsonOutput());
     }
 }
