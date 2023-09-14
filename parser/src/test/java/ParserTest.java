@@ -1,4 +1,4 @@
-import match.MatchFacade;
+import match.MatchWrapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ public class ParserTest {
 
         String line = reader.readLine();
         JSONObject match = new JSONObject(line);
-        MatchFacade formattedMatchFacade = new MatchFacade(match);
-        System.out.println(formattedMatchFacade.toHomeTeamStatsJsonOutput());
+        MatchWrapper formattedMatchWrapper = new MatchWrapper(match);
+        System.out.println(formattedMatchWrapper.toPlayerOutput());
     }
 }

@@ -5,14 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd87c009-84ab-4466-8df5-d521cdec748b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/match/TeamStatsRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/entity/PlayerStatsBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/entity/TeamStatsBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/match/MatchWrapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/match/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/Event.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/match/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/match/Match.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/Match.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/match/MatchFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/MatchFacade.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/match/TeamStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/TeamStats.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/match/Match.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/match/MatchFacade.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/match/MatchRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/match/TeamStats.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/match/TeamStatsRepository.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/ParserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ParserTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -23,6 +28,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -33,6 +39,13 @@
   <component name="MacroExpansionManager">
     <option name="directoryName" value="nrndkw8u" />
   </component>
+  <component name="MavenRunner">
+    <option name="environmentProperties">
+      <map>
+        <entry key="GRAALVM_HOME" value="$USER_HOME$/.sdkman/candidates/java/current/bin/native-image" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -41,15 +54,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/calum/Development/personal/xg-reboot/parser&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/home/calum/Development/personal/xg-reboot/parser",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.runner"
   }
-}</component>
-  <component name="RunManager" selected="JUnit.ParserTest.testParse">
+}]]></component>
+  <component name="RunManager" selected="JUnit.ParserTest">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="match.Main" />
       <module name="parser" />
@@ -76,10 +90,45 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="parser-1.0-SNAPSHOT.jar" type="JarApplication" temporary="true">
+      <option name="JAR_PATH" value="$PROJECT_DIR$/target/parser-1.0-SNAPSHOT.jar" />
+      <method v="2" />
+    </configuration>
+    <configuration name="parser [jooq-codegen:generate]" type="MavenRunConfiguration" factoryName="Maven">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="cmdOptions" />
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="jooq-codegen:generate" />
+                <option value="-X" />
+              </list>
+            </option>
+            <option name="pomFileName" value="pom.xml" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="projectsCmdOptionValues">
+              <list />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.ParserTest.testParse" />
+        <item itemvalue="JAR Application.parser-1.0-SNAPSHOT.jar" />
         <item itemvalue="JUnit.ParserTest" />
+        <item itemvalue="JUnit.ParserTest.testParse" />
         <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>

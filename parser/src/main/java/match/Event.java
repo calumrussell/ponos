@@ -11,27 +11,42 @@ public class Event {
 
     private JSONArray eventTypes;
     private Optional<Integer> playerId;
+    private Optional<Integer> minute;
 
-    protected boolean isShot() {
-        //Not strictly good for performance reasons but makes this more readable
-        Vector<String> shotNames = new Vector<>(List.of("shotSixYardBox", "shotRightFoot"));
-
+    private boolean checkType(Vector<String> types) {
         for (Object eventTypeRaw : this.eventTypes) {
             Integer eventType = (Integer) eventTypeRaw;
             String eventName = EventMapping.eventIdMap.get(eventType);
-            if (shotNames.contains(eventName)){
+            if (types.contains(eventName)){
                 return true;
             }
         }
         return false;
     }
 
-    protected Optional<Integer> getPlayerId() {
-        return this.playerId;
+    protected boolean isShot() {
+        Vector<String> shotNames = new Vector<>(List.of(
+                "shotsTotal"
+        ));
+        return checkType(shotNames);
+    }
+    protected boolean isShotOnTarget() {
+        Vector<String> shotNames = new Vector<>(List.of(
+                "shotOnPost",
+                "shotOnTarget"
+        ));
+        return checkType(shotNames);
+    }
+
+    protected boolean isShotOffTarget() {
+        Vector<String> shotNames = new Vector<>(List.of(
+                "shotOffTarget"
+                ));
+        return checkType(shotNames);
     }
 
     protected boolean isPass() {
-        //Not strictly good for performance reasons but makes this more readable
+        //Checking against names is potentially more buggy but it is far more readable
         Vector<String> passNames = new Vector<>(List.of(
                 "passCorner",
                 "passCornerAccurate",
@@ -50,23 +65,150 @@ public class Event {
                 "keyPassThrowin",
                 "keyPassOther"
         ));
+        return checkType(passNames);
+    }
 
-        for (Object eventTypeRaw : this.eventTypes) {
-            Integer eventType = (Integer) eventTypeRaw;
-            String eventName = EventMapping.eventIdMap.get(eventType);
-            if (passNames.contains(eventName)){
-                return true;
-            }
+    protected boolean isPassKey() {
+        Vector<String> keyPassNames = new Vector<>(List.of(
+                "keyPassShort",
+                "keyPassCross",
+                "keyPassCorner",
+                "keyPassThroughball",
+                "keyPassFreekick",
+                "keyPassThrowin",
+                "keyPassOther"
+        ));
+        return checkType(keyPassNames);
+    }
+
+    protected boolean isPassCross() {
+        Vector<String> passNames = new Vector<>(List.of(
+                "passCorner"
+                ));
+        return checkType(passNames);
+    }
+
+    protected boolean isDispossessed() {
+        Vector<String> dispossessedNames = new Vector<>(List.of(
+                "dispossessed"
+        ));
+        return checkType(dispossessedNames);
+    }
+
+    protected boolean isGoal() {
+        Vector<String> goalNames = new Vector<>(List.of(
+            "goalSixYardBox",
+            "goalPenaltyArea",
+            "goalObox",
+            "goalOpenPlay",
+            "goalCounter",
+            "goalSetPiece",
+            "penaltyScored",
+            "goalOwn",
+            "goalNormal",
+            "goalRightFoot",
+            "goalLeftFoot",
+            "goalHead",
+            "goalObp"
+        ));
+        return checkType(goalNames);
+    }
+
+    protected boolean isAerialDuel() {
+        Vector<String> aerialDuelsNames = new Vector<>(List.of(
+                "duelAerialWon",
+                "duelAerialLost"
+        ));
+        return checkType(aerialDuelsNames);
+    }
+
+    protected boolean isAssist() {
+        Vector<String> assistNames = new Vector<>(List.of(
+                "assistCross",
+                "assistCorner",
+                "assistThroughball",
+                "assistFreekick",
+                "assistThrowin",
+                "assistOther"
+        ));
+        return checkType(assistNames);
+    }
+
+    protected boolean isRedCard() {
+        Vector<String> redCardNames = new Vector<>(List.of(
+                "redCard"
+        ));
+        return checkType(redCardNames);
+    }
+
+    protected boolean isYellowCard() {
+        //Also have void category
+        Vector<String> yellowCardNames = new Vector<>(List.of(
+                "yellowCard"
+        ));
+        return checkType(yellowCardNames);
+    }
+
+    protected boolean isSave() {
+        Vector<String> saveNames = new Vector<>(List.of(
+                "saveLowLeft",
+                "saveHighLeft",
+                "saveLowCentre",
+                "saveHighCentre",
+                "saveLowRight",
+                "saveHighRight",
+                "saveHands",
+                "saveFeet",
+                "saveObp",
+                "saveSixYardBox",
+                "savePenaltyArea",
+                "saveObox",
+                "keeperDivingSave",
+                "standingSave"
+        ));
+        return checkType(saveNames);
+    }
+
+    protected boolean isDuel() {
+        Vector<String> duelNames = new Vector<>(List.of(
+                "offensiveDuel",
+                "defensiveDuel"
+        ));
+        return checkType(duelNames);
+    }
+
+    protected boolean isSubbedOn() {
+        Vector<String> subOnNames = new Vector<>(List.of(
+                "subOn"
+        ));
+        return checkType(subOnNames);
+    }
+
+    protected boolean isSubbedOff() {
+        Vector<String> subOffNames = new Vector<>(List.of(
+                "subOff"
+        ));
+        return checkType(subOffNames);
+    }
+
+    protected Optional<Integer> getPlayerId() {
+        return this.playerId;
+    }
+
+    protected Optional<Integer> getMinute() {
+        return this.minute;
+    }
+
+    private Optional<Integer> getOptionalValue(JSONObject event, String name) {
+        if (event.has(name)) {
+            return Optional.of(event.getInt(name));
         }
-        return false;
+        return Optional.empty();
     }
 
     Event (JSONObject event) {
         this.eventTypes = event.getJSONArray("satisfiedEventsTypes");
-        if (event.has("playerId")) {
-            this.playerId = Optional.of(event.getInt("playerId"));
-        } else {
-            this.playerId = Optional.empty();
-        }
+        this.playerId = this.getOptionalValue(event, "playerId");
+        this.minute = this.getOptionalValue(event, "minute");
     }
 }
