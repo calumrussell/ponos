@@ -34,14 +34,18 @@ export default {
     } else if (path === "/insert_match") {
       const contentType = request.headers.get("content-type");
       if (contentType == "text/plain") {
-	const toJson = parseRequestToJson(request);
+	const toJson = await parseRequestToJson(request);
 	let query = "INSERT INTO match(id, start_date, home_id, away_id) VALUES ";
-	toJson.forEach(row => {
-	  query += `(${row.match_id}, ${row.start_date}, ${row.home_id}, ${row.away_id})`;
+	let queries = toJson.map(row => {
+	  return `(${row.match_id}, ${row.start_date}, ${row.home_id}, ${row.away_id})`;
 	});
+	const joined = queries.join(",");
 	const client = new Client(env.DATABASE_URL);
 	await client.connect();
-	const { rows } = await client.query(`${query} on conflict do nothing;`);
+
+	const finalQuery = `${query} ${joined} on conflict do nothing;`;
+        console.log(finalQuery);
+	await client.query(finalQuery);
 	ctx.waitUntil(client.end());
 	return new Response(JSON.stringify([]));
       }
