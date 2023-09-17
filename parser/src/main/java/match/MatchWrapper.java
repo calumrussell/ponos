@@ -1,9 +1,7 @@
 package match;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import entity.*;
-import org.jooq.generated.tables.records.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -173,83 +171,51 @@ public class MatchWrapper {
         }
     }
 
-    public String toMatchJsonOutput() throws JsonProcessingException {
-        return this.toMatchOutput().formatJSON();
+    public Match toMatchOutput () {
+        return new Match(matchId, (int) startTime, homeId, awayId);
     }
 
-    public MatchRecord toMatchOutput () {
-        MatchRecord match = new MatchRecord();
-        match.setId(matchId);
-        match.setHomeId(homeId);
-        match.setAwayId(awayId);
-        match.setStartDate((int) startTime);
-        return match;
+    public TeamStats toHomeTeamStatsOutput () {
+        return new TeamStats(this.homeId, this);
     }
 
-    public TeamStatsRecord toHomeTeamStatsOutput () {
-        return TeamStatsBuilder.build(this.homeId, this);
+    public TeamStats toAwayTeamStatsOutput () {
+        return new TeamStats(this.awayId, this);
     }
 
-    public String toHomeTeamStatsJsonOutput() {
-        return this.toHomeTeamStatsOutput().formatJSON();
-    }
-
-    public TeamStatsRecord toAwayTeamStatsOutput () {
-        return TeamStatsBuilder.build(this.awayId, this);
-    }
-
-    public String toAwayTeamStatsJsonOutput() {
-        return this.toAwayTeamStatsOutput().formatJSON();
-    }
-
-    public Vector<PlayerStatsRecord> toPlayerStatsOutput() {
-        Vector<PlayerStatsRecord> res = new Vector<>();
+    public Vector<PlayerStats> toPlayerStatsOutput() {
+        Vector<PlayerStats> res = new Vector<>();
         for (Integer playerId: this.homePlayerIds.keySet()) {
-            res.add(PlayerStatsBuilder.build(playerId, homeId, this));
+            res.add(new PlayerStats(playerId, homeId, this));
         }
         for (Integer playerId: this.awayPlayerIds.keySet()) {
-            res.add(PlayerStatsBuilder.build(playerId, awayId, this));
+            res.add(new PlayerStats(playerId, awayId, this));
         }
         return res;
     }
 
-    public JSONArray toPlayerStatsJsonOutput() throws JsonProcessingException {
-        JSONArray res = new JSONArray();
-        for (PlayerStatsRecord record: this.toPlayerStatsOutput()) {
-            res.put(record.formatJSON());
-
-        }
-        return res;
-    }
-
-    public Vector<TeamRecord> toTeamOutput() {
-        Vector<TeamRecord> res = new Vector<>();
+    public Vector<Team> toTeamOutput() {
+        Vector<Team> res = new Vector<>();
         JSONObject home = this.matchCentre.getJSONObject("home");
         String homeName = home.getString("name");
-        TeamRecord homeRecord = new TeamRecord();
-        homeRecord.setId(homeId);
-        homeRecord.setName(homeName);
-        res.add(homeRecord);
+        Team homeObj = new Team(homeId, homeName);
+        res.add(homeObj);
 
         JSONObject away = this.matchCentre.getJSONObject("away");
         String awayName = away.getString("name");
-        TeamRecord awayRecord = new TeamRecord();
-        awayRecord.setId(awayId);
-        awayRecord.setName(awayName);
-        res.add(awayRecord);
+        Team awayObj = new Team(awayId, awayName);
+        res.add(awayObj);
         return res;
     }
 
-    public Vector<PlayerRecord> toPlayerOutput() {
-        Vector<PlayerRecord> res = new Vector<>();
+    public Vector<Player> toPlayerOutput() {
+        Vector<Player> res = new Vector<>();
         JSONObject players = matchCentre.getJSONObject("playerIdNameDictionary");
         for (String player: players.keySet()) {
             Integer playerId = Integer.parseInt(player);
             String name = players.getString(player);
-            PlayerRecord playerRecord = new PlayerRecord();
-            playerRecord.setId(playerId);
-            playerRecord.setName(name);
-            res.add(playerRecord);
+            Player playerObj = new Player(playerId, name);
+            res.add(playerObj);
         }
         return res;
     }

@@ -1,18 +1,35 @@
 package entity;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import match.MatchWrapper;
-import org.jooq.generated.tables.records.TeamStatsRecord;
 
 import java.util.Set;
 
-public class TeamStatsBuilder {
-    static public TeamStatsRecord build(Integer teamId, MatchWrapper matchWrapper) {
-        TeamStatsRecord ts = new TeamStatsRecord();
-        ts.setTeamId(teamId);
-        ts.setMatchId(matchWrapper.getMatchId());
-        ts.setIsHome(matchWrapper.getHomeId().equals(teamId));
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+public class TeamStats {
+    public Integer teamId;
+    public Integer matchId;
+    public boolean isHome;
+    public short pass;
+    public short shot;
+    public short shotOnTarget;
+    public short shotOffTarget;
+    public short passKey;
+    public short dispossessed;
+    public short goal;
+    public short aerialDuel;
+    public short assist;
+    public short redCard;
+    public short yellowCard;
+    public short save;
+    public short passCross;
+    public short duel;
+    public TeamStats(Integer teamId, MatchWrapper matchWrapper) {
+        this.teamId = teamId;
+        this.matchId = matchWrapper.getMatchId();
+        this.isHome = matchWrapper.getHomeId().equals(teamId);
+
         Set<Integer> players = matchWrapper.getPlayers(teamId);
         short pass = 0;
         short shot = 0;
@@ -47,20 +64,19 @@ public class TeamStatsBuilder {
             duel += matchWrapper.duelMap.getOrDefault(player, 0);
         }
 
-        ts.setPass(pass);
-        ts.setShot(shot);
-        ts.setShotOnTarget(shotOnTarget);
-        ts.setShotOffTarget(shotOffTarget);
-        ts.setPassKey(passKey);
-        ts.setDispossessed(dispossessed);
-        ts.setGoal(goal);
-        ts.setAerialDuel(aerialDuel);
-        ts.setAssist(assist);
-        ts.setRedCard(redCard);
-        ts.setYellowCard(yellowCard);
-        ts.setSave(save);
-        ts.setPassCross(passCross);
-        ts.setDuel(duel);
-        return ts;
+        this.pass = pass;
+        this.shot = shot;
+        this.shotOnTarget = shotOnTarget;
+        this.shotOffTarget = shotOffTarget;
+        this.passKey = passKey;
+        this.dispossessed = dispossessed;
+        this.goal = goal;
+        this.aerialDuel = aerialDuel;
+        this.assist = assist;
+        this.redCard = redCard;
+        this.yellowCard = yellowCard;
+        this.save = save;
+        this.passCross = passCross;
+        this.duel = duel;
     }
 }
