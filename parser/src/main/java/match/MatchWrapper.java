@@ -2,6 +2,7 @@ package match;
 
 
 import entity.*;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -35,25 +36,29 @@ public class MatchWrapper {
     public HashMap<Integer, Integer> passCrossMap;
     public HashMap<Integer, Integer> duelMap;
 
+    private String parsePlayerName(String name) {
+        return StringUtils.stripAccents(name).replaceAll("'", "''");
+    }
+
     private void initPlayerIds() {
         this.homePlayerIds= new HashMap<Integer, String>();
         JSONObject homeJson = matchCentre.getJSONObject("home");
         JSONArray homePlayersJSON = homeJson.getJSONArray("players");
         for (Object player: homePlayersJSON) {
-            JSONObject player_json = (JSONObject) player;
-            String player_name = player_json.getString("name");
-            Integer player_id = player_json.getInt("playerId");
-            this.homePlayerIds.put(player_id, player_name);
+            JSONObject playerJson = (JSONObject) player;
+            String playerName = parsePlayerName(playerJson.getString("name"));
+            Integer playerId = playerJson.getInt("playerId");
+            this.homePlayerIds.put(playerId, playerName);
         }
 
         this.awayPlayerIds= new HashMap<Integer, String>();
         JSONObject awayJson = matchCentre.getJSONObject("away");
         JSONArray awayPlayersJSON = awayJson.getJSONArray("players");
         for (Object player: awayPlayersJSON) {
-            JSONObject player_json = (JSONObject) player;
-            String player_name = player_json.getString("name");
-            Integer player_id = player_json.getInt("playerId");
-            this.awayPlayerIds.put(player_id, player_name);
+            JSONObject playerJson = (JSONObject) player;
+            String playerName = parsePlayerName(playerJson.getString("name"));
+            Integer playerId = playerJson.getInt("playerId");
+            this.awayPlayerIds.put(playerId, playerName);
         }
     }
 
@@ -213,7 +218,7 @@ public class MatchWrapper {
         JSONObject players = matchCentre.getJSONObject("playerIdNameDictionary");
         for (String player: players.keySet()) {
             Integer playerId = Integer.parseInt(player);
-            String name = players.getString(player);
+            String name = parsePlayerName(players.getString(player));
             Player playerObj = new Player(playerId, name);
             res.add(playerObj);
         }
