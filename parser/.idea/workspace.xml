@@ -5,20 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd87c009-84ab-4466-8df5-d521cdec748b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/entity/JSONOutput.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/entity/Match.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/entity/Player.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/entity/PlayerStats.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/entity/Team.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/entity/TeamStats.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/entity/PlayerStatsBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/entity/TeamStatsBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/match/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/entity/PlayerStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/PlayerStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/entity/TeamStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/TeamStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/match/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/Event.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/match/MatchWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/MatchWrapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ParserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ParserTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../xg-puppet" beforeDir="false" afterPath="$PROJECT_DIR$/../xg-puppet" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/match.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/match.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,9 +119,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.ParserTest" />
+        <item itemvalue="Application.Main" />
         <item itemvalue="JAR Application.parser-1.0-SNAPSHOT.jar" />
         <item itemvalue="JUnit.ParserTest.testParse" />
-        <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
