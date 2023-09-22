@@ -249,7 +249,7 @@ public class Event {
     protected boolean isShotFoot() {
         return checkType(List.of(
                 "shotRightFoot",
-                "shotLeftFood"
+                "shotLeftFoot"
         ));
     }
 

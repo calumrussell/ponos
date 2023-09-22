@@ -1,5 +1,6 @@
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import match.MatchWrapper;
@@ -46,6 +47,7 @@ public class PlayerStats {
     public short shotCounter;
     public short shotHead;
     public short shotFoot;
+    @JsonProperty("shot_0bp")
     public short shot0bp;
     public short goal;
     public short goalNormal;
@@ -55,7 +57,9 @@ public class PlayerStats {
     public short goalOwn;
     public short goalCounter;
     public short goalOpenPlay;
+    @JsonProperty("goal_0bp")
     public short goal0bp;
+    @JsonProperty("goal_0box")
     public short goal0box;
     public short goalSixYardBox;
     public short goalPenaltyArea;
