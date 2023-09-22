@@ -1,4 +1,4 @@
-import { Client } from '@neondatabase/serverless';
+import { neon, Client } from '@neondatabase/serverless';
 
 const parseTextRequestToJson = async (request) => {
   const text = await request.text();
@@ -27,20 +27,101 @@ const insertBuilder = (columns, data, name) => {
 };
 
 const baseStats = [
-  'pass',
-  'shot',
-  'shot_on_target',
-  'shot_off_target',
-  'pass_key',
-  'dispossessed',
-  'goal',
-  'aerial_duel',
-  'assist',
-  'red_card',
-  'yellow_card',
-  'save',
-  'pass_cross',
-  'duel'
+    'pass',
+    'pass_corner',
+    'pass_longball',
+    'pass_cross',
+    'pass_back',
+    'pass_forward',
+    'pass_left',
+    'pass_right',
+    'pass_short',
+    'pass_throughball',
+    'pass_accurate',
+    'pass_short_accurate',
+    'pass_corner_accurate',
+    'pass_longball_accurate',
+    'pass_cross_accurate',
+    'pass_throughball_accurate',
+    'pass_key',
+    'pass_key_cross',
+    'pass_key_freekick',
+    'pass_key_corner',
+    'pass_key_throughball',
+    'shot',
+    'shot_on_target',
+    'shot_off_target',
+    'shot_blocked',
+    'shot_open_play',
+    'shot_set_piece',
+    'shot_on_post',
+    'shot_six_yard_box',
+    'shot_penalty_area',
+    'shot_box',
+    'shot_counter',
+    'shot_head',
+    'shot_foot',
+    'shot_0bp',
+    'goal',
+    'goal_normal',
+    'goal_head',
+    'goal_foot',
+    'goal_set_piece',
+    'goal_own',
+    'goal_counter',
+    'goal_open_play',
+    'goal_0bp',
+    'goal_0box',
+    'goal_six_yard_box',
+    'goal_penalty_area',
+    'assist',
+    'assist_cross',
+    'assist_corner',
+    'assist_throughball',
+    'aerial_duel',
+    'red_card',
+    'yellow_card',
+    'second_yellow_card',
+    'save',
+    'duel',
+    'duel_offensive',
+    'duel_defensive',
+    'dispossessed',
+    'turnover',
+    'dribble',
+    'dribble_won',
+    'dribble_lost',
+    'dribble_last_man',
+    'challenge_lost',
+    'blocked_cross',
+    'block_outfielder',
+    'block_six_yard',
+    'block_pass_outfielder',
+    'interception',
+    'interception_won',
+    'interception_in_box',
+    'tackle',
+    'tackle_won',
+    'tackle_lost',
+    'tackle_last_man',
+    'offside_given',
+    'offside_provoked',
+    'ball_recovery',
+    'clearance',
+    'clearance_effective',
+    'clearance_off_line',
+    'error_leads_to_goal',
+    'error_leads_to_shot',
+    'touch',
+    'penalty_won',
+    'penalty_conceded',
+    'penalty_scored',
+    'big_chance_missed',
+    'big_chance_scored',
+    'big_chance_created',
+    'parried_safe',
+    'parried_danger',
+    'save_keeper'
 ];
 
 const insertMatches = (matches) => {
@@ -83,53 +164,60 @@ export default {
       let before = url.searchParams.get('before');
       let after = url.searchParams.get('after');
 
-      let query = "select * from match";
+      const sql = neon(env.DATABASE_URL);
       if (before === null && after != null) {
-	query += ` where start_date > ${after}`
+	const res = await sql(`select * from match where start_date > $1`, [after]);
+        return new Response(JSON.stringify(res));
       } else if (after === null && before != null) {
-	query += ` where start_date < ${before}`
+	const rows = await sql(`select * from match where start_date < $1`, [before]);
+        return new Response(JSON.stringify(rows));
       } else if (after!= null && before != null) {
-	query += ` where start_date < ${before} and start_date > ${after}`;
+	const rows = await sql( `select * from match where start_date < $1 and start_date > $2`, [before, after]);
+        return new Response(JSON.stringify(rows));
+      } else {
+        return new Response(JSON.stringify([]));
       }
-
-      const client = new Client(env.DATABASE_URL);
-      await client.connect();
-      const { rows } = await client.query(`${query};`);
-      ctx.waitUntil(client.end());
-
-      return new Response(JSON.stringify(rows));
-    } else if (path === "/insert_match") {
-      const contentType = request.headers.get("content-type");
-      if (contentType == "text/plain") {
-	const toJson = await parseTextRequestToJson(request);
-
-	let query = insertMatches(toJson);
-	const client = new Client(env.DATABASE_URL);
-	await client.connect();
-	const finalQuery = `${query} on conflict do nothing;`;
-	await client.query(finalQuery);
-	ctx.waitUntil(client.end());
-	return new Response(JSON.stringify([]));
-      }
-      return new Response(JSON.stringify([]));
-    } else if (path == "/insert_parsed") {
+    } else if (path === "/insert_matches") {
       const contentType = request.headers.get("content-type");
       if (contentType == "application/json") {
-	const toJson = await request.json(); 
-
-
-	const client = new Client(env.DATABASE_URL);
-	await client.connect();
-	await client.query(insertMatches(toJson.matches));
-	await client.query(insertPlayers(toJson.players));
-	await client.query(insertTeams(toJson.teams));
-	await client.query(insertPlayerStats(toJson.playerStats));
-	await client.query(insertTeamStats(toJson.teamStats));
-	ctx.waitUntil(client.end());
+	const json = await request.json(); 
+        const sql = neon(env.DATABASE_URL);
+	await sql(insertMatches(json.matches));
 	return new Response(JSON.stringify([]));
       }
-	 
+    } else if (path === "/insert_players") {
+      const contentType = request.headers.get("content-type");
+      if (contentType == "application/json") {
+	const json = await request.json(); 
+        const sql = neon(env.DATABASE_URL);
+	await sql(insertPlayers(json.players));
+	return new Response(JSON.stringify([]));
+      }
+    } else if (path === "/insert_teams") {
+      const contentType = request.headers.get("content-type");
+      if (contentType == "application/json") {
+	const json = await request.json(); 
+        const sql = neon(env.DATABASE_URL);
+	await sql(insertTeams(json.teams));
+	return new Response(JSON.stringify([]));
+      }
+    } else if (path === "/insert_team_stats") {
+      const contentType = request.headers.get("content-type");
+      if (contentType == "application/json") {
+	const json = await request.json(); 
+        const sql = neon(env.DATABASE_URL);
+	await sql(insertTeamStats(json.team_stats));
+	return new Response(JSON.stringify([]));
+      }
+    } else if (path === "/insert_player_stats") {
+      const contentType = request.headers.get("content-type");
+      if (contentType == "application/json") {
+	const json = await request.json(); 
+        const sql = neon(env.DATABASE_URL);
+	await sql(insertPlayerStats(json.player_stats));
+	return new Response(JSON.stringify([]));
+      }
     }
-  return new Response(JSON.stringify([]));
+    return new Response(JSON.stringify([]));
   }
 }
