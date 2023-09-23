@@ -1,3 +1,4 @@
+import entity.JSONOutput;
 import match.MatchWrapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,11 @@ public class ParserTest {
         String line = reader.readLine();
         JSONObject match = new JSONObject(line);
         MatchWrapper formattedMatchWrapper = new MatchWrapper(match);
-        System.out.println(formattedMatchWrapper.toPlayerOutput());
+
+        JSONOutput output = new JSONOutput();
+        output.addMatchWrapper(formattedMatchWrapper);
+
+        String test = output.toJSON();
+        System.out.println(test);
     }
 }
