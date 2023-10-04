@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+  ponosdb:
+    container_name: ponosdb
+    image: postgres
+    env_file:
+      - ./db/.env
+    volumes:
+       - ./db/db:/pg
+    ports:
+      - 100.112.31.65:12000:5432
+    restart: unless-stopped
+
