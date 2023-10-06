@@ -11,3 +11,10 @@ services:
       - 100.112.31.65:12000:5432
     restart: unless-stopped
 
+  ponosapi:
+    container_name: ponosapi
+    build:
+      context: ./api
+    ports:
+      - 100.112.31.65:8000:8000
+    restart: unless-stopped
