@@ -2,19 +2,20 @@ version: '3.7'
 services:
   ponosdb:
     container_name: ponosdb
-    image: postgres
+    image: postgres:15
     env_file:
       - ./db/.env
     volumes:
-       - ./db/db:/pg
+       - ./data/db:/pg
     ports:
-      - 100.112.31.65:12000:5432
+      - 100.124.40.39:12000:5432
     restart: unless-stopped
 
   ponosapi:
     container_name: ponosapi
     build:
+      dockerfile: Dockerfile
       context: ./api
     ports:
-      - 100.112.31.65:8000:8000
+      - 100.124.40.39:8000:8000
     restart: unless-stopped
