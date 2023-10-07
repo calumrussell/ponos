@@ -1,7 +1,7 @@
 package repository;
 
 import entity.Team;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TeamRepository extends CrudRepository<Team, Integer> {
+public interface TeamRepository extends JpaRepository<Team, Integer> {
 }

@@ -12,6 +12,7 @@ public class TeamStats {
     public Integer teamId;
     @Id
     public Integer matchId;
+    public boolean isHome;
     public short pass;
     public short passCorner;
     public short passLongball;

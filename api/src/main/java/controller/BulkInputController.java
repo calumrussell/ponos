@@ -32,8 +32,11 @@ public class BulkInputController {
         matchRepository.flush();
         playerStatsRepository.saveAll(statsDto.playerStats);
         playerStatsRepository.flush();
-        //teamStatsRepository.saveAll(statsDto.teamStats);
-        //playerRepository.saveAll(statsDto.players);
-        //teamRepository.saveAll(statsDto.teams);
+        teamStatsRepository.saveAll(statsDto.teamStats);
+        teamStatsRepository.flush();
+        playerRepository.saveAll(statsDto.players);
+        playerRepository.flush();
+        teamRepository.saveAll(statsDto.teams);
+        teamRepository.flush();
     }
 }
