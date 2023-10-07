@@ -149,10 +149,10 @@ public class MatchWrapper {
             Optional<Integer> playerId = event.getPlayerId();
             if (playerId.isPresent()) {
                 if (map.containsKey(playerId.get())) {
-                    Integer passes = map.get(playerId.get());
-                    map.put(playerId.get(), passes + 1);
+                    Integer val = map.get(playerId.get());
+                    map.put(playerId.get(), val + 1);
                 } else {
-                    map.put(playerId.get(), 0);
+                    map.put(playerId.get(), 1);
                 }
             }
         }

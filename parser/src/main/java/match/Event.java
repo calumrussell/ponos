@@ -3,6 +3,7 @@ package match;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import java.util.Optional;
 public class Event {
 
     private JSONArray eventTypes;
+    private List<String> eventNames;
     private Optional<Integer> playerId;
     private Optional<Integer> minute;
 
@@ -681,6 +683,11 @@ public class Event {
 
     Event (JSONObject event) {
         this.eventTypes = event.getJSONArray("satisfiedEventsTypes");
+        this.eventNames = new ArrayList<>();
+        for (Object type: eventTypes) {
+            Integer typeInt = (Integer) type;
+            this.eventNames.add(EventMapping.eventIdMap.get(typeInt));
+        }
         this.playerId = this.getOptionalValue(event, "playerId");
         this.minute = this.getOptionalValue(event, "minute");
     }
