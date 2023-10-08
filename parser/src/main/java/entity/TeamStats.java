@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import match.MatchWrapper;
-import org.json.JSONPropertyName;
 
 import java.util.Set;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TeamStats {
     public Integer teamId;
+    public Integer oppId;
     public Integer matchId;
     public boolean isHome;
     public short pass;
@@ -112,8 +112,9 @@ public class TeamStats {
     public short parriedDanger;
     public short saveKeeper;
 
-    public TeamStats(Integer teamId, MatchWrapper matchWrapper) {
+    public TeamStats(Integer teamId, Integer oppId, MatchWrapper matchWrapper) {
         this.teamId = teamId;
+        this.oppId = oppId;
         this.matchId = matchWrapper.getMatchId();
         this.isHome = matchWrapper.getHomeId().equals(teamId);
 

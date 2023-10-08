@@ -450,11 +450,11 @@ public class MatchWrapper {
     }
 
     public TeamStats toHomeTeamStatsOutput () {
-        return new TeamStats(this.homeId, this);
+        return new TeamStats(this.homeId, this.awayId, this);
     }
 
     public TeamStats toAwayTeamStatsOutput () {
-        return new TeamStats(this.awayId, this);
+        return new TeamStats(this.awayId, this.homeId, this);
     }
 
     public Vector<PlayerStats> toPlayerStatsOutput() {
