@@ -14,6 +14,7 @@ public class PlayerStats {
     @Id
     public Integer playerId;
     public Integer teamId;
+    public String position;
     @Id
     public Integer matchId;
     public Integer minutes;
