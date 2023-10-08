@@ -12,6 +12,7 @@ public class PlayerStats {
     public Integer playerId;
     public Integer teamId;
     public Integer matchId;
+    public String position;
     public short minutes;
     public short pass;
     public short passCorner;
@@ -116,6 +117,7 @@ public class PlayerStats {
         this.playerId = playerId;
         this.teamId = teamId;
         this.matchId = matchWrapper.getMatchId();;
+        this.position = matchWrapper.positionMap.get(playerId);
         //This needs to fail on missing values as it will indicate an error somewhere in the code
         this.minutes = matchWrapper.playerMinutes.get(playerId).shortValue();
         //This can return zero if the player was a substitute but we need to record that they played the game

@@ -18,6 +18,7 @@ public class MatchWrapper {
     private Integer awayId;
     private Integer maxMinute;
     private long startTime;
+    public HashMap<Integer, String> positionMap;
     public HashMap<Integer, Integer> playerMinutes;
     private HashMap<Integer, String> homePlayerIds;
     private HashMap<Integer, String> awayPlayerIds;
@@ -420,6 +421,30 @@ public class MatchWrapper {
         }
     }
 
+    private void initPositions() {
+        this.positionMap = new HashMap<>();
+
+        JSONObject home = matchCentre.getJSONObject("home");
+        JSONObject away = matchCentre.getJSONObject("away");
+
+        JSONArray homePlayers = home.getJSONArray("players");
+        JSONArray awayPlayers = away.getJSONArray("players");
+
+        for (Object player: homePlayers) {
+            JSONObject playerJson = (JSONObject) player;
+            Integer playerId = playerJson.getInt("playerId");
+            String position = playerJson.getString("position");
+            positionMap.put(playerId, position);
+        }
+
+        for (Object player: awayPlayers) {
+            JSONObject playerJson = (JSONObject) player;
+            Integer playerId = playerJson.getInt("playerId");
+            String position = playerJson.getString("position");
+            positionMap.put(playerId, position);
+        }
+    }
+
     public Match toMatchOutput () {
         return new Match(matchId, (int) startTime, homeId, awayId);
     }
@@ -478,6 +503,7 @@ public class MatchWrapper {
         initTeams();
         initStartTime();
         initPlayerMinutes();
+        initPositions();
     }
 
     public Integer getMatchId() {
