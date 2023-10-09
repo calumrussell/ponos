@@ -1,7 +1,11 @@
 {{ 
     config(
-        materialized='view',
-    ) 
+        materialized='table',
+        indexes = [
+            {'columns': ['id'], 'unique': True},
+        ],
+        post_hook = "alter table match_names alter column id set not null;",
+    )
 }}
 
 select 

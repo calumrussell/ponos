@@ -1,6 +1,10 @@
 {{ 
     config(
-        materialized='view',
+        materialized='table',
+        indexes = [
+            {'columns': ['player_id', 'match_id'], 'unique': True},
+        ],
+        post_hook = "alter table player_stats_names alter column player_id set not null; alter table player_stats_names alter column match_id set not null;",
     ) 
 }}
 
