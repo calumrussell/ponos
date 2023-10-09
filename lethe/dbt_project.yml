@@ -1,0 +1,17 @@
+name: 'lethe'
+version: '1.0.0'
+config-version: 2
+
+profile: 'lethe'
+
+model-paths: ["models"]
+test-paths: ["tests"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  lethe:
+    base:
+      +materialized: view
