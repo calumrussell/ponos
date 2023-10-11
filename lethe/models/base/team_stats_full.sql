@@ -1,10 +1,9 @@
 {{ 
     config(
-        materialized='table',
+        materialized='view',
         indexes = [
             {'columns': ['team_id', 'match_id'], 'unique': True},
         ],
-        post_hook = "alter table team_stats_joined alter column team_id set not null; alter table team_stats_joined alter column match_id set not null;",
     ) 
 }}
 
@@ -107,9 +106,11 @@
 ] %}
 
 select 
+    match.start_date,
     team_stats.team_id,
     team_stats.opp_id,
     team_stats.match_id,
+    team_stats.is_home,
     {% for stat in stat_groups %}
     team_stats.{{stat}} as {{stat}},
     opp_stats.{{stat}} as opp_{{stat}},
@@ -128,3 +129,4 @@ from team_stats
 left join team_stats as opp_stats on team_stats.team_id=opp_stats.opp_id and team_stats.match_id=opp_stats.match_id
 left join team on team.id=team_stats.team_id
 left join team as opp on opp.id=team_stats.opp_id
+left join match on team_stats.match_id=match.id

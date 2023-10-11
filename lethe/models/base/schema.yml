@@ -1,6 +1,6 @@
 version: 2
 
 models:
-  - name: matches_names
-  - name: player_stats_names
-  - name: taem_stats_names
+  - name: matches_full
+  - name: player_stats_full
+  - name: taem_stats_full
