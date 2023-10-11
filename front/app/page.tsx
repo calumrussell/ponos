@@ -1,15 +1,23 @@
 import prisma from '@/lib/prisma';
-import { Match } from '@/lib/components';
+import { Matches } from '@/lib/components';
 
 async function getRecentMatches() {
   let epoch = Date.now() / 1000;
-  const matches = await prisma.match.findMany({
+  const matches = await prisma.match_with_names.findMany({
     where: {
       start_date : {
-        gt: epoch - (86400 * 14),
-        lt: epoch - (86400 * 2),
+        gt: epoch - (86400 * 5),
+        lt: epoch + (86400),
       }
-    }
+    },
+    orderBy: [
+      {
+        tournament_id: 'desc',
+      },
+      {
+        start_date: 'desc',
+      }
+    ]
   })
   return matches;
 }
@@ -18,11 +26,7 @@ export default async function Home() {
   const matches = await getRecentMatches();
   return (
     <main>
-      {
-        matches.map((match) => {
-          return <Match key={match.id} {...match} />;
-        })
-      }
+      <Matches matches={matches} />
     </main>
   )
 }

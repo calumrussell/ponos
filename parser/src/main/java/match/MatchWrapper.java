@@ -460,10 +460,10 @@ public class MatchWrapper {
     public Vector<PlayerStats> toPlayerStatsOutput() {
         Vector<PlayerStats> res = new Vector<>();
         for (Integer playerId: this.homePlayerIds.keySet()) {
-            res.add(new PlayerStats(playerId, homeId, this));
+            res.add(new PlayerStats(playerId, homeId, awayId, this));
         }
         for (Integer playerId: this.awayPlayerIds.keySet()) {
-            res.add(new PlayerStats(playerId, awayId, this));
+            res.add(new PlayerStats(playerId, awayId, homeId, this));
         }
         return res;
     }

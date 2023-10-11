@@ -11,6 +11,7 @@ import java.util.HashMap;
 public class PlayerStats {
     public Integer playerId;
     public Integer teamId;
+    public Integer oppId;
     public Integer matchId;
     public String position;
     public short minutes;
@@ -113,9 +114,10 @@ public class PlayerStats {
     public short parriedDanger;
     public short saveKeeper;
 
-    public PlayerStats(Integer playerId, Integer teamId, MatchWrapper matchWrapper) {
+    public PlayerStats(Integer playerId, Integer teamId, Integer oppId, MatchWrapper matchWrapper) {
         this.playerId = playerId;
         this.teamId = teamId;
+        this.oppId = oppId;
         this.matchId = matchWrapper.getMatchId();;
         this.position = matchWrapper.positionMap.get(playerId);
         //This needs to fail on missing values as it will indicate an error somewhere in the code
