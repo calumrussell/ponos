@@ -1,11 +1,11 @@
 import React from "react";
 
 import prisma from "@/lib/prisma";
-import { PlayerStats, TeamStats } from "@/lib/components";
+import { PlayerStatsMatchPage, TeamStatsMatchPage } from "@/lib/components";
 import { sortByPosition } from "@/lib/functions";
 
 async function getMatch(id: string) {
-  const match = await prisma.match_with_names.findFirst({
+  const match = await prisma.match_full.findFirst({
     where: {
       id: parseInt(id)
     }
@@ -14,7 +14,7 @@ async function getMatch(id: string) {
 }
 
 async function getTeamStats(id: string) {
-  const team_stats = await prisma.team_stats_with_names.findMany({
+  const team_stats = await prisma.team_stats_full.findMany({
     where: {
       match_id: parseInt(id)
     }
@@ -23,7 +23,7 @@ async function getTeamStats(id: string) {
 };
 
 async function getPlayerStats(id: string) {
-  const player_stats = await prisma.player_stats_with_names.findMany({
+  const player_stats = await prisma.player_stats_full.findMany({
     where: {
       match_id: parseInt(id)
     },
@@ -68,11 +68,11 @@ export default async function Page(input: Match) {
   return (
     <main>
       <h4>{`Score: ${homeGoal} : ${awayGoal}`}</h4>
-      <TeamStats team_stats={[homeTeamStats[0], awayTeamStats[0]]} />
+      <TeamStatsMatchPage team_stats={[homeTeamStats[0], awayTeamStats[0]]} />
       <h4>{homeSide}</h4>
-      <PlayerStats player_stats={homePlayerStats} />
+      <PlayerStatsMatchPage player_stats={homePlayerStats} />
       <h4>{awaySide}</h4>
-      <PlayerStats player_stats={awayPlayerStats} />
+      <PlayerStatsMatchPage player_stats={awayPlayerStats} />
     </main>
   )
 }

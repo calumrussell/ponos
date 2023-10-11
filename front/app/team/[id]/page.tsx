@@ -1,10 +1,10 @@
 import React from "react";
 
 import prisma from "@/lib/prisma";
-import { TeamStats } from "@/lib/components";
+import { TeamStatsTeamPage } from "@/lib/components";
 
 async function getTeamStats(id: string) {
-  const team_stats = await prisma.team_stats_with_names.findMany({
+  const team_stats = await prisma.team_stats_full.findMany({
     where: {
       team_id: parseInt(id)
     },
@@ -27,7 +27,7 @@ export default async function Page(input: Team) {
 
   return (
     <main>
-      <TeamStats team_stats={teamStats} />
+      <TeamStatsTeamPage team_stats={teamStats} />
     </main>
   )
 }

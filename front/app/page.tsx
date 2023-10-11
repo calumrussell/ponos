@@ -3,7 +3,7 @@ import { Matches } from '@/lib/components';
 
 async function getRecentMatches() {
   let epoch = Date.now() / 1000;
-  const matches = await prisma.match_with_names.findMany({
+  const matches = await prisma.match_full.findMany({
     where: {
       start_date : {
         gt: epoch - (86400 * 5),
