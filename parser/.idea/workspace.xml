@@ -5,12 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd87c009-84ab-4466-8df5-d521cdec748b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../api/src/main/java/entity/TeamStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/../api/src/main/java/entity/TeamStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../front/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/../front/app/globals.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../front/app/match/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../front/app/match/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../front/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../front/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../front/lib/components/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../front/lib/components/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../front/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../front/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../front/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../front/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../front/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/../front/prisma/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../front/public/next.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../front/public/vercel.svg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/entity/PlayerStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/PlayerStats.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/entity/TeamStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/TeamStats.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/match/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/Event.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/match/MatchWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/match/MatchWrapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/match.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/match.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
