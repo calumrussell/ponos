@@ -4,7 +4,7 @@ services:
     container_name: ponosdb
     image: postgres:15
     env_file:
-      - ./db/.env
+      - ./app/db/.env
     volumes:
        - ./data/db:/pg
     ports:
@@ -15,7 +15,7 @@ services:
     container_name: ponosapi
     build:
       dockerfile: Dockerfile
-      context: ./api
+      context: ./app/api
     ports:
       - 100.124.40.39:8000:8000
     restart: unless-stopped
