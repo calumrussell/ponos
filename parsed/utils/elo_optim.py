@@ -3,7 +3,7 @@ from scipy.optimize import minimize
 from sklearn.linear_model import LogisticRegression
 import os
 import psycopg2
- 
+
 class Elo:
     expected_margin = lambda x_rating, y_rating, p, home_adv: ((x_rating-y_rating)/p) + home_adv
     rating_change = lambda k, actual_margin, expected_margin: k*(actual_margin-expected_margin)
@@ -14,10 +14,10 @@ class Elo:
         self.k = k
         self.p = p
         self.h = 0.2
-        self.rating_burn = 20
+        self.rating_burn = 5
         self.result_buffer = []
-        self.result_buffer_len = 200
-        self.optimizer_cooldown = 100
+        self.result_buffer_len = 150
+        self.optimizer_cooldown = 150
         self.optimizer_heat = 101
         self.regression = None
         self.predictions = []
@@ -64,7 +64,7 @@ class Elo:
             else:
                 self.optimizer_heat += 1
  
-    def update(self, t1, t2, t1_goals, t2_goals, is_home):
+    def update(self, t1, t2, t1_goals, t2_goals):
         if t1 not in self.ratings:
             self.ratings[t1] = 1500
             self.match_count[t1] = 0
@@ -76,7 +76,7 @@ class Elo:
         goal_diff = t1_goals - t2_goals
  
         if self.match_count[t1] > self.rating_burn and self.match_count[t2] > self.rating_burn:
-            self.result_buffer.append([ratings_diff, t1_goals - t2_goals])
+            self.result_buffer.append([self.ratings[t1] - self.ratings[t2], t1_goals - t2_goals])
  
         if self.regression:
             for result, prob in zip(self.regression.classes_, self.regression.predict_proba([[ratings_diff]]).flatten()):
@@ -88,11 +88,17 @@ class Elo:
                     self.actuals.append(1 if goal_diff < 0 else 0)
                 self.predictions.append(prob)
  
-        x_margin = Elo.expected_margin(self.ratings[t1], self.ratings[t2], self.p, self.h if is_home else -self.h)
-        rating_change = Elo.rating_change(self.k, t1_goals - t2_goals, x_margin)
+        t1_x_margin = Elo.expected_margin(self.ratings[t1], self.ratings[t2], self.p, self.h)
+        t1_rating_change = Elo.rating_change(self.k, t1_goals - t2_goals, t1_x_margin)
+
+        t2_x_margin = Elo.expected_margin(self.ratings[t2], self.ratings[t1], self.p, self.h)
+        t2_rating_change = Elo.rating_change(self.k, t2_goals - t1_goals, t2_x_margin)
  
-        self.ratings[t1] += rating_change
+        self.ratings[t1] += t1_rating_change
         self.match_count[t1] += 1
+
+        self.ratings[t2] += t2_rating_change
+        self.match_count[t2] += 1
  
         self._optimizer_update()
  
@@ -107,14 +113,29 @@ if __name__ == "__main__":
 
     with conn:
         with conn.cursor() as cur:
-            query = "select start_date, ts.team_id, ts.opp_id, goal, opp_goal, is_home from team_stats_joined as ts left join match on ts.match_id=match.id where tournament_id=2 and year=2012 order by start_date asc"
+            query = """
+                select 
+                match.start_date,
+                match.home_id,
+                match.away_id,
+                home.goal as home_goal,
+                away.goal as away_goal
+                from match
+                left join team_stats_full as home
+                    on home.team_id=match.home_id and home.match_id=match.id
+                left join team_stats_full as away
+                    on away.team_id=match.away_id and away.match_id=match.id
+                where year=2021 or year=2022
+                order by match.start_date asc"""
             cur.execute(query)
             
             rows = cur.fetchall()
 
             elo = Elo()
             for row in rows:
-                elo.update(row[1], row[2], row[3], row[4], row[5])
+                if row[3] and row[4]:
+                    elo.update(row[1], row[2], row[3], row[4])
 
+            print(elo.k, elo.p, elo.h)
             print(brier_score_loss(elo.actuals, elo.predictions))
 

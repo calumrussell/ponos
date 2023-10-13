@@ -117,12 +117,19 @@ select
     {% endfor %}
     team_stats.touch/opp_stats.touch as posession,
     case when team_stats.pass != 0 then team_stats.pass_accurate::real/team_stats.pass::real else 0 end as pass_accuracy,
+    case when opp_stats.pass != 0 then opp_stats.pass_accurate::real/opp_stats.pass::real else 0 end as opp_pass_accuracy,
     case when team_stats.pass_short != 0 then team_stats.pass_short_accurate::real/team_stats.pass_short::real else 0 end as pass_short_accuracy,
-    case when team_stats.dribble != 0 then  team_stats.dribble_won::real/team_stats.dribble::real else 0 end as dribble_conversion,
-    case when team_stats.interception != 0 then  team_stats.interception_won::real/team_stats.interception::real else 0 end as interception_conversion,
-    case when team_stats.tackle != 0 then  team_stats.tackle_won::real/team_stats.tackle::real else 0 end as tackle_conversion,
-    case when team_stats.clearance != 0 then  team_stats.clearance_effective::real/team_stats.clearance::real else 0 end as clearance_conversion,
+    case when opp_stats.pass_short != 0 then opp_stats.pass_short_accurate::real/opp_stats.pass_short::real else 0 end as opp_pass_short_accuracy,
+    case when team_stats.dribble != 0 then team_stats.dribble_won::real/team_stats.dribble::real else 0 end as dribble_conversion,
+    case when opp_stats.dribble != 0 then opp_stats.dribble_won::real/opp_stats.dribble::real else 0 end as opp_dribble_conversion,
+    case when team_stats.interception != 0 then team_stats.interception_won::real/team_stats.interception::real else 0 end as interception_conversion,
+    case when opp_stats.interception != 0 then opp_stats.interception_won::real/opp_stats.interception::real else 0 end as opp_interception_conversion,
+    case when team_stats.tackle != 0 then team_stats.tackle_won::real/team_stats.tackle::real else 0 end as tackle_conversion,
+    case when opp_stats.tackle != 0 then opp_stats.tackle_won::real/opp_stats.tackle::real else 0 end as opp_tackle_conversion,
+    case when team_stats.clearance != 0 then team_stats.clearance_effective::real/team_stats.clearance::real else 0 end as clearance_conversion,
+    case when opp_stats.clearance != 0 then opp_stats.clearance_effective::real/opp_stats.clearance::real else 0 end as opp_clearance_conversion,
     case when team_stats.big_chance_created != 0 then team_stats.big_chance_scored::real/team_stats.big_chance_created::real else 0.0::real end as big_chance_conversion,
+    case when opp_stats.big_chance_created != 0 then opp_stats.big_chance_scored::real/opp_stats.big_chance_created::real else 0.0::real end as opp_big_chance_conversion,
     team.name as team,
     opp.name as opp
 from team_stats 
