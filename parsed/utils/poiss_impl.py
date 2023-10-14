@@ -18,8 +18,10 @@ def _loss_poisson(par, matches):
     if par[0] < 0 or par[1] < 0:
         return np.inf
 
-    loss = 0
+    loss = []
     end_year = matches[-1][2]
+    off_pmf = [poiss_pmf(i, par[0]) for i in range(10)]
+    def_pmf = [poiss_pmf(i, par[1]) for i in range(10)]
     for match in matches:
         goals_for = match[0]
         goals_against = match[1]
@@ -27,9 +29,9 @@ def _loss_poisson(par, matches):
         ##If the match is from a different season then we weight down significantly
         multiplier = 1 if year == end_year else 0.25
 
-        loss -= multiplier * np.log(poiss_pmf(goals_for, par[0]))
-        loss -= multiplier * np.log(poiss_pmf(goals_against, par[1]))
-    return loss
+        loss.append(multiplier * np.log(off_pmf[goals_for]))
+        loss.append(multiplier * np.log(def_pmf[goals_against]))
+    return -(sum(loss) / len(loss))
 
 class Poisson:
     """
@@ -61,6 +63,7 @@ class Poisson:
                 args=(matches[-self.window_length:]),
             )
             last_date = matches[-1][3]
+            print(res.x)
             self.rating_records.append(Rating(team, res.x[0], res.x[1], last_date))
         return
 
@@ -115,7 +118,7 @@ if __name__ == "__main__":
             for rating in poiss.rating_records:
                 values.append(f"({rating.team_id}, {rating.off_rating}, {rating.def_rating}, {rating.date})")
             query += ",".join(values)
-            query += " on conflict do nothing;"
+            query += " on conflict(team_id, date) do update set off_rating=excluded.off_rating, def_rating=excluded.def_rating;"
             cur.execute(query)
         conn.commit()
 

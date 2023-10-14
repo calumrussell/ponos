@@ -62,20 +62,19 @@ def _loss_weibull(par, matches):
     if par[0] < 0 or par[1] < 0 or par[2] < 0 or par[3] < 0:
         return np.inf
  
-    loss = 0
+    loss = []
     end_year = matches[-1][2]
+    prob_dist_a = weibull_count_pmf(par[0], par[1])
+    prob_dist_b = weibull_count_pmf(par[2], par[3])
     for match in matches:
         goals_for = match[0]
         goals_against = match[1]
         year = match[2]
         ##If the match is from a different season then we weight down significantly
         multiplier = 1 if year == end_year else 0.25
-
-        prob_dist_a = weibull_count_pmf(par[0], par[1])
-        loss -= multiplier * np.log(prob_dist_a[goals_for])
-        prob_dist_b = weibull_count_pmf(par[2], par[3])
-        loss -= multiplier * np.log(prob_dist_b[goals_against])
-    return loss
+        loss.append(multiplier * np.log(prob_dist_a[goals_for]))
+        loss.append(multiplier * np.log(prob_dist_b[goals_against]))
+    return -(sum(loss) / len(loss))
 
 class Weibull:
     def __init__(self):
@@ -138,7 +137,7 @@ if __name__ == "__main__":
                 for rating in wei.rating_records:
                     values.append(f"({rating.team_id}, {rating.off_rating}, {rating.off_rating_spread}, {rating.def_rating}, {rating.def_rating_spread}, {rating.date})")
                 query += ",".join(values)
-                query += " on conflict do nothing;"
+                query += " on conflict(team_id, date) do update set off_rating=excluded.off_rating, off_rating_spread=excluded.off_rating_spread, def_rating=excluded.def_rating, def_rating_spread=excluded.def_rating_spread;"
                 cur.execute(query)
                 conn.commit()
 
@@ -155,7 +154,7 @@ if __name__ == "__main__":
                     on home.team_id=match.home_id and home.match_id=match.id
                 left join team_stats_full as away
                     on away.team_id=match.away_id and away.match_id=match.id
-                where (year=2021 or year=2022 or year=2023 or year=2024) and tournament_id=2
+                where (year=2021 or year=2022) and tournament_id=2
                 order by match.start_date asc"""
             cur.execute(query)
             
