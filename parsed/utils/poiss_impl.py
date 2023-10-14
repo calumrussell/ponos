@@ -3,53 +3,68 @@ from math import factorial
 from scipy.optimize import minimize
 import os
 import psycopg2
-from sklearn.preprocessing import OneHotEncoder
+
+class Rating:
+    def __init__(self, team_id, off_rating, def_rating, date) -> None:
+        self.team_id = team_id
+        self.off_rating = off_rating
+        self.def_rating = def_rating
+        self.date = date
 
 def poiss_pmf(x, a):
     return ((a**x) * (np.exp(-a))) / factorial(x)
 
-def _loss_poisson(par, matches, teams_map):
-    if any(v < 0 for v in par):
+def _loss_poisson(par, matches):
+    if par[0] < 0 or par[1] < 0:
         return np.inf
 
     loss = 0
+    end_year = matches[-1][2]
     for match in matches:
-        goals = match[0]
-        team = match[1]
-        team_pos = teams_map[team]
-        loss -= np.log(poiss_pmf(goals, par[team_pos]))
+        goals_for = match[0]
+        goals_against = match[1]
+        year = match[2]
+        ##If the match is from a different season then we weight down significantly
+        multiplier = 1 if year == end_year else 0.25
+
+        loss -= multiplier * np.log(poiss_pmf(goals_for, par[0]))
+        loss -= multiplier * np.log(poiss_pmf(goals_against, par[1]))
     return loss
 
 class Poisson:
     def __init__(self):
-        self.params = []
-        self.matches = []
-        self.optimizer_burn = 50
+        self.matches = {}
+        self.rating_records = []
+        self.window_length = 20
 
-    def optimize(self):
-        teams = set()
-        for row in self.matches:
-            teams.add(row[1])
+    def _optimize(self):
+        ##Check that all teams have sufficient history
+        if any(len(i) < self.window_length for i in self.matches.values()):
+            return
 
-        count = len(teams)
-        init_params = np.random.uniform(low=0.1, high=1.0, size=(1, count))
-
-        teams_map = {j: i for i,j in enumerate(teams)}
-        res = minimize(
-            fun=_loss_poisson,
-            method='Nelder-Mead',
-            ##always intialize to random values at start because we aren't using rolling
-            ##window
-            x0=init_params[0],
-            args=(self.matches, teams_map),
-            options={"disp": "true"},
-        )
-        self.params = { i: j for i, j in  zip(teams, res.x) }
+        teams = self.matches.keys()
+        for team in teams:
+            matches = self.matches[team]
+            init_params = np.random.uniform(low=0.1, high=1.0, size=2)
+            res = minimize(
+                fun=_loss_poisson,
+                method='Nelder-Mead',
+                x0=init_params,
+                args=(matches[-self.window_length:]),
+            )
+            last_date = matches[-1][3]
+            self.rating_records.append(Rating(team, res.x[0], res.x[1], last_date))
         return
 
-    def update(self, home_team, away_team, home_goals, away_goals):
-        self.matches.append([home_goals, home_team])
-        self.matches.append([away_goals, away_team])
+    def update(self, home_team, away_team, home_goals, away_goals, year, date):
+        if home_team not in self.matches:
+            self.matches[home_team] = []
+        if away_team not in self.matches:
+            self.matches[away_team] = []
+        
+        self.matches[home_team].append([home_goals, away_goals, year, date])
+        self.matches[away_team].append([away_goals, home_goals, year, date])
+        self._optimize()
         return
 
 if __name__ == "__main__":
@@ -69,13 +84,14 @@ if __name__ == "__main__":
                 match.home_id,
                 match.away_id,
                 home.goal as home_goal,
-                away.goal as away_goal
+                away.goal as away_goal,
+                year
                 from match
                 left join team_stats_full as home
                     on home.team_id=match.home_id and home.match_id=match.id
                 left join team_stats_full as away
                     on away.team_id=match.away_id and away.match_id=match.id
-                where tournament_id=2 and year=2022
+                where (year=2019 or year=2020 or year=2021 or year=2022 or year=2023 or year=2024)
                 order by match.start_date asc"""
             cur.execute(query)
             
@@ -85,6 +101,14 @@ if __name__ == "__main__":
             for row in rows:
                 if row[1] == -1 or row[2] == -1:
                     continue
-                poiss.update(row[1], row[2], row[3], row[4])
-            poiss.optimize()
-            print(poiss.params)
+                poiss.update(row[1], row[2], row[3], row[4], row[5], row[0])
+            query = "insert into poiss_ratings(team_id, off_rating, def_rating, date) VALUES "
+            values = []
+            for rating in poiss.rating_records:
+                values.append(f"({rating.team_id}, {rating.off_rating}, {rating.def_rating}, {rating.date})")
+            query += ",".join(values)
+            query += " on conflict do nothing;"
+            cur.execute(query)
+        conn.commit()
+
+
