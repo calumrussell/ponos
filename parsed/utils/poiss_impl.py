@@ -63,7 +63,6 @@ class Poisson:
                 args=(matches[-self.window_length:]),
             )
             last_date = matches[-1][3]
-            print(res.x)
             self.rating_records.append(Rating(team, res.x[0], res.x[1], last_date))
         return
 
