@@ -2,3 +2,5 @@ version: 2
 
 models:
   - name: elo_live
+  - name: poiss_live
+  - name: wei_live
