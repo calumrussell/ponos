@@ -115,15 +115,3 @@ if __name__ == "__main__":
                     continue
                 poiss.update(row[1], row[2], row[3], row[4], row[5], row[0])
             print(poiss.params)
-            """
-            query = "insert into poiss_ratings(team_id, off_rating, def_rating, date) VALUES "
-            values = []
-            for rating in poiss.rating_records:
-                values.append(f"({rating.team_id}, {rating.off_rating}, {rating.def_rating}, {rating.date})")
-            query += ",".join(values)
-            query += " on conflict do nothing;"
-            cur.execute(query)
-        conn.commit()
-        """
-
-
