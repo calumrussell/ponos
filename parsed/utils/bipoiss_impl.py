@@ -35,6 +35,10 @@ class BivariatePoisson:
     basically equivalent to two independent poissons, which is what the other poisson
     model is. Worth keeping this code until I work out if I have made a mistake
     somewhere.
+
+    Tried calculating correlation parameter for each team but this impacts the
+    interpretability of the model because high-strength teams have their strength rating
+    deflated.
     """
     def __init__(self):
         self.matches = {}

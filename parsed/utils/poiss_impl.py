@@ -32,6 +32,14 @@ def _loss_poisson(par, matches):
     return loss
 
 class Poisson:
+    """
+    Offensive and defensive strength modelled per team as two independent poisson. This
+    is calculated over 20-game windows with 75% decay for matches in previous season.
+
+    Calculation is very slow because we calculate each-window, each-team. Possible to
+    calculate all teams simultaneously as each variable is independent but this
+    significantly complicates window code.
+    """
     def __init__(self):
         self.matches = {}
         self.rating_records = []

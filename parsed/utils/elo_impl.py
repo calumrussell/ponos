@@ -14,6 +14,9 @@ class DefaultEloModel:
         self.h = 0.17
 
 class EloImpl:
+    """
+    Uses computed variables, includes home strength parameter.
+    """
     expected_margin = lambda x_rating, y_rating, p, home_adv: ((x_rating-y_rating)/p) + home_adv
     rating_change = lambda actual_margin, expected_margin, k: k*(actual_margin-expected_margin)
 
