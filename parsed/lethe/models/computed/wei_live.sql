@@ -2,7 +2,7 @@
     config(
         materialized='view',
         indexes = [
-            {'columns': ['team_id'], 'unique': True},
+            {'columns': ['team_id', 'date'], 'unique': True},
         ],
     ) 
 }}
