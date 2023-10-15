@@ -6,7 +6,7 @@ async function getRecentMatches() {
   const matches = await prisma.match_full.findMany({
     where: {
       start_date : {
-        gt: epoch - (86400 * 5),
+        gt: epoch - (86400 * 20),
         lt: epoch + (86400),
       }
     },
