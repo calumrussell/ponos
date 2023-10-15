@@ -1,14 +1,14 @@
 import React from "react";
 import Link from "next/link";
 
-import { match_names } from "@prisma/client";
+import { match_full } from "@prisma/client";
 
 export { TeamStatsMatchPage, PlayerStatsMatchPage } from "./match";
 export { TeamStatsTeamPage } from "./team";
 export { PlayerStatsPlayerPage } from './player';
 
-export const MatchRow = ({id, home, home_id, away, away_id, start_date} : match_names) => {
-  const js_date = new Date(start_date * 1000);
+export const MatchRow = ({id, home, home_id, away, away_id, start_date} : match_full) => {
+  const js_date = start_date ? new Date(start_date * 1000) : new Date();
   return (
     <tr>
       <td><Link href={`/match/${id}`}>{id}</Link></td>
@@ -19,7 +19,7 @@ export const MatchRow = ({id, home, home_id, away, away_id, start_date} : match_
   )
 }
 
-export const Matches = ({matches}: {matches: match_names[] }) => {
+export const Matches = ({matches}: {matches: match_full[] }) => {
   return (
     <table>
       <thead>

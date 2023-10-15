@@ -3,10 +3,15 @@ import React from "react";
 import prisma from "@/lib/prisma";
 import { TeamStatsTeamPage } from "@/lib/components";
 
-async function getTeamStats(id: string) {
+export async function generateStaticParams() {
+  const teams = await prisma.team.findMany({});
+  return teams.map(team => ({id: team.id.toString()}))
+}
+
+async function getTeamStats(id: number) {
   const team_stats = await prisma.team_stats_full.findMany({
     where: {
-      team_id: parseInt(id)
+      team_id: id
     },
     orderBy: {
       match_id: 'desc'
@@ -18,12 +23,12 @@ async function getTeamStats(id: string) {
 
 interface Team {
   params: {
-    id: string 
+    id: string
   }
 }
 
 export default async function Page(input: Team) {
-  const teamStats = await getTeamStats(input.params.id);
+  const teamStats = await getTeamStats(parseInt(input.params.id));
 
   return (
     <main>

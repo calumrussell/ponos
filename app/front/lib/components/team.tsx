@@ -20,7 +20,7 @@ const TeamStatsRow = (row: team_stats_full) => {
     clearance_effective,
   } = row;
 
-  const date = new Date(start_date * 1000);
+  const date = start_date ? new Date(start_date * 1000): new Date();
   const dateStr = date.toLocaleDateString('en-GB', {year: 'numeric', month: 'numeric', day: 'numeric'});
   
   return (
