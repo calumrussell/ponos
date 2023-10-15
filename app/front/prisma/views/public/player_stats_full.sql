@@ -99,13 +99,17 @@ SELECT
   player_stats.parried_danger,
   player_stats.save_keeper,
   player_stats."position",
+  player_stats.opp_id,
   team.name AS team,
   player.name AS player
 FROM
   (
     (
-      player_stats
-      LEFT JOIN team ON ((team.id = player_stats.team_id))
+      (
+        player_stats
+        LEFT JOIN team ON ((team.id = player_stats.team_id))
+      )
+      LEFT JOIN player ON ((player.id = player_stats.player_id))
     )
-    LEFT JOIN player ON ((player.id = player_stats.player_id))
+    LEFT JOIN MATCH ON ((player_stats.match_id = MATCH.id))
   );

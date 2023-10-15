@@ -202,11 +202,23 @@ SELECT
     ELSE (0) :: real
   END AS pass_accuracy,
   CASE
+    WHEN (opp_stats.pass <> 0) THEN (
+      (opp_stats.pass_accurate) :: real / (opp_stats.pass) :: real
+    )
+    ELSE (0) :: real
+  END AS opp_pass_accuracy,
+  CASE
     WHEN (team_stats.pass_short <> 0) THEN (
       (team_stats.pass_short_accurate) :: real / (team_stats.pass_short) :: real
     )
     ELSE (0) :: real
   END AS pass_short_accuracy,
+  CASE
+    WHEN (opp_stats.pass_short <> 0) THEN (
+      (opp_stats.pass_short_accurate) :: real / (opp_stats.pass_short) :: real
+    )
+    ELSE (0) :: real
+  END AS opp_pass_short_accuracy,
   CASE
     WHEN (team_stats.dribble <> 0) THEN (
       (team_stats.dribble_won) :: real / (team_stats.dribble) :: real
@@ -214,11 +226,23 @@ SELECT
     ELSE (0) :: real
   END AS dribble_conversion,
   CASE
+    WHEN (opp_stats.dribble <> 0) THEN (
+      (opp_stats.dribble_won) :: real / (opp_stats.dribble) :: real
+    )
+    ELSE (0) :: real
+  END AS opp_dribble_conversion,
+  CASE
     WHEN (team_stats.interception <> 0) THEN (
       (team_stats.interception_won) :: real / (team_stats.interception) :: real
     )
     ELSE (0) :: real
   END AS interception_conversion,
+  CASE
+    WHEN (opp_stats.interception <> 0) THEN (
+      (opp_stats.interception_won) :: real / (opp_stats.interception) :: real
+    )
+    ELSE (0) :: real
+  END AS opp_interception_conversion,
   CASE
     WHEN (team_stats.tackle <> 0) THEN (
       (team_stats.tackle_won) :: real / (team_stats.tackle) :: real
@@ -226,17 +250,35 @@ SELECT
     ELSE (0) :: real
   END AS tackle_conversion,
   CASE
+    WHEN (opp_stats.tackle <> 0) THEN (
+      (opp_stats.tackle_won) :: real / (opp_stats.tackle) :: real
+    )
+    ELSE (0) :: real
+  END AS opp_tackle_conversion,
+  CASE
     WHEN (team_stats.clearance <> 0) THEN (
       (team_stats.clearance_effective) :: real / (team_stats.clearance) :: real
     )
     ELSE (0) :: real
   END AS clearance_conversion,
   CASE
+    WHEN (opp_stats.clearance <> 0) THEN (
+      (opp_stats.clearance_effective) :: real / (opp_stats.clearance) :: real
+    )
+    ELSE (0) :: real
+  END AS opp_clearance_conversion,
+  CASE
     WHEN (team_stats.big_chance_created <> 0) THEN (
       (team_stats.big_chance_scored) :: real / (team_stats.big_chance_created) :: real
     )
     ELSE (0.0) :: real
   END AS big_chance_conversion,
+  CASE
+    WHEN (opp_stats.big_chance_created <> 0) THEN (
+      (opp_stats.big_chance_scored) :: real / (opp_stats.big_chance_created) :: real
+    )
+    ELSE (0.0) :: real
+  END AS opp_big_chance_conversion,
   team.name AS team,
   opp.name AS opp
 FROM

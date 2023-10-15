@@ -125,6 +125,7 @@ model player_stats {
   parried_danger            Int     @db.SmallInt
   save_keeper               Int     @db.SmallInt
   position                  String?
+  opp_id                    Int?    @db.SmallInt
 
   @@id([player_id, match_id])
 }
@@ -248,6 +249,34 @@ model tournament {
   name String?
 }
 
+model elo_ratings {
+  team_id Int
+  rating  Int?
+  date    Int
+
+  @@id([team_id, date])
+}
+
+model poiss_ratings {
+  team_id    Int
+  date       Int
+  off_rating Float? @db.Real
+  def_rating Float? @db.Real
+
+  @@id([team_id, date])
+}
+
+model wei_ratings {
+  team_id           Int
+  off_rating        Float? @db.Real
+  off_rating_spread Float? @db.Real
+  def_rating        Float? @db.Real
+  def_rating_spread Float? @db.Real
+  date              Int
+
+  @@id([team_id, date])
+}
+
 view player_stats_full {
   player_id                 Int
   team_id                   Int?
@@ -349,6 +378,7 @@ view player_stats_full {
   parried_danger            Int?    @db.SmallInt
   save_keeper               Int?    @db.SmallInt
   position                  String?
+  opp_id                    Int?    @db.SmallInt
   team                      String?
   player                    String?
 
@@ -566,14 +596,60 @@ view team_stats_full {
   opp_save_keeper               Int?     @db.SmallInt
   posession                     Int?     @db.SmallInt
   pass_accuracy                 Float?   @db.Real
+  opp_pass_accuracy             Float?   @db.Real
   pass_short_accuracy           Float?   @db.Real
+  opp_pass_short_accuracy       Float?   @db.Real
   dribble_conversion            Float?   @db.Real
+  opp_dribble_conversion        Float?   @db.Real
   interception_conversion       Float?   @db.Real
+  opp_interception_conversion   Float?   @db.Real
   tackle_conversion             Float?   @db.Real
+  opp_tackle_conversion         Float?   @db.Real
   clearance_conversion          Float?   @db.Real
+  opp_clearance_conversion      Float?   @db.Real
   big_chance_conversion         Float?   @db.Real
+  opp_big_chance_conversion     Float?   @db.Real
   team                          String?
   opp                           String?
 
   @@id([team_id, match_id])
+}
+
+view poiss_live {
+  team_id    Int
+  off_rating Float? @db.Real
+  def_rating Float? @db.Real
+  date       Int
+
+  @@id([date, team_id])
+}
+
+view match_front {
+  id            Int      @unique
+  home_id       Int?
+  away_id       Int?
+  start_date    Int?
+  broken        Boolean?
+  tournament_id Int?     @db.SmallInt
+  season_id     Int?     @db.SmallInt
+  year          Int?     @db.SmallInt
+}
+
+view wei_live {
+  team_id           Int
+  off_rating        Float? @db.Real
+  off_rating_spread Float? @db.Real
+  def_rating        Float? @db.Real
+  def_rating_spread Float? @db.Real
+  date              Int
+
+  @@id([date, team_id])
+}
+
+view elo_live {
+  team_id Int
+  rating  Int?
+  date    Int
+
+  @@id([date, team_id])
 }
