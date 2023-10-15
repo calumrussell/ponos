@@ -6,7 +6,7 @@ services:
     env_file:
       - ./app/db/.env
     volumes:
-       - ./data/db:/pg
+       - ./raw/data/db:/pg
     ports:
       - 100.124.40.39:12000:5432
     restart: unless-stopped
