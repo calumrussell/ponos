@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 
 import { team_stats_full } from "@prisma/client"
+import { convertDates } from "../functions";
 
 const TeamStatsRow = (row: team_stats_full) => {
   const  {
@@ -20,14 +21,11 @@ const TeamStatsRow = (row: team_stats_full) => {
     clearance_effective,
   } = row;
 
-  const date = start_date ? new Date(start_date * 1000): new Date();
-  const dateStr = date.toLocaleDateString('en-GB', {year: 'numeric', month: 'numeric', day: 'numeric'});
-  
   return (
     <tr>
       <td><Link href={`/team/${team_id}`}>{team}</Link></td>
       <td><Link href={`/team/${opp_id}`}>{opp}</Link></td>
-      <td><Link href={`/match/${match_id}`}>{dateStr}</Link></td>
+      <td><Link href={`/match/${match_id}`}>{convertDates(start_date)}</Link></td>
       <td>{pass}</td>
       <td>{goal}</td>
       <td>{shot}</td>

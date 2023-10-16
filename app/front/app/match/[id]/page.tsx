@@ -2,46 +2,12 @@ import React from "react";
 
 import prisma from "@/lib/prisma";
 import { PlayerStatsMatchPage, TeamStatsMatchPage } from "@/lib/components";
-import { sortByPosition } from "@/lib/functions";
+import { getMatch, getPlayerStats, getTeamStats, sortByPosition, getRoute } from "@/lib/functions";
+import { match_full, player_stats_full, team_stats_full } from "@prisma/client";
 
 export async function generateStaticParams() {
   const matches = await prisma.match_front.findMany({});
-  return matches.map(match => ({id: match.id.toString()}))
-}
-
-async function getMatch(id: number) {
-  const match = await prisma.match_full.findFirst({
-    where: {
-      id: id
-    }
-  })
-  return match;
-}
-
-async function getTeamStats(id: number) {
-  const team_stats = await prisma.team_stats_full.findMany({
-    where: {
-      match_id: id
-    }
-  })
-  return team_stats;
-};
-
-async function getPlayerStats(id: number) {
-  const player_stats = await prisma.player_stats_full.findMany({
-    where: {
-      match_id: id
-    },
-    orderBy: [
-      {
-        team_id: 'desc',
-      },
-      {
-        minutes: 'desc',
-      }
-    ]
-  });
-  return player_stats;
+  return matches.map(match => ({id: getRoute(match.id.toString())}))
 }
 
 interface Match {
@@ -51,9 +17,9 @@ interface Match {
 }
 
 export default async function Page(input: Match) {
-  const playerStats = await getPlayerStats(parseInt(input.params.id));
-  const match = await getMatch(parseInt(input.params.id));
-  const teamStats = await getTeamStats(parseInt(input.params.id));
+  const playerStats = await getPlayerStats(input.params.id) as player_stats_full[];
+  const match = await getMatch(input.params.id) as match_full;
+  const teamStats = await getTeamStats(input.params.id) as team_stats_full[];
 
   const homeSide = match?.home;
   const awaySide = match?.away;
