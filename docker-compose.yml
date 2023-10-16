@@ -10,6 +10,15 @@ services:
     ports:
       - 100.124.40.39:12000:5432
     restart: unless-stopped
+  
+  ponosfront:
+    container_name: ponosfront
+    build:
+      dockerfile: Dockerfile
+      context: ./app/front
+    ports:
+      - 100.124.40.39:3000:3000
+    restart: unless-stopped
 
   ponosapi:
     container_name: ponosapi
