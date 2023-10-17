@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
       context: ./app/api
     ports:
-      - 100.124.40.39:8000:8000
+      - 100.124.40.39:8080:8080
     restart: unless-stopped
 
   ponostunnel:
