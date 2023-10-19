@@ -390,6 +390,8 @@ view player_stats_full {
   opp_id                    Int?    @db.SmallInt
   team                      String?
   player                    String?
+  year                      Int?    @db.SmallInt
+  tournament                String?
   xg                        Float?  @db.Real
 
   @@id([player_id, match_id])
@@ -406,6 +408,7 @@ view match_full {
   year          Int?     @db.SmallInt
   home          String?
   away          String?
+  tournament    String?
 }
 
 view team_stats_full {
@@ -622,6 +625,8 @@ view team_stats_full {
   xg                            Float?   @db.Real
   team                          String?
   opp                           String?
+  year                          Int?     @db.SmallInt
+  tournament                    String?
 
   @@id([team_id, match_id])
 }
