@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { team_stats_full } from "@prisma/client"
 import { convertDates } from "../functions";
+import { buildTitles, buildValues } from "./stats";
 
 const TeamStatsRow = (row: team_stats_full) => {
   const  {
@@ -12,13 +13,6 @@ const TeamStatsRow = (row: team_stats_full) => {
     opp,
     opp_id,
     match_id,
-    pass,
-    goal,
-    shot,
-    shot_on_target,
-    tackle_won,
-    interception_won,
-    clearance_effective,
   } = row;
 
   return (
@@ -26,13 +20,7 @@ const TeamStatsRow = (row: team_stats_full) => {
       <td><Link href={`/team/${team_id}`}>{team}</Link></td>
       <td><Link href={`/team/${opp_id}`}>{opp}</Link></td>
       <td><Link href={`/match/${match_id}`}>{convertDates(start_date)}</Link></td>
-      <td>{pass}</td>
-      <td>{goal}</td>
-      <td>{shot}</td>
-      <td>{shot_on_target}</td>
-      <td>{tackle_won}</td>
-      <td>{interception_won}</td>
-      <td>{clearance_effective}</td>
+      { buildValues(row) }
     </tr>
   )
 }
@@ -46,13 +34,7 @@ export const TeamStatsTeamPage = ({ team_stats }: { team_stats: team_stats_full[
           <th>Team</th>
           <th>Opp</th>
           <th>Match</th>
-          <th>Pass</th>
-          <th>Goal</th>
-          <th>Shot</th>
-          <th>Shot On</th>
-          <th>Tackle W</th>
-          <th>Int W</th>
-          <th>Clearance E</th>
+          { buildTitles() }
         </tr>
       </thead>
       <tbody>

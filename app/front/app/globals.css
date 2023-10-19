@@ -7,3 +7,12 @@ table > thead > tr > th:first-child {
     width: 10rem;
     text-align: right;
 }
+
+table > thead > tr > th.data {
+    width: 3rem;
+    text-align: center;
+}
+
+table > tbody > tr > td {
+    text-align: center;
+}
