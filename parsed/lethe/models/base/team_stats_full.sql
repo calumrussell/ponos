@@ -136,10 +136,13 @@ select
     case when opp_stats.big_chance_created != 0 then opp_stats.big_chance_scored::real/opp_stats.big_chance_created::real else 0.0::real end as opp_big_chance_conversion,
     CASE WHEN xg_team.xg is NULL THEN 0 ELSE xg_team.xg END AS xg,
     team.name as team,
-    opp.name as opp
+    opp.name as opp,
+    match.year,
+    tournament.name as tournament
 from team_stats 
 left join team_stats as opp_stats on team_stats.team_id=opp_stats.opp_id and team_stats.match_id=opp_stats.match_id
 left join team on team.id=team_stats.team_id
 left join team as opp on opp.id=team_stats.opp_id
 left join match on team_stats.match_id=match.id
 left join xg_team on xg_team.team_id=team_stats.team_id and xg_team.match_id=team_stats.match_id
+left join tournament on tournament.id=match.tournament_id
