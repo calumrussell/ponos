@@ -14,6 +14,9 @@ public class Match {
     public Integer awayId;
     public Integer startDate;
     public boolean broken;
+    public Integer seasonId;
+    public Integer tournamentId;
+    public Integer year;
 
     public Integer getId() {
         return id;

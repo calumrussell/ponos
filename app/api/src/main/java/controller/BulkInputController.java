@@ -1,5 +1,6 @@
 package controller;
 
+import entity.MatchesDto;
 import entity.StatsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -25,6 +26,12 @@ public class BulkInputController {
 
     @Autowired
     MatchRepository matchRepository;
+
+    @PostMapping(path = "/bulk_matches", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void bulkMatches(@RequestBody MatchesDto matchesDto) {
+        matchRepository.saveAll(matchesDto.matches);
+        matchRepository.flush();
+    }
 
     @PostMapping(path = "/bulk_input", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void bulkInsert(@RequestBody StatsDto statsDto) {
