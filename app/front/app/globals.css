@@ -16,3 +16,16 @@ table > thead > tr > th.data {
 table > tbody > tr > td {
     text-align: center;
 }
+
+.matches-wrapper {
+    margin: 0.5rem 0;
+}
+
+.matches-wrapper > table {
+    width: 800px;
+}
+
+.matches-wrapper td {
+    width: 200px;
+}
+

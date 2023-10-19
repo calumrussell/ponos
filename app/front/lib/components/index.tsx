@@ -21,13 +21,6 @@ export const MatchRow = ({id, home, home_id, away, away_id, start_date} : match_
 export const Matches = ({matches}: {matches: match_full[] }) => {
   return (
     <table>
-      <thead>
-        <tr>
-          <th>Match</th>
-          <th>Home</th>
-          <th>Away</th>
-        </tr>
-      </thead>
       <tbody>
         {
           matches.map(match => {
@@ -37,5 +30,34 @@ export const Matches = ({matches}: {matches: match_full[] }) => {
       </tbody>
     </table>
   )
+}
 
+export const GroupedMatches = ({matches}: {matches: match_full[] }) => {
+
+  const groups = new Map();
+
+  matches.forEach(match => {
+    const dom = convertDates(match.start_date);
+    if (groups.has(dom)) {
+      const existing = groups.get(dom);
+      const copy = [...existing, match];
+      groups.set(dom, copy);
+    } else {
+      groups.set(dom, [match]);
+    }
+  })
+  
+  return (
+    <React.Fragment>
+      {
+        Array.from(groups.keys()).map(k => {
+          return (
+            <div key={k} className="matches-wrapper">
+              <Matches matches={groups.get(k)} />
+            </div>
+          );
+        })
+      }
+    </React.Fragment>
+  )
 }
