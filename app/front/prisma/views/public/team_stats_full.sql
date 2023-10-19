@@ -1,3 +1,14 @@
+WITH xg_team AS (
+  SELECT
+    sum(player_stats_full.xg) AS xg,
+    player_stats_full.match_id,
+    player_stats_full.team_id
+  FROM
+    player_stats_full
+  GROUP BY
+    player_stats_full.match_id,
+    player_stats_full.team_id
+)
 SELECT
   MATCH.start_date,
   team_stats.team_id,
@@ -279,6 +290,10 @@ SELECT
     )
     ELSE (0.0) :: real
   END AS opp_big_chance_conversion,
+  CASE
+    WHEN (xg_team.xg IS NULL) THEN (0) :: real
+    ELSE xg_team.xg
+  END AS xg,
   team.name AS team,
   opp.name AS opp
 FROM
@@ -286,17 +301,25 @@ FROM
     (
       (
         (
-          team_stats
-          LEFT JOIN team_stats opp_stats ON (
-            (
-              (team_stats.team_id = opp_stats.opp_id)
-              AND (team_stats.match_id = opp_stats.match_id)
+          (
+            team_stats
+            LEFT JOIN team_stats opp_stats ON (
+              (
+                (team_stats.team_id = opp_stats.opp_id)
+                AND (team_stats.match_id = opp_stats.match_id)
+              )
             )
           )
+          LEFT JOIN team ON ((team.id = team_stats.team_id))
         )
-        LEFT JOIN team ON ((team.id = team_stats.team_id))
+        LEFT JOIN team opp ON ((opp.id = team_stats.opp_id))
       )
-      LEFT JOIN team opp ON ((opp.id = team_stats.opp_id))
+      LEFT JOIN MATCH ON ((team_stats.match_id = MATCH.id))
     )
-    LEFT JOIN MATCH ON ((team_stats.match_id = MATCH.id))
+    LEFT JOIN xg_team ON (
+      (
+        (xg_team.team_id = team_stats.team_id)
+        AND (xg_team.match_id = team_stats.match_id)
+      )
+    )
   );

@@ -1,3 +1,14 @@
+WITH xg_player AS (
+  SELECT
+    sum(xg.prob) AS prob,
+    xg.player_id,
+    xg.match_id
+  FROM
+    xg
+  GROUP BY
+    xg.player_id,
+    xg.match_id
+)
 SELECT
   player_stats.player_id,
   player_stats.team_id,
@@ -101,15 +112,27 @@ SELECT
   player_stats."position",
   player_stats.opp_id,
   team.name AS team,
-  player.name AS player
+  player.name AS player,
+  CASE
+    WHEN (xg_player.prob IS NULL) THEN (0) :: real
+    ELSE xg_player.prob
+  END AS xg
 FROM
   (
     (
       (
-        player_stats
-        LEFT JOIN team ON ((team.id = player_stats.team_id))
+        (
+          player_stats
+          LEFT JOIN team ON ((team.id = player_stats.team_id))
+        )
+        LEFT JOIN player ON ((player.id = player_stats.player_id))
       )
-      LEFT JOIN player ON ((player.id = player_stats.player_id))
+      LEFT JOIN MATCH ON ((player_stats.match_id = MATCH.id))
     )
-    LEFT JOIN MATCH ON ((player_stats.match_id = MATCH.id))
+    LEFT JOIN xg_player ON (
+      (
+        (player_stats.player_id = xg_player.player_id)
+        AND (player_stats.match_id = xg_player.match_id)
+      )
+    )
   );

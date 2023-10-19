@@ -277,6 +277,15 @@ model wei_ratings {
   @@id([team_id, date])
 }
 
+model xg {
+  match_id  Int
+  player_id Int
+  event_id  Int
+  prob      Float? @db.Real
+
+  @@id([match_id, player_id, event_id])
+}
+
 view player_stats_full {
   player_id                 Int
   team_id                   Int?
@@ -381,6 +390,7 @@ view player_stats_full {
   opp_id                    Int?    @db.SmallInt
   team                      String?
   player                    String?
+  xg                        Float?  @db.Real
 
   @@id([player_id, match_id])
 }
@@ -609,6 +619,7 @@ view team_stats_full {
   opp_clearance_conversion      Float?   @db.Real
   big_chance_conversion         Float?   @db.Real
   opp_big_chance_conversion     Float?   @db.Real
+  xg                            Float?   @db.Real
   team                          String?
   opp                           String?
 
