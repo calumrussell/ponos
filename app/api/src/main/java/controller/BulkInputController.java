@@ -35,8 +35,7 @@ public class BulkInputController {
 
     @PostMapping(path = "/bulk_input", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void bulkInsert(@RequestBody StatsDto statsDto) {
-        matchRepository.saveAll(statsDto.matches);
-        matchRepository.flush();
+        //Bulk insert should never touch matches
         playerStatsRepository.saveAll(statsDto.playerStats);
         playerStatsRepository.flush();
         teamStatsRepository.saveAll(statsDto.teamStats);
