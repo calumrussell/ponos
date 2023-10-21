@@ -8,12 +8,10 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        Scanner sc = new Scanner(System.in);
 
         JSONOutput output = new JSONOutput();
-        while (sc.hasNextLine()) {
-            String json = sc.nextLine();
-            JSONObject json_string = new JSONObject(json);
+        for(String arg: args ) {
+            JSONObject json_string = new JSONObject(arg);
             if (json_string.has("matchCentreData") && !json_string.isNull("matchCentreData")) {
                 MatchWrapper matchWrapper = new MatchWrapper(json_string);
                 output.addMatchWrapper(matchWrapper);
