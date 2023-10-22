@@ -14,4 +14,4 @@ if __name__ == "__main__":
             row_json['tournament_id'] = int(row_json['tournament_id'])
             row_json['year'] = int(row_json['year'])
             matches.append(row_json)
-    res = requests.post('http://localhost:8080/bulk_matches', json = {"matches": matches})
+    res = requests.post('http://100.124.40.39:8080/bulk_matches', json = {"matches": matches})
