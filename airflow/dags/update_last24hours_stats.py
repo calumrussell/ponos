@@ -12,7 +12,7 @@ import subprocess
       
 with DAG(
     "update_last24hours_stats",
-    start_date=datetime(2023, 10, 22),
+    start_date=datetime(2021, 1, 1),
     schedule=timedelta(minutes=30),
     catchup=False,
 ) as dag:

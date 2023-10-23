@@ -9,7 +9,7 @@ from airflow.decorators import task
       
 with DAG(
     "update_liveseasons_match",
-    start_date=datetime(2023, 10, 22),
+    start_date=datetime(2021, 1, 1),
     schedule=timedelta(days=1),
     catchup=False,
 ) as dag:
