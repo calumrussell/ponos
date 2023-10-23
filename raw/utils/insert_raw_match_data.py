@@ -3,13 +3,15 @@ import os
 import sys
 import json
 
-conn = psycopg2.connect(
+conn = psycopg2.connect(os.getenv("DB_CONN"))
+"""
     host=os.getenv("DB_HOST"),
     user=os.getenv("DB_USER"),
     password=os.getenv("DB_PWD"),
     dbname=os.getenv("DB_NAME"),
     port=os.getenv("DB_PORT")
 )
+"""
 
 for line in sys.stdin:
     json_row = json.loads(line)
