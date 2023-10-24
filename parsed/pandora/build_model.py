@@ -74,14 +74,7 @@ class ShotModel:
         self.x.append([distance, angle, location, play, body_part])
 
 if __name__ == "__main__":
-    conn = psycopg2.connect(
-        host=os.getenv("DB_HOST"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PWD"),
-        dbname=os.getenv("DB_NAME"),
-        port=os.getenv("DB_PORT")
-    )
-
+    conn = psycopg2.connect(os.getenv("DB_CONN"))
     model = ShotModel()
     with conn:
         with conn.cursor() as cur:
@@ -90,12 +83,10 @@ if __name__ == "__main__":
                 data
                 from 
                 match_data
-                where id in (select id from match where tournament_id=2 and (year=2024 or year=2023 or year=2022 or year=2021))
+                where id in (select id from match where tournament_id=2 and (year=2023 or year=2022 or year=2021))
                 """
             cur.execute(query)
-
-            rows = cur.fetchall()
-            for row in rows:
+            for row in cur:
                 events = row[0]['matchCentreData']['events']
                 for event in events:
                     if event.get('satisfiedEventsTypes'):
