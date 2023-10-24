@@ -1,4 +1,4 @@
-import { GroupedMatches, Matches } from '@/lib/components';
+import { GroupedMatches } from '@/lib/components';
 import { getRecentMatches } from '@/lib/functions';
 import { match_full } from '@prisma/client';
 

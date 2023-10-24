@@ -103,6 +103,9 @@ export async function getPlayerStatsByPlayer(id: string) {
     where: {
       player_id: parseInt(findRoute(id))
     },
+    orderBy: {
+      start_date: 'desc'
+    },
     take: 10,
   });
   return requestFormatter(player_stats);
@@ -114,9 +117,9 @@ export async function getTeamStatsByTeam(id: string) {
       team_id: parseInt(findRoute(id))
     },
     orderBy: {
-      match_id: 'desc'
+      start_date: 'desc'
     },
-    take: 10,
+    take: 20,
   })
   return requestFormatter(team_stats);
 };
