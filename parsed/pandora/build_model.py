@@ -1,4 +1,3 @@
-import psycopg2
 import os
 import pickle
 from sklearn.linear_model import LogisticRegression
@@ -74,6 +73,7 @@ class ShotModel:
         self.x.append([distance, angle, location, play, body_part])
 
 if __name__ == "__main__":
+    import psycopg2
     conn = psycopg2.connect(os.getenv("DB_CONN"))
     model = ShotModel()
     with conn:
