@@ -115,6 +115,7 @@ SELECT
   player.name AS player,
   MATCH.year,
   tournament.name AS tournament,
+  MATCH.start_date,
   CASE
     WHEN (xg_player.prob IS NULL) THEN (0) :: real
     ELSE xg_player.prob

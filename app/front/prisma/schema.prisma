@@ -286,6 +286,12 @@ model xg {
   @@id([match_id, player_id, event_id])
 }
 
+model seasons {
+  path  String   @id
+  tourn String?
+  curr  Boolean?
+}
+
 view player_stats_full {
   player_id                 Int
   team_id                   Int?
@@ -392,6 +398,7 @@ view player_stats_full {
   player                    String?
   year                      Int?    @db.SmallInt
   tournament                String?
+  start_date                Int?
   xg                        Float?  @db.Real
 
   @@id([player_id, match_id])

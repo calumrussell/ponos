@@ -17,6 +17,7 @@ team.name as team,
 player.name as player,
 match.year,
 tournament.name as tournament,
+match.start_date,
 CASE WHEN xg_player.prob is NULL THEN 0 ELSE xg_player.prob END AS xg
 from player_stats
 left join team on team.id=player_stats.team_id
