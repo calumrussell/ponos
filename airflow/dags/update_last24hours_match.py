@@ -44,7 +44,7 @@ with DAG(
         sql_query = "SELECT data FROM match_data where id in (select id from match where start_date < extract(epoch from now()) and start_date > (extract(epoch from now()) - 86400))"
         recs = hook.get_records(sql_query)
         process = subprocess.Popen(
-                ['docker', 'run', '-i', 'parser'], 
+                ['docker', 'run', '-i', '--rm', 'parser'], 
                 stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
@@ -65,7 +65,7 @@ with DAG(
         sql_query = "SELECT data FROM match_data where id in (select id from match where start_date < extract(epoch from now()) and start_date > (extract(epoch from now()) - 86400))"
         recs = hook.get_records(sql_query)
         process = subprocess.Popen(
-                ['docker', 'run', '-i', 'pandora'], 
+                ['docker', 'run', '-i', '--rm', 'pandora'], 
                 stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
