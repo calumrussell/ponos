@@ -1,6 +1,3 @@
-import os
-import psycopg2
-
 class Rating:
     def __init__(self, team_id, rating, date) -> None:
         self.team_id = team_id
@@ -52,49 +49,4 @@ class EloImpl:
         self.rating_record.append(Rating(t2, self.ratings[t2], start_date))
         self.team_match_count[t1] += 1
         self.team_match_count[t2] += 1
-  
-if __name__ == "__main__":
-    conn = psycopg2.connect(
-        host=os.getenv("DB_HOST"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PWD"),
-        dbname=os.getenv("DB_NAME"),
-        port=os.getenv("DB_PORT")
-    )
-
-    with conn:
-        with conn.cursor() as cur:
-            query = """
-                select 
-                match.start_date,
-                match.home_id,
-                match.away_id,
-                home.goal as home_goal,
-                away.goal as away_goal
-                from match
-                left join team_stats_full as home
-                    on home.team_id=match.home_id and home.match_id=match.id
-                left join team_stats_full as away
-                    on away.team_id=match.away_id and away.match_id=match.id
-                order by match.start_date asc"""
-            cur.execute(query)
-            
-            rows = cur.fetchall()
-
-            model = DefaultEloModel()
-            elo = EloImpl(model)
-            for row in rows:
-                if row[1] == -1 or row[2] == -1:
-                    continue
-                elo.update(row[1], row[2], row[3], row[4], row[0])
-            ratings = elo.rating_record
-            query = "insert into elo_ratings(team_id, rating, date) VALUES "
-            values = []
-            for rating in ratings:
-                values.append(f"({rating.team_id}, {rating.rating}, {rating.date})")
-            query += ",".join(values)
-            query += " on conflict do nothing;"
-            cur.execute(query)
-        conn.commit()
-
 
