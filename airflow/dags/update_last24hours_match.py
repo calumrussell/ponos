@@ -13,6 +13,7 @@ with DAG(
     start_date=datetime(2021, 1, 1),
     schedule=timedelta(minutes=30),
     catchup=False,
+    concurrency=5,
 ) as dag:
 
     @task(task_id="get_recent_matches")
