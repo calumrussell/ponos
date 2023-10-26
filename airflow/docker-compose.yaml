@@ -81,6 +81,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/packages:/packages
     - ../parsed/ares:/packages/ares
     - ../parsed/artemis:/packages/artemis
+    - ../parsed/athena:/packages/athena
     - /var/run/docker.sock:/var/run/docker.sock
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
