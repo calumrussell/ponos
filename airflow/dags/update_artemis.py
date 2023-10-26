@@ -4,15 +4,15 @@ from airflow import DAG
 from airflow.decorators import task
       
 with DAG(
-    "update_ares",
+    "update_artemis",
     start_date=datetime(2021, 1, 1),
     schedule=timedelta(days=1),
     catchup=False,
 ) as dag:
 
-    @task.virtualenv(task_id="update_ares", requirements=["scikit-learn==1.3.2"])
-    def update_ares():
-        from ares.elo_impl import EloImpl, DefaultEloModel
+    @task.virtualenv(task_id="update_artemis", requirements=["scipy==1.9.0", "numpy==1.24.0"])
+    def update_artemis():
+        from artemis.poiss_impl import Poisson 
         from airflow.providers.postgres.hooks.postgres import PostgresHook
 
         hook = PostgresHook(postgres_conn_id="ponos")
@@ -22,32 +22,34 @@ with DAG(
             match.home_id,
             match.away_id,
             home.goal as home_goal,
-            away.goal as away_goal
+            away.goal as away_goal,
+            match.year
             from match
             left join team_stats_full as home
                 on home.team_id=match.home_id and home.match_id=match.id
             left join team_stats_full as away
                 on away.team_id=match.away_id and away.match_id=match.id
+            where match.year=2024 or match.year=2023
             order by match.start_date asc"""
         rows = hook.get_records(sql_query)
-        model = DefaultEloModel()
-        elo = EloImpl(model)
+        poiss = Poisson()
+
         for row in rows:
             if row[1] == -1 or row[2] == -1 or row[3] == None or row[4] == None:
                 continue
-            elo.update(row[1], row[2], row[3], row[4], row[0])
-        ratings = elo.rating_record
-
-        query = "insert into elo_ratings(team_id, rating, date) VALUES "
+            poiss.update(row[1], row[2], row[3], row[4], row[5], row[0])
+        query = "insert into poiss_ratings(team_id, off_rating, def_rating, date) VALUES "
         values = []
-        for rating in ratings:
-            values.append(f"({rating.team_id}, {rating.rating}, {rating.date})")
+        for rating in poiss.rating_records:
+            values.append(f"({rating.team_id}, {rating.off_rating}, {rating.def_rating}, {rating.date})")
         query += ",".join(values)
-        query += " on conflict do nothing;"
+        query += " on conflict(team_id, date) do update set off_rating=excluded.off_rating, def_rating=excluded.def_rating;"
+
         conn = hook.get_conn()
         cur = conn.cursor()
-        cur.execute(sql_query)
+        cur.execute(query)
         conn.commit()
         return
 
-    update_ares()
+    update_artemis()
+ 

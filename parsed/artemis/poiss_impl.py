@@ -11,6 +11,9 @@ class Rating:
         self.def_rating = def_rating
         self.date = date
 
+    def __str__(self):
+        return f"{self.team_id}, {self.date}, {self.off_rating}, {self.def_rating}"
+
 def poiss_pmf(x, a):
     return ((a**x) * (np.exp(-a))) / factorial(x)
 
@@ -20,8 +23,8 @@ def _loss_poisson(par, matches):
 
     loss = []
     end_year = matches[-1][2]
-    off_pmf = [poiss_pmf(i, par[0]) for i in range(10)]
-    def_pmf = [poiss_pmf(i, par[1]) for i in range(10)]
+    off_pmf = [poiss_pmf(i, par[0]) for i in range(15)]
+    def_pmf = [poiss_pmf(i, par[1]) for i in range(15)]
     for match in matches:
         goals_for = match[0]
         goals_against = match[1]
@@ -46,24 +49,25 @@ class Poisson:
         self.matches = {}
         self.rating_records = []
         self.window_length = 20
+        self.calculated = {}
 
     def _optimize(self):
-        ##Check that all teams have sufficient history
-        if any(len(i) < self.window_length for i in self.matches.values()):
-            return
-
         teams = self.matches.keys()
         for team in teams:
             matches = self.matches[team]
-            init_params = np.random.uniform(low=0.1, high=1.0, size=2)
-            res = minimize(
-                fun=_loss_poisson,
-                method='Nelder-Mead',
-                x0=init_params,
-                args=(matches[-self.window_length:]),
-            )
-            last_date = matches[-1][3]
-            self.rating_records.append(Rating(team, res.x[0], res.x[1], last_date))
+            if len(matches) > self.window_length:
+                last_date = matches[-1][3]
+                if hash(str(team) + str(last_date)) not in self.calculated:
+                    init_params = np.random.uniform(low=0.1, high=1.0, size=2)
+                    res = minimize(
+                        fun=_loss_poisson,
+                        method='Nelder-Mead',
+                        x0=init_params,
+                        args=(matches[-self.window_length:]),
+                    )
+                    last_date = matches[-1][3]
+                    self.rating_records.append(Rating(team, res.x[0], res.x[1], last_date))
+                    self.calculated[hash(str(team) + str(last_date))] = 1
         return
 
     def update(self, home_team, away_team, home_goals, away_goals, year, date):
@@ -76,49 +80,3 @@ class Poisson:
         self.matches[away_team].append([away_goals, home_goals, year, date])
         self._optimize()
         return
-
-if __name__ == "__main__":
-    conn = psycopg2.connect(
-        host=os.getenv("DB_HOST"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PWD"),
-        dbname=os.getenv("DB_NAME"),
-        port=os.getenv("DB_PORT")
-    )
-
-    with conn:
-        with conn.cursor() as cur:
-            query = """
-                select 
-                match.start_date,
-                match.home_id,
-                match.away_id,
-                home.goal as home_goal,
-                away.goal as away_goal,
-                year
-                from match
-                left join team_stats_full as home
-                    on home.team_id=match.home_id and home.match_id=match.id
-                left join team_stats_full as away
-                    on away.team_id=match.away_id and away.match_id=match.id
-                where (year=2019 or year=2020 or year=2021 or year=2022 or year=2023 or year=2024)
-                order by match.start_date asc"""
-            cur.execute(query)
-            
-            rows = cur.fetchall()
-
-            poiss = Poisson()
-            for row in rows:
-                if row[1] == -1 or row[2] == -1:
-                    continue
-                poiss.update(row[1], row[2], row[3], row[4], row[5], row[0])
-            query = "insert into poiss_ratings(team_id, off_rating, def_rating, date) VALUES "
-            values = []
-            for rating in poiss.rating_records:
-                values.append(f"({rating.team_id}, {rating.off_rating}, {rating.def_rating}, {rating.date})")
-            query += ",".join(values)
-            query += " on conflict(team_id, date) do update set off_rating=excluded.off_rating, def_rating=excluded.def_rating;"
-            cur.execute(query)
-        conn.commit()
-
-
