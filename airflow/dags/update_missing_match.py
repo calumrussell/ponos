@@ -11,7 +11,7 @@ from airflow.decorators import task
 with DAG(
     "update_missing_match",
     start_date=datetime(2021, 1, 1),
-    schedule=timedelta(days=1),
+    schedule=timedelta(hours=2),
     catchup=False,
     concurrency=5,
 ) as dag:
@@ -30,14 +30,17 @@ with DAG(
             ['docker', 'run', '--rm', 'puppet', 'bash', '-c', 'npm install --silent --no-progress && node match.js \'' + match_str + '\''], 
             capture_output=True)
 
-        raw_match = process.stdout.decode('utf-8').replace("'", "''")
-        loaded = json.loads(raw_match)
+        raw_match = process.stdout.decode('utf-8')
+        if not raw_match:
+            return
+
+        replaced = raw_match.replace("'", "''").strip()
+        loaded = json.loads(replaced)
         if loaded['matchCentreData']:
-            raw_match_json = json.dumps(raw_match)
             hook = PostgresHook(postgres_conn_id="ponos")
             conn = hook.get_conn()
 
-            sql_query = f"INSERT INTO match_data (id, data) VALUES ({mid}, '{raw_match_json}') on conflict(id) do update set data=excluded.data"
+            sql_query = f"INSERT INTO match_data (id, data) VALUES ({mid}, '{replaced}') on conflict(id) do update set data=excluded.data"
             cur = conn.cursor();
             cur.execute(sql_query)
             conn.commit()
@@ -46,20 +49,15 @@ with DAG(
     @task(task_id="fetch_and_parse_matches")
     def match_load():
         hook = PostgresHook(postgres_conn_id="ponos")
-        sql_query = "SELECT data FROM match_data where id in (select id from match where start_date < extract(epoch from now())) and id not in (select distinct(match_id) from team_stats);"
-        recs = hook.get_records(sql_query)
+        sql_query = "SELECT data FROM match_data where id in (select id from match where start_date < extract(epoch from now())) and id not in (select distinct(match_id) from team_stats) limit 100"
+        vals = "\n".join(json.dumps(i[0]) for i in hook.get_records(sql_query))
         process = subprocess.Popen(
                 ['docker', 'run', '-i', '--rm', 'parser'], 
                 stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 text=True)
-        for item in recs:
-            process.stdin.write(item[0])
-        process.stdin.flush()
-        process.stdin.close()
-        output = process.stdout.read()
-        process.wait()
+        output, err = process.communicate(vals)
         res = requests.post('http://100.124.40.39:8080/bulk_input', json = json.loads(output))
         print(res.status_code)
         return 
@@ -67,25 +65,20 @@ with DAG(
     @task(task_id="fetch_and_parse_shots")
     def shots_load():
         hook = PostgresHook(postgres_conn_id="ponos")
-        sql_query = "SELECT data FROM match_data where id in (select id from match where start_date < extract(epoch from now())) and id not in (select distinct(match_id) from team_stats);"
-        recs = hook.get_records(sql_query)
+        sql_query = "SELECT data FROM match_data where id in (select id from match where start_date < extract(epoch from now())) and id not in (select distinct(match_id) from xg) limit 100"
+        vals = "\n".join(json.dumps(i[0]) for i in hook.get_records(sql_query))
         process = subprocess.Popen(
-                ['docker', 'run', '-i', '--rm', 'pandora'], 
+                ['docker', 'run', '-i','--rm', 'pandora'], 
                 stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 text=True)
-        for item in recs:
-            process.stdin.write(item[0])
-        process.stdin.flush()
-        process.stdin.close()
-        output = process.stdout.read()
-        process.wait()
-        conn = hook.get_conn()
+        res, err = process.communicate(vals)
 
-        values = ast.literal_eval(output)
+        values = ast.literal_eval(res)
         if len(values) > 0:
-            sql_values = ",".join(ast.literal_eval(output))
+            conn = hook.get_conn()
+            sql_values = ",".join(ast.literal_eval(res))
             sql_query = f"INSERT INTO xg(match_id, player_id, event_id, prob) VALUES {sql_values} on conflict(match_id, player_id, event_id) do update set prob=excluded.prob"
             cur = conn.cursor();
             cur.execute(sql_query)
@@ -95,3 +88,4 @@ with DAG(
         return 
 
     get_match_data.expand(match_id=get_missing_matches()) >> [match_load(), shots_load()]
+

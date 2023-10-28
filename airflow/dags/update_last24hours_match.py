@@ -29,34 +29,37 @@ with DAG(
         process = subprocess.run(
             ['docker', 'run', '--rm', 'puppet', 'bash', '-c', 'npm install --silent --no-progress && node match.js \'' + match_str + '\''], 
             capture_output=True)
-        data = json.dumps(process.stdout.decode('utf-8').replace("'", "''"))
-        hook = PostgresHook(postgres_conn_id="ponos")
-        conn = hook.get_conn()
 
-        sql_query = f"INSERT INTO match_data (id, data) VALUES ({mid}, '{data}') on conflict(id) do update set data=excluded.data"
-        cur = conn.cursor();
-        cur.execute(sql_query)
-        conn.commit()
+
+        raw_match = process.stdout.decode('utf-8')
+        if not raw_match:
+            return
+
+        replaced = raw_match.replace("'", "''").strip()
+        loaded = json.loads(replaced)
+        if loaded['matchCentreData']:
+            hook = PostgresHook(postgres_conn_id="ponos")
+            conn = hook.get_conn()
+
+            sql_query = f"INSERT INTO match_data (id, data) VALUES ({mid}, '{replaced}') on conflict(id) do update set data=excluded.data"
+            cur = conn.cursor();
+            cur.execute(sql_query)
+            conn.commit()
         return
 
     @task(task_id="fetch_and_parse_match")
     def match_load():
         hook = PostgresHook(postgres_conn_id="ponos")
         sql_query = "SELECT data FROM match_data where id in (select id from match where start_date < extract(epoch from now()) and start_date > (extract(epoch from now()) - 86400))"
-        recs = hook.get_records(sql_query)
+        vals = "\n".join(json.dumps(i[0]) for i in hook.get_records(sql_query))
         process = subprocess.Popen(
                 ['docker', 'run', '-i', '--rm', 'parser'], 
                 stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 text=True)
-        for item in recs:
-            process.stdin.write(item[0])
-        process.stdin.flush()
-        process.stdin.close()
-        output = process.stdout.read()
-        process.wait()
-        res = requests.post('http://100.124.40.39:8080/bulk_input', json = json.loads(output))
+        res, err = process.communicate(vals)
+        res = requests.post('http://100.124.40.39:8080/bulk_input', json = json.loads(res))
         print(res.status_code)
         return 
 
@@ -64,24 +67,19 @@ with DAG(
     def shots_load():
         hook = PostgresHook(postgres_conn_id="ponos")
         sql_query = "SELECT data FROM match_data where id in (select id from match where start_date < extract(epoch from now()) and start_date > (extract(epoch from now()) - 86400))"
-        recs = hook.get_records(sql_query)
+        vals = "\n".join(json.dumps(i[0]) for i in hook.get_records(sql_query))
         process = subprocess.Popen(
-                ['docker', 'run', '-i', '--rm', 'pandora'], 
+                ['docker', 'run', '-i','--rm', 'pandora'], 
                 stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 text=True)
-        for item in recs:
-            process.stdin.write(item[0])
-        process.stdin.flush()
-        process.stdin.close()
-        output = process.stdout.read()
-        process.wait()
+        res, err = process.communicate(vals)
+
         conn = hook.get_conn()
-        
-        values = ast.literal_eval(output)
+        values = ast.literal_eval(res)
         if len(values) > 0:
-            sql_values = ",".join(ast.literal_eval(output))
+            sql_values = ",".join(ast.literal_eval(res))
             sql_query = f"INSERT INTO xg(match_id, player_id, event_id, prob) VALUES {sql_values} on conflict(match_id, player_id, event_id) do update set prob=excluded.prob"
             cur = conn.cursor();
             cur.execute(sql_query)
