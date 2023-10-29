@@ -1,3 +1,5 @@
+from dataclasses import dataclass, asdict
+
 class DefaultEloModel:
     def __init__(self):
         self.k = 15
@@ -33,3 +35,12 @@ class EloImpl:
         model = DefaultEloModel()
         return EloImpl.expected_margin(rating, opp_rating, model.p, model.h if is_home else -model.h)
 
+@dataclass
+class pred:
+    match_id: int
+    home_win: float
+    away_win: float
+    draw: float
+
+    def to_dict(self):
+        return asdict(self)

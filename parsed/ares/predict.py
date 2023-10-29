@@ -1,18 +1,11 @@
-from dataclasses import dataclass, asdict
 
-@dataclass
-class pred:
-    match_id: int
-    home_win: float
-    away_win: float
-    draw: float
 
 if __name__ == "__main__":
     import pickle
     import os
     import sys
     import json
-    from common import EloImpl
+    from common import EloImpl, pred
 
     with open("model.pkl", 'rb') as f:
         model = pickle.load(f)
@@ -42,4 +35,4 @@ if __name__ == "__main__":
                 home = i
             else:
                 away = i
-        print(json.dumps(asdict(pred(match_id=match_id, home_win=home, away_win=away, draw=draw))))
+        print(json.dumps(pred(match_id=match_id, home_win=home, away_win=away, draw=draw).to_dict()))
