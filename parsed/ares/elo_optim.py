@@ -103,13 +103,7 @@ class Elo:
         self._optimizer_update()
  
 if __name__ == "__main__":
-    conn = psycopg2.connect(
-        host=os.getenv("DB_HOST"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PWD"),
-        dbname=os.getenv("DB_NAME"),
-        port=os.getenv("DB_PORT")
-    )
+    conn = psycopg2.connect(os.getenv("DB_CONN"))
 
     with conn:
         with conn.cursor() as cur:
