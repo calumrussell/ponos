@@ -12,7 +12,7 @@ with DAG(
 
     @task.virtualenv(task_id="update_ares", requirements=["scikit-learn==1.3.2"])
     def update_ares():
-        from ares.elo_impl import EloImpl, DefaultEloModel
+        from ares.common import EloImpl
         from airflow.providers.postgres.hooks.postgres import PostgresHook
 
         hook = PostgresHook(postgres_conn_id="ponos")
@@ -30,8 +30,7 @@ with DAG(
                 on away.team_id=match.away_id and away.match_id=match.id
             order by match.start_date asc"""
         rows = hook.get_records(sql_query)
-        model = DefaultEloModel()
-        elo = EloImpl(model)
+        elo = EloImpl()
         for row in rows:
             if row[1] == -1 or row[2] == -1 or row[3] == None or row[4] == None:
                 continue
