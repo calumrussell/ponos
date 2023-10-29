@@ -31,5 +31,5 @@ class EloImpl:
 
     def margin(rating, opp_rating, is_home):
         model = DefaultEloModel()
-        return EloPred.expected_margin(home_rating, away_rating, model.p, model.h if is_home else -model.h)
+        return EloImpl.expected_margin(rating, opp_rating, model.p, model.h if is_home else -model.h)
 
