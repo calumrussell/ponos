@@ -7,7 +7,7 @@ from airflow.decorators import task
 from airflow.providers.postgres.hooks.postgres import PostgresHook
       
 with DAG(
-    "update_ares_pred_missing",
+    "update_ares_pred_latest_two_years",
     start_date=datetime(2021, 1, 1),
     schedule=timedelta(hours=3),
     catchup=False,
@@ -26,7 +26,7 @@ with DAG(
             match
             where id not in (select match_id from elo_pred)
             and start_date < (extract(epoch from now()) + (86400*7))
-            limit 100"""
+            and (year=2024 and year=2023)"""
         vals = []
         recs = hook.get_records(sql_query)
         for rec in recs:
