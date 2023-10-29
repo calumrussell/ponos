@@ -24,8 +24,7 @@ with DAG(
             away_id
             from
             match
-            where id not in (select match_id from elo_pred)
-            and start_date < (extract(epoch from now()) + (86400*7))
+            where start_date < (extract(epoch from now()) + (86400*7))
             and (year=2024 and year=2023)"""
         vals = []
         recs = hook.get_records(sql_query)
@@ -66,6 +65,8 @@ with DAG(
             away_win = round(float(json_row['away_win']), 2)
             draw = round(float(json_row['draw']), 2)
             vals.append(f"({match_id},{home_win},{away_win},{draw})")
+        if not vals:
+            return
 
         joined = ",".join(vals)
         sql_query = f"insert into elo_pred(match_id, home_win, away_win, draw) VALUES {joined} on conflict(match_id) do update set home_win=excluded.home_win, away_win=excluded.away_win, draw=excluded.draw;"

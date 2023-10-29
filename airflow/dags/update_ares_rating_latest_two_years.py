@@ -28,7 +28,8 @@ with DAG(
                 on home.team_id=match.home_id and home.match_id=match.id
             left join team_stats_full as away
                 on away.team_id=match.away_id and away.match_id=match.id
-            where match.year=2023 or match.year=2024
+            where (match.year=2023 or match.year=2024)
+            and match.start_date < extract(epoch from now())
             order by match.start_date asc"""
         rows = hook.get_records(sql_query)
         conn = hook.get_conn()
@@ -39,6 +40,9 @@ with DAG(
             away_id = row[2]
             home_goals = row[3]
             away_goals = row[4]
+
+            if not home_goals or not away_goals:
+                continue
 
             home_rating = EloImpl.default_rating()
             cur.execute(f"select rating from elo_ratings where team_id={home_id} and date < {start_date} order by date desc limit 1")
