@@ -6,7 +6,7 @@ from airflow.decorators import task
 with DAG(
     "update_ares_rating_latest_two_years",
     start_date=datetime(2021, 1, 1),
-    schedule=timedelta(days=1),
+    schedule=timedelta(hours=3),
     catchup=False,
 ) as dag:
 
