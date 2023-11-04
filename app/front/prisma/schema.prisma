@@ -292,6 +292,13 @@ model seasons {
   curr  Boolean?
 }
 
+model elo_pred {
+  match_id Int    @id
+  home_win Float? @db.Real
+  away_win Float? @db.Real
+  draw     Float? @db.Real
+}
+
 view player_stats_full {
   player_id                 Int
   team_id                   Int?
