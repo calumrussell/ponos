@@ -98,6 +98,57 @@ export async function getPlayerStats(id: string) {
   return requestFormatter(player_stats);
 }
 
+export async function getLastArtemisRatingByDateAndTeam(match_date: number, team_id: string) {
+  const rating = await prisma.poiss_ratings.findFirst({
+    where: {
+      AND: [
+        {
+          date: {
+            lt: match_date,
+          }
+        },
+        {
+          team_id: parseInt(findRoute(team_id)),
+        }
+      ]
+    },
+    orderBy: {
+      date: 'desc'
+    }
+  })
+  return requestFormatter(rating);
+}
+
+export async function getLastAresRatingByDateAndTeam(match_date: number, team_id: string) {
+  const rating = await prisma.elo_ratings.findFirst({
+    where: {
+      AND: [
+        {
+          date: {
+            lt: match_date,
+          }
+        },
+        {
+          team_id: parseInt(findRoute(team_id)),
+        }
+      ]
+    },
+    orderBy: {
+      date: 'desc'
+    }
+  })
+  return requestFormatter(rating);
+}
+
+export async function getEloPredictionByMatch(id: string) {
+  const prediction = await prisma.elo_pred.findUnique({
+    where: {
+      match_id: parseInt(findRoute(id))
+    }
+  })
+  return prediction;
+}
+
 export async function getPlayerStatsByPlayer(id: string) {
   const player_stats = await prisma.player_stats_full.findMany({
     where: {
@@ -172,9 +223,19 @@ export const sortByPosition = (arr: any) => {
     const bIndex = -orderForIndexVals.indexOf(b.position);
     return aIndex - bIndex;
   });
+  return arr;
 }
 
 export const convertDates = (epoch: number | null) => {
   const date = epoch ? new Date(epoch * 1000): new Date();
   return date.toLocaleDateString('en-GB', {year: 'numeric', month: 'numeric', day: 'numeric'});
+}
+
+export const convertDatesWithTime = (epoch: number | null) => {
+  const date = epoch ? new Date(epoch * 1000): new Date();
+  return date.toLocaleDateString('en-GB', {hour: 'numeric', minute: 'numeric', year: 'numeric', month: 'numeric', day: 'numeric'});
+}
+
+export const roundNumber = (val: number) => {
+  return val.toFixed(2);
 }
