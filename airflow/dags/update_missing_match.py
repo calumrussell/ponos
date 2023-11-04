@@ -58,7 +58,7 @@ with DAG(
                 stdout=subprocess.PIPE,
                 text=True)
         output, err = process.communicate(vals)
-        res = requests.post('http://100.124.40.39:8080/bulk_input', json = json.loads(output))
+        res = requests.post('http://100.105.145.143:8080/bulk_input', json = json.loads(output))
         print(res.status_code)
         return 
 
