@@ -294,6 +294,10 @@ SELECT
     WHEN (xg_team.xg IS NULL) THEN (0) :: real
     ELSE xg_team.xg
   END AS xg,
+  CASE
+    WHEN (opp_xg_team.xg IS NULL) THEN (0) :: real
+    ELSE opp_xg_team.xg
+  END AS opp_xg,
   team.name AS team,
   opp.name AS opp,
   MATCH.year,
@@ -305,24 +309,32 @@ FROM
         (
           (
             (
-              team_stats
-              LEFT JOIN team_stats opp_stats ON (
-                (
-                  (team_stats.team_id = opp_stats.opp_id)
-                  AND (team_stats.match_id = opp_stats.match_id)
+              (
+                team_stats
+                LEFT JOIN team_stats opp_stats ON (
+                  (
+                    (team_stats.team_id = opp_stats.opp_id)
+                    AND (team_stats.match_id = opp_stats.match_id)
+                  )
                 )
               )
+              LEFT JOIN team ON ((team.id = team_stats.team_id))
             )
-            LEFT JOIN team ON ((team.id = team_stats.team_id))
+            LEFT JOIN team opp ON ((opp.id = team_stats.opp_id))
           )
-          LEFT JOIN team opp ON ((opp.id = team_stats.opp_id))
+          LEFT JOIN MATCH ON ((team_stats.match_id = MATCH.id))
         )
-        LEFT JOIN MATCH ON ((team_stats.match_id = MATCH.id))
+        LEFT JOIN xg_team ON (
+          (
+            (xg_team.team_id = team_stats.team_id)
+            AND (xg_team.match_id = team_stats.match_id)
+          )
+        )
       )
-      LEFT JOIN xg_team ON (
+      LEFT JOIN xg_team opp_xg_team ON (
         (
-          (xg_team.team_id = team_stats.team_id)
-          AND (xg_team.match_id = team_stats.match_id)
+          (opp_xg_team.team_id = team_stats.opp_id)
+          AND (opp_xg_team.match_id = team_stats.match_id)
         )
       )
     )

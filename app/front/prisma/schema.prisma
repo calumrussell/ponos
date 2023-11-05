@@ -637,6 +637,7 @@ view team_stats_full {
   big_chance_conversion         Float?   @db.Real
   opp_big_chance_conversion     Float?   @db.Real
   xg                            Float?   @db.Real
+  opp_xg                        Float?   @db.Real
   team                          String?
   opp                           String?
   year                          Int?     @db.SmallInt
@@ -887,8 +888,8 @@ view team_stats_sum_by_season {
 view poiss_rolling_average {
   team_id    Int
   date       Int
-  off_rating Decimal? @db.Decimal
-  def_rating Decimal? @db.Decimal
+  off_rating Float? @db.Real
+  def_rating Float? @db.Real
 
   @@id([date, team_id])
 }
@@ -904,10 +905,10 @@ view elo_rolling_average {
 view wei_rolling_average {
   team_id           Int
   date              Int
-  off_rating        Decimal? @db.Decimal
-  off_rating_spread Decimal? @db.Decimal
-  def_rating        Decimal? @db.Decimal
-  def_rating_spread Decimal? @db.Decimal
+  off_rating        Float? @db.Real
+  off_rating_spread Float? @db.Real
+  def_rating        Float? @db.Real
+  def_rating_spread Float? @db.Real
 
   @@id([date, team_id])
 }
