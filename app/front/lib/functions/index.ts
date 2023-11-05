@@ -164,7 +164,6 @@ export async function getLastArtemisRatingByDateAndTeam(match_date: number, team
       date: 'desc'
     }
   });
-  console.log(team_id, match_date)
   return requestFormatter(rating);
 }
 

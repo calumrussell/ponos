@@ -26,7 +26,6 @@ export default async function Page(input: Match) {
   const homeAresRating = await getLastAresRatingByDateAndTeam(match.start_date, match.home_id);
   const awayAresRating = await getLastAresRatingByDateAndTeam(match.start_date, match.away_id);
 
-  console.log(match)
   const homeArtemisRating = await getLastArtemisRatingByDateAndTeam(match.start_date, match.home_id);
   const awayArtemisRating = await getLastArtemisRatingByDateAndTeam(match.start_date, match.away_id);
 
