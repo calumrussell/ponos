@@ -17,5 +17,5 @@ select
             order by date desc 
             ROWS BETWEEN 4 preceding and current row
         )
-    ,2) as rating
+    ,2)::real as rating
 from elo_ratings

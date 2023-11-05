@@ -17,7 +17,7 @@ select
             order by date desc 
             ROWS BETWEEN 4 preceding and current row
         )
-    ,2) as off_rating,
+    ,2)::real as off_rating,
     round(
         avg(def_rating::numeric)
         over(
@@ -25,5 +25,5 @@ select
             order by date desc 
             ROWS BETWEEN 4 preceding and current row
         )
-    ,2) as def_rating
+    ,2)::real as def_rating
 from poiss_ratings

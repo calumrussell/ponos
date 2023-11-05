@@ -17,7 +17,7 @@ select
             order by date desc 
             ROWS BETWEEN 4 preceding and current row
         )
-    ,2) as off_rating,
+    ,2)::real as off_rating,
     round(
         avg(off_rating_spread::numeric)
         over(
@@ -25,7 +25,7 @@ select
             order by date desc 
             ROWS BETWEEN 4 preceding and current row
         )
-    ,2) as off_rating_spread,
+    ,2)::real as off_rating_spread,
     round(
         avg(def_rating::numeric)
         over(
@@ -33,7 +33,7 @@ select
             order by date desc 
             ROWS BETWEEN 4 preceding and current row
         )
-    ,2) as def_rating,
+    ,2)::real as def_rating,
     round(
         avg(def_rating_spread::numeric)
         over(
@@ -41,5 +41,5 @@ select
             order by date desc 
             ROWS BETWEEN 4 preceding and current row
         )
-    ,2) as def_rating_spread
+    ,2)::real as def_rating_spread
 from wei_ratings

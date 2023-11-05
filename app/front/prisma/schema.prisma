@@ -896,7 +896,7 @@ view poiss_rolling_average {
 view elo_rolling_average {
   team_id Int
   date    Int
-  rating  Decimal? @db.Decimal
+  rating  Float? @db.Real
 
   @@id([date, team_id])
 }
