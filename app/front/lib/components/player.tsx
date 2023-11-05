@@ -1,7 +1,7 @@
 import React from "react";
 
 import { player_stats_full } from "@prisma/client";
-import { buildTitles, buildValues } from "./stats";
+import { buildStackedTitles, buildStackedValues } from "./stats";
 
 const PlayerStatsRow = (row: player_stats_full) => {
   const  {
@@ -15,7 +15,7 @@ const PlayerStatsRow = (row: player_stats_full) => {
       <td>{player?.slice(0, 18)}</td>
       <td>{position}</td>
       <td>{minutes}</td>
-      { buildValues(row) }
+      { buildStackedValues(row) }
     </tr>
   )
 }
@@ -28,7 +28,7 @@ export const PlayerStatsPlayerPage = ({ player_stats }: { player_stats: player_s
           <th>Player</th>
           <th>POS</th>
           <th>MIN</th>
-          { buildTitles() }
+          { buildStackedTitles() }
         </tr>
       </thead>
       <tbody>

@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 
 import { team_stats_full, player_stats_full } from "@prisma/client";
-import { buildTitles, buildValues } from "./stats";
+import { buildStackedTitles, buildStackedValues } from "./stats";
 
 const TeamStatsRow = (row: team_stats_full) => {
   const  {
@@ -13,7 +13,7 @@ const TeamStatsRow = (row: team_stats_full) => {
   return (
     <tr>
       <td><Link href={`/team/${team_id}`}>{team}</Link></td>
-      { buildValues (row) }
+      { buildStackedValues(row) }
     </tr>
   )
 }
@@ -25,7 +25,7 @@ export const TeamStatsMatchPage = ({ team_stats }: { team_stats: team_stats_full
       <thead>
         <tr>
           <th>Team</th>
-          { buildTitles() }
+          { buildStackedTitles() }
         </tr>
       </thead>
       <tbody>
@@ -52,7 +52,7 @@ const PlayerStatsRow = (row: player_stats_full) => {
       <td><Link href={`/player/${player_id}`}>{player?.slice(0, 18)}</Link></td>
       <td>{position}</td>
       <td>{minutes}</td>
-      { buildValues(row) }
+      { buildStackedValues(row) }
     </tr>
   )
 }
@@ -65,7 +65,7 @@ export const PlayerStatsMatchPage = ({ player_stats }: { player_stats: player_st
           <th>Player</th>
           <th>POS</th>
           <th>MIN</th>
-          { buildTitles() }
+          { buildStackedTitles() }
         </tr>
       </thead>
       <tbody>

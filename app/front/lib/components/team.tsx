@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { team_stats_full } from "@prisma/client"
 import { convertDates } from "../functions";
-import { buildTitles, buildValues } from "./stats";
+import { buildMatchTitles, buildMatchValues } from "./stats";
 
 const TeamStatsRow = (row: team_stats_full) => {
   const  {
@@ -20,7 +20,7 @@ const TeamStatsRow = (row: team_stats_full) => {
       <td><Link href={`/team/${team_id}`}>{team}</Link></td>
       <td><Link href={`/team/${opp_id}`}>{opp}</Link></td>
       <td><Link href={`/match/${match_id}`}>{convertDates(start_date)}</Link></td>
-      { buildValues(row) }
+      { buildMatchValues(row) }
     </tr>
   )
 }
@@ -34,7 +34,7 @@ export const TeamStatsTeamPage = ({ team_stats }: { team_stats: team_stats_full[
           <th>Team</th>
           <th>Opp</th>
           <th>Match</th>
-          { buildTitles() }
+          { buildMatchTitles() }
         </tr>
       </thead>
       <tbody>

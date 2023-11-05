@@ -98,13 +98,59 @@ export async function getPlayerStats(id: string) {
   return requestFormatter(player_stats);
 }
 
+export async function getArtemisRatingOverLastTwoYearsByTeam(team_id: string) {
+  const now = Date.now()/1000;
+  const twoYearsInSeconds = (86400 * 365) * 2
+  const rating = await prisma.poiss_ratings.findMany({
+    where: {
+      AND: [
+        {
+          date: {
+            gt:  now - twoYearsInSeconds,
+          }
+        },
+        {
+          team_id: parseInt(findRoute(team_id)),
+        }
+      ]
+    },
+    orderBy: {
+      date: 'desc'
+    }
+  })
+  return requestFormatter(rating);
+}
+
 export async function getLastArtemisRatingByDateAndTeam(match_date: number, team_id: string) {
-  const rating = await prisma.poiss_ratings.findFirst({
+  const rating = await prisma.poiss_rolling_average.findFirst({
     where: {
       AND: [
         {
           date: {
             lt: match_date,
+          }
+        },
+        {
+          team_id: parseInt(findRoute(team_id)),
+        }
+      ]
+    },
+    orderBy: {
+      date: 'desc'
+    }
+  })
+  return requestFormatter(rating);
+}
+
+export async function getAresRatingOverLastTwoYearsByTeam(team_id: string) {
+  const now = Date.now()/1000;
+  const twoYearsInSeconds = (86400 * 365) * 2
+  const rating = await prisma.elo_rolling_average.findMany({
+    where: {
+      AND: [
+        {
+          date: {
+            gt:  now - twoYearsInSeconds,
           }
         },
         {
