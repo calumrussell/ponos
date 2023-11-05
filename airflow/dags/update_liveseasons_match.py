@@ -24,7 +24,7 @@ with DAG(
     def get_season_matches(season_str):
         season_row = season_str[0]
         process = subprocess.run(
-            ['docker', 'run', 'puppet', 'bash', '-c', 'npm install --silent --no-progress && node fixtures.js \'' + season_row + '\''], 
+            ['docker', 'run', '--rm', 'puppet', 'bash', '-c', 'npm install --silent --no-progress && node fixtures.js \'' + season_row + '\''], 
             capture_output=True)
 
         lines = process.stdout.decode('utf-8').split("\n")
