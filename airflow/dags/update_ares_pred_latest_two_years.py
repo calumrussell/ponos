@@ -25,7 +25,7 @@ with DAG(
             from
             match
             where start_date < (extract(epoch from now()) + (86400*7))
-            and (year=2024 and year=2023)"""
+            and (year=2024 or year=2023)"""
         vals = []
         recs = hook.get_records(sql_query)
         for rec in recs:
