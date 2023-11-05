@@ -1,8 +1,6 @@
 import numpy as np
 from math import factorial
 from scipy.optimize import minimize
-import os
-import psycopg2
 
 class Rating:
     def __init__(self, team_id, off_rating, def_rating, date) -> None:
@@ -55,19 +53,22 @@ class Poisson:
         teams = self.matches.keys()
         for team in teams:
             matches = self.matches[team]
+            ##This caused an issue where new teams don't get a rating until 75% into the season
             if len(matches) > self.window_length:
-                last_date = matches[-1][3]
-                if hash(str(team) + str(last_date)) not in self.calculated:
-                    init_params = np.random.uniform(low=0.1, high=1.0, size=2)
-                    res = minimize(
-                        fun=_loss_poisson,
-                        method='Nelder-Mead',
-                        x0=init_params,
-                        args=(matches[-self.window_length:]),
-                    )
-                    last_date = matches[-1][3]
-                    self.rating_records.append(Rating(team, res.x[0], res.x[1], last_date))
-                    self.calculated[hash(str(team) + str(last_date))] = 1
+                window = matches[-self.window_length:]
+            else:
+                window = matches
+            last_date = window[-1][3]
+            if hash(str(team) + str(last_date)) not in self.calculated:
+                init_params = np.random.uniform(low=0.1, high=1.0, size=2)
+                res = minimize(
+                    fun=_loss_poisson,
+                    method='Nelder-Mead',
+                    x0=init_params,
+                    args=(window),
+                )
+                self.rating_records.append(Rating(team, res.x[0], res.x[1], last_date))
+                self.calculated[hash(str(team) + str(last_date))] = 1
         return
 
     def update(self, home_team, away_team, home_goals, away_goals, year, date):

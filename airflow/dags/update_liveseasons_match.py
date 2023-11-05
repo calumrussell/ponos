@@ -24,7 +24,7 @@ with DAG(
     def get_season_matches(season_str):
         season_row = season_str[0]
         process = subprocess.run(
-            ['docker', 'run', 'puppet', 'bash', '-c', 'npm install --silent --no-progress && node fixtures.js \'' + season_row + '\''], 
+            ['docker', 'run', '--rm', 'puppet', 'bash', '-c', 'npm install --silent --no-progress && node fixtures.js \'' + season_row + '\''], 
             capture_output=True)
 
         lines = process.stdout.decode('utf-8').split("\n")
@@ -44,7 +44,7 @@ with DAG(
             tmp['year'] = int(row_json['year'])
             matches.append(tmp)
 
-        res = requests.post('http://100.105.145.143:8080/bulk_matches', json = {"matches": matches})
+        res = requests.post('http://100.111.31.32:8080/bulk_matches', json = {"matches": matches})
         print(res.status_code)
         return
 
