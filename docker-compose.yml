@@ -6,9 +6,9 @@ services:
     env_file:
       - ./app/db/.env
     volumes:
-       - ./raw/data/db:/pg
+       - ponosdb_data:/pg
     ports:
-      - 100.105.145.143:12000:5432
+      - 100.111.31.32:12000:5432
     restart: unless-stopped
   
   ponosfront:
@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile
       context: ./app/front
     ports:
-      - 100.105.145.143:3000:3000
+      - 100.111.31.32:3000:3000
     restart: unless-stopped
 
   ponosapi:
@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
       context: ./app/api
     ports:
-      - 100.105.145.143:8080:8080
+      - 100.111.31.32:8080:8080
     restart: unless-stopped
 
   ponostunnel:
@@ -38,3 +38,6 @@ services:
     command: tunnel run
     environment:
       - TUNNEL_TOKEN=${TOKEN}
+
+volumes:
+  ponosdb_data:

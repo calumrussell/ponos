@@ -44,7 +44,7 @@ with DAG(
             tmp['year'] = int(row_json['year'])
             matches.append(tmp)
 
-        res = requests.post('http://100.105.145.143:8080/bulk_matches', json = {"matches": matches})
+        res = requests.post('http://100.111.31.32:8080/bulk_matches', json = {"matches": matches})
         print(res.status_code)
         return
 

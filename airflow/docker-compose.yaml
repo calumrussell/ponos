@@ -82,7 +82,7 @@ x-airflow-common:
     - ../parsed/ares:/packages/ares
     - ../parsed/artemis:/packages/artemis
     - ../parsed/athena:/packages/athena
-    - /var/run/docker.sock:/var/run/docker.sock
+    - /run/user/1000/docker.sock:/var/run/docker.sock
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -123,7 +123,7 @@ services:
     <<: *airflow-common
     command: webserver
     ports:
-      - "100.105.145.143:14000:8080"
+      - "100.111.31.32:14000:8080"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
