@@ -689,196 +689,196 @@ view elo_live {
 view team_stats_sum_by_season {
   team_id                       Int
   team                          String?
-  pass                          BigInt?
-  opp_pass                      BigInt?
-  pass_corner                   BigInt?
-  opp_pass_corner               BigInt?
-  pass_longball                 BigInt?
-  opp_pass_longball             BigInt?
-  pass_cross                    BigInt?
-  opp_pass_cross                BigInt?
-  pass_back                     BigInt?
-  opp_pass_back                 BigInt?
-  pass_forward                  BigInt?
-  opp_pass_forward              BigInt?
-  pass_left                     BigInt?
-  opp_pass_left                 BigInt?
-  pass_right                    BigInt?
-  opp_pass_right                BigInt?
-  pass_short                    BigInt?
-  opp_pass_short                BigInt?
-  pass_throughball              BigInt?
-  opp_pass_throughball          BigInt?
-  pass_accurate                 BigInt?
-  opp_pass_accurate             BigInt?
-  pass_short_accurate           BigInt?
-  opp_pass_short_accurate       BigInt?
-  pass_corner_accurate          BigInt?
-  opp_pass_corner_accurate      BigInt?
-  pass_longball_accurate        BigInt?
-  opp_pass_longball_accurate    BigInt?
-  pass_cross_accurate           BigInt?
-  opp_pass_cross_accurate       BigInt?
-  pass_throughball_accurate     BigInt?
-  opp_pass_throughball_accurate BigInt?
-  pass_key                      BigInt?
-  opp_pass_key                  BigInt?
-  pass_key_cross                BigInt?
-  opp_pass_key_cross            BigInt?
-  pass_key_freekick             BigInt?
-  opp_pass_key_freekick         BigInt?
-  pass_key_corner               BigInt?
-  opp_pass_key_corner           BigInt?
-  pass_key_throughball          BigInt?
-  opp_pass_key_throughball      BigInt?
-  shot                          BigInt?
-  opp_shot                      BigInt?
-  shot_on_target                BigInt?
-  opp_shot_on_target            BigInt?
-  shot_off_target               BigInt?
-  opp_shot_off_target           BigInt?
-  shot_blocked                  BigInt?
-  opp_shot_blocked              BigInt?
-  shot_open_play                BigInt?
-  opp_shot_open_play            BigInt?
-  shot_set_piece                BigInt?
-  opp_shot_set_piece            BigInt?
-  shot_on_post                  BigInt?
-  opp_shot_on_post              BigInt?
-  shot_six_yard_box             BigInt?
-  opp_shot_six_yard_box         BigInt?
-  shot_penalty_area             BigInt?
-  opp_shot_penalty_area         BigInt?
-  shot_box                      BigInt?
-  opp_shot_box                  BigInt?
-  shot_counter                  BigInt?
-  opp_shot_counter              BigInt?
-  shot_head                     BigInt?
-  opp_shot_head                 BigInt?
-  shot_foot                     BigInt?
-  opp_shot_foot                 BigInt?
-  shot_0bp                      BigInt?
-  opp_shot_0bp                  BigInt?
-  goal                          BigInt?
-  opp_goal                      BigInt?
-  goal_normal                   BigInt?
-  opp_goal_normal               BigInt?
-  goal_head                     BigInt?
-  opp_goal_head                 BigInt?
-  goal_foot                     BigInt?
-  opp_goal_foot                 BigInt?
-  goal_set_piece                BigInt?
-  opp_goal_set_piece            BigInt?
-  goal_own                      BigInt?
-  opp_goal_own                  BigInt?
-  goal_counter                  BigInt?
-  opp_goal_counter              BigInt?
-  goal_open_play                BigInt?
-  opp_goal_open_play            BigInt?
-  goal_0bp                      BigInt?
-  opp_goal_0bp                  BigInt?
-  goal_0box                     BigInt?
-  opp_goal_0box                 BigInt?
-  goal_six_yard_box             BigInt?
-  opp_goal_six_yard_box         BigInt?
-  goal_penalty_area             BigInt?
-  opp_goal_penalty_area         BigInt?
-  assist                        BigInt?
-  opp_assist                    BigInt?
-  assist_cross                  BigInt?
-  opp_assist_cross              BigInt?
-  assist_corner                 BigInt?
-  opp_assist_corner             BigInt?
-  assist_throughball            BigInt?
-  opp_assist_throughball        BigInt?
-  aerial_duel                   BigInt?
-  opp_aerial_duel               BigInt?
-  red_card                      BigInt?
-  opp_red_card                  BigInt?
-  yellow_card                   BigInt?
-  opp_yellow_card               BigInt?
-  second_yellow_card            BigInt?
-  opp_second_yellow_card        BigInt?
-  save                          BigInt?
-  opp_save                      BigInt?
-  duel                          BigInt?
-  opp_duel                      BigInt?
-  duel_offensive                BigInt?
-  opp_duel_offensive            BigInt?
-  duel_defensive                BigInt?
-  opp_duel_defensive            BigInt?
-  dispossessed                  BigInt?
-  opp_dispossessed              BigInt?
-  turnover                      BigInt?
-  opp_turnover                  BigInt?
-  dribble                       BigInt?
-  opp_dribble                   BigInt?
-  dribble_won                   BigInt?
-  opp_dribble_won               BigInt?
-  dribble_lost                  BigInt?
-  opp_dribble_lost              BigInt?
-  dribble_last_man              BigInt?
-  opp_dribble_last_man          BigInt?
-  challenge_lost                BigInt?
-  opp_challenge_lost            BigInt?
-  blocked_cross                 BigInt?
-  opp_blocked_cross             BigInt?
-  block_outfielder              BigInt?
-  opp_block_outfielder          BigInt?
-  block_six_yard                BigInt?
-  opp_block_six_yard            BigInt?
-  block_pass_outfielder         BigInt?
-  opp_block_pass_outfielder     BigInt?
-  interception                  BigInt?
-  opp_interception              BigInt?
-  interception_won              BigInt?
-  opp_interception_won          BigInt?
-  interception_in_box           BigInt?
-  opp_interception_in_box       BigInt?
-  tackle                        BigInt?
-  opp_tackle                    BigInt?
-  tackle_won                    BigInt?
-  opp_tackle_won                BigInt?
-  tackle_lost                   BigInt?
-  opp_tackle_lost               BigInt?
-  tackle_last_man               BigInt?
-  opp_tackle_last_man           BigInt?
-  offside_given                 BigInt?
-  opp_offside_given             BigInt?
-  offside_provoked              BigInt?
-  opp_offside_provoked          BigInt?
-  ball_recovery                 BigInt?
-  opp_ball_recovery             BigInt?
-  clearance                     BigInt?
-  opp_clearance                 BigInt?
-  clearance_effective           BigInt?
-  opp_clearance_effective       BigInt?
-  clearance_off_line            BigInt?
-  opp_clearance_off_line        BigInt?
-  error_leads_to_goal           BigInt?
-  opp_error_leads_to_goal       BigInt?
-  error_leads_to_shot           BigInt?
-  opp_error_leads_to_shot       BigInt?
-  touch                         BigInt?
-  opp_touch                     BigInt?
-  penalty_won                   BigInt?
-  opp_penalty_won               BigInt?
-  penalty_conceded              BigInt?
-  opp_penalty_conceded          BigInt?
-  penalty_scored                BigInt?
-  opp_penalty_scored            BigInt?
-  big_chance_missed             BigInt?
-  opp_big_chance_missed         BigInt?
-  big_chance_scored             BigInt?
-  opp_big_chance_scored         BigInt?
-  big_chance_created            BigInt?
-  opp_big_chance_created        BigInt?
-  parried_safe                  BigInt?
-  opp_parried_safe              BigInt?
-  parried_danger                BigInt?
-  opp_parried_danger            BigInt?
-  save_keeper                   BigInt?
-  opp_save_keeper               BigInt?
+  pass                          Float?  @db.Real
+  opp_pass                      Float?  @db.Real
+  pass_corner                   Float?  @db.Real
+  opp_pass_corner               Float?  @db.Real
+  pass_longball                 Float?  @db.Real
+  opp_pass_longball             Float?  @db.Real
+  pass_cross                    Float?  @db.Real
+  opp_pass_cross                Float?  @db.Real
+  pass_back                     Float?  @db.Real
+  opp_pass_back                 Float?  @db.Real
+  pass_forward                  Float?  @db.Real
+  opp_pass_forward              Float?  @db.Real
+  pass_left                     Float?  @db.Real
+  opp_pass_left                 Float?  @db.Real
+  pass_right                    Float?  @db.Real
+  opp_pass_right                Float?  @db.Real
+  pass_short                    Float?  @db.Real
+  opp_pass_short                Float?  @db.Real
+  pass_throughball              Float?  @db.Real
+  opp_pass_throughball          Float?  @db.Real
+  pass_accurate                 Float?  @db.Real
+  opp_pass_accurate             Float?  @db.Real
+  pass_short_accurate           Float?  @db.Real
+  opp_pass_short_accurate       Float?  @db.Real
+  pass_corner_accurate          Float?  @db.Real
+  opp_pass_corner_accurate      Float?  @db.Real
+  pass_longball_accurate        Float?  @db.Real
+  opp_pass_longball_accurate    Float?  @db.Real
+  pass_cross_accurate           Float?  @db.Real
+  opp_pass_cross_accurate       Float?  @db.Real
+  pass_throughball_accurate     Float?  @db.Real
+  opp_pass_throughball_accurate Float?  @db.Real
+  pass_key                      Float?  @db.Real
+  opp_pass_key                  Float?  @db.Real
+  pass_key_cross                Float?  @db.Real
+  opp_pass_key_cross            Float?  @db.Real
+  pass_key_freekick             Float?  @db.Real
+  opp_pass_key_freekick         Float?  @db.Real
+  pass_key_corner               Float?  @db.Real
+  opp_pass_key_corner           Float?  @db.Real
+  pass_key_throughball          Float?  @db.Real
+  opp_pass_key_throughball      Float?  @db.Real
+  shot                          Float?  @db.Real
+  opp_shot                      Float?  @db.Real
+  shot_on_target                Float?  @db.Real
+  opp_shot_on_target            Float?  @db.Real
+  shot_off_target               Float?  @db.Real
+  opp_shot_off_target           Float?  @db.Real
+  shot_blocked                  Float?  @db.Real
+  opp_shot_blocked              Float?  @db.Real
+  shot_open_play                Float?  @db.Real
+  opp_shot_open_play            Float?  @db.Real
+  shot_set_piece                Float?  @db.Real
+  opp_shot_set_piece            Float?  @db.Real
+  shot_on_post                  Float?  @db.Real
+  opp_shot_on_post              Float?  @db.Real
+  shot_six_yard_box             Float?  @db.Real
+  opp_shot_six_yard_box         Float?  @db.Real
+  shot_penalty_area             Float?  @db.Real
+  opp_shot_penalty_area         Float?  @db.Real
+  shot_box                      Float?  @db.Real
+  opp_shot_box                  Float?  @db.Real
+  shot_counter                  Float?  @db.Real
+  opp_shot_counter              Float?  @db.Real
+  shot_head                     Float?  @db.Real
+  opp_shot_head                 Float?  @db.Real
+  shot_foot                     Float?  @db.Real
+  opp_shot_foot                 Float?  @db.Real
+  shot_0bp                      Float?  @db.Real
+  opp_shot_0bp                  Float?  @db.Real
+  goal                          Float?  @db.Real
+  opp_goal                      Float?  @db.Real
+  goal_normal                   Float?  @db.Real
+  opp_goal_normal               Float?  @db.Real
+  goal_head                     Float?  @db.Real
+  opp_goal_head                 Float?  @db.Real
+  goal_foot                     Float?  @db.Real
+  opp_goal_foot                 Float?  @db.Real
+  goal_set_piece                Float?  @db.Real
+  opp_goal_set_piece            Float?  @db.Real
+  goal_own                      Float?  @db.Real
+  opp_goal_own                  Float?  @db.Real
+  goal_counter                  Float?  @db.Real
+  opp_goal_counter              Float?  @db.Real
+  goal_open_play                Float?  @db.Real
+  opp_goal_open_play            Float?  @db.Real
+  goal_0bp                      Float?  @db.Real
+  opp_goal_0bp                  Float?  @db.Real
+  goal_0box                     Float?  @db.Real
+  opp_goal_0box                 Float?  @db.Real
+  goal_six_yard_box             Float?  @db.Real
+  opp_goal_six_yard_box         Float?  @db.Real
+  goal_penalty_area             Float?  @db.Real
+  opp_goal_penalty_area         Float?  @db.Real
+  assist                        Float?  @db.Real
+  opp_assist                    Float?  @db.Real
+  assist_cross                  Float?  @db.Real
+  opp_assist_cross              Float?  @db.Real
+  assist_corner                 Float?  @db.Real
+  opp_assist_corner             Float?  @db.Real
+  assist_throughball            Float?  @db.Real
+  opp_assist_throughball        Float?  @db.Real
+  aerial_duel                   Float?  @db.Real
+  opp_aerial_duel               Float?  @db.Real
+  red_card                      Float?  @db.Real
+  opp_red_card                  Float?  @db.Real
+  yellow_card                   Float?  @db.Real
+  opp_yellow_card               Float?  @db.Real
+  second_yellow_card            Float?  @db.Real
+  opp_second_yellow_card        Float?  @db.Real
+  save                          Float?  @db.Real
+  opp_save                      Float?  @db.Real
+  duel                          Float?  @db.Real
+  opp_duel                      Float?  @db.Real
+  duel_offensive                Float?  @db.Real
+  opp_duel_offensive            Float?  @db.Real
+  duel_defensive                Float?  @db.Real
+  opp_duel_defensive            Float?  @db.Real
+  dispossessed                  Float?  @db.Real
+  opp_dispossessed              Float?  @db.Real
+  turnover                      Float?  @db.Real
+  opp_turnover                  Float?  @db.Real
+  dribble                       Float?  @db.Real
+  opp_dribble                   Float?  @db.Real
+  dribble_won                   Float?  @db.Real
+  opp_dribble_won               Float?  @db.Real
+  dribble_lost                  Float?  @db.Real
+  opp_dribble_lost              Float?  @db.Real
+  dribble_last_man              Float?  @db.Real
+  opp_dribble_last_man          Float?  @db.Real
+  challenge_lost                Float?  @db.Real
+  opp_challenge_lost            Float?  @db.Real
+  blocked_cross                 Float?  @db.Real
+  opp_blocked_cross             Float?  @db.Real
+  block_outfielder              Float?  @db.Real
+  opp_block_outfielder          Float?  @db.Real
+  block_six_yard                Float?  @db.Real
+  opp_block_six_yard            Float?  @db.Real
+  block_pass_outfielder         Float?  @db.Real
+  opp_block_pass_outfielder     Float?  @db.Real
+  interception                  Float?  @db.Real
+  opp_interception              Float?  @db.Real
+  interception_won              Float?  @db.Real
+  opp_interception_won          Float?  @db.Real
+  interception_in_box           Float?  @db.Real
+  opp_interception_in_box       Float?  @db.Real
+  tackle                        Float?  @db.Real
+  opp_tackle                    Float?  @db.Real
+  tackle_won                    Float?  @db.Real
+  opp_tackle_won                Float?  @db.Real
+  tackle_lost                   Float?  @db.Real
+  opp_tackle_lost               Float?  @db.Real
+  tackle_last_man               Float?  @db.Real
+  opp_tackle_last_man           Float?  @db.Real
+  offside_given                 Float?  @db.Real
+  opp_offside_given             Float?  @db.Real
+  offside_provoked              Float?  @db.Real
+  opp_offside_provoked          Float?  @db.Real
+  ball_recovery                 Float?  @db.Real
+  opp_ball_recovery             Float?  @db.Real
+  clearance                     Float?  @db.Real
+  opp_clearance                 Float?  @db.Real
+  clearance_effective           Float?  @db.Real
+  opp_clearance_effective       Float?  @db.Real
+  clearance_off_line            Float?  @db.Real
+  opp_clearance_off_line        Float?  @db.Real
+  error_leads_to_goal           Float?  @db.Real
+  opp_error_leads_to_goal       Float?  @db.Real
+  error_leads_to_shot           Float?  @db.Real
+  opp_error_leads_to_shot       Float?  @db.Real
+  touch                         Float?  @db.Real
+  opp_touch                     Float?  @db.Real
+  penalty_won                   Float?  @db.Real
+  opp_penalty_won               Float?  @db.Real
+  penalty_conceded              Float?  @db.Real
+  opp_penalty_conceded          Float?  @db.Real
+  penalty_scored                Float?  @db.Real
+  opp_penalty_scored            Float?  @db.Real
+  big_chance_missed             Float?  @db.Real
+  opp_big_chance_missed         Float?  @db.Real
+  big_chance_scored             Float?  @db.Real
+  opp_big_chance_scored         Float?  @db.Real
+  big_chance_created            Float?  @db.Real
+  opp_big_chance_created        Float?  @db.Real
+  parried_safe                  Float?  @db.Real
+  opp_parried_safe              Float?  @db.Real
+  parried_danger                Float?  @db.Real
+  opp_parried_danger            Float?  @db.Real
+  save_keeper                   Float?  @db.Real
+  opp_save_keeper               Float?  @db.Real
   year                          Int     @db.SmallInt
   tournament                    String
 

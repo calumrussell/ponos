@@ -109,8 +109,8 @@ select
     team_id,
     team,
     {% for stat in stat_groups %}
-    sum({{stat}}) as {{stat}},
-    sum(opp_{{stat}}) as opp_{{stat}},
+    sum({{stat}})::real as {{stat}},
+    sum(opp_{{stat}})::real as opp_{{stat}},
     {% endfor %}
     year,
     tournament
