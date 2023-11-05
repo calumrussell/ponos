@@ -81,6 +81,19 @@ export async function getTeamStats(id: string) {
   return requestFormatter(team_stats);
 };
 
+export async function getTeamStatsSeasonTotalsByTeam(id: string) {
+  const team_stats = await prisma.team_stats_sum_by_season.findMany({
+    where: {
+      team_id: parseInt(findRoute(id))
+    },
+    orderBy: {
+      year: 'desc',
+    },
+    take: 5,
+  });
+  return requestFormatter(team_stats);
+}
+
 export async function getPlayerStats(id: string) {
   const player_stats = await prisma.player_stats_full.findMany({
     where: {
@@ -96,6 +109,18 @@ export async function getPlayerStats(id: string) {
     ]
   });
   return requestFormatter(player_stats);
+}
+
+export async function getCurrentArtemisRatingByTeam(team_id: string) {
+  const rating = await prisma.poiss_ratings.findFirst({
+    where: {
+      team_id: parseInt(findRoute(team_id)),
+    },
+    orderBy: {
+      date: 'desc',
+    }
+  });
+  return requestFormatter(rating);
 }
 
 export async function getArtemisRatingOverLastTwoYearsByTeam(team_id: string) {
@@ -117,7 +142,7 @@ export async function getArtemisRatingOverLastTwoYearsByTeam(team_id: string) {
     orderBy: {
       date: 'desc'
     }
-  })
+  });
   return requestFormatter(rating);
 }
 
@@ -138,7 +163,20 @@ export async function getLastArtemisRatingByDateAndTeam(match_date: number, team
     orderBy: {
       date: 'desc'
     }
-  })
+  });
+  console.log(team_id, match_date)
+  return requestFormatter(rating);
+}
+
+export async function getCurrentAresRatingByTeam(team_id: string) {
+  const rating = await prisma.elo_ratings.findFirst({
+    where: {
+      team_id: parseInt(findRoute(team_id)),
+    },
+    orderBy: {
+      date: 'desc',
+    }
+  });
   return requestFormatter(rating);
 }
 

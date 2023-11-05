@@ -112,6 +112,8 @@ select
     sum({{stat}})::real as {{stat}},
     sum(opp_{{stat}})::real as opp_{{stat}},
     {% endfor %}
+    sum(xg)::real as xg,
+    sum(opp_xg)::real as opp_xg,
     year,
     tournament
 from {{ref('team_stats_full')}}

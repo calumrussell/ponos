@@ -193,6 +193,8 @@ SELECT
   (sum(team_stats_full.opp_parried_danger)) :: real AS opp_parried_danger,
   (sum(team_stats_full.save_keeper)) :: real AS save_keeper,
   (sum(team_stats_full.opp_save_keeper)) :: real AS opp_save_keeper,
+  sum(team_stats_full.xg) AS xg,
+  sum(team_stats_full.opp_xg) AS opp_xg,
   team_stats_full.year,
   team_stats_full.tournament
 FROM

@@ -879,6 +879,8 @@ view team_stats_sum_by_season {
   opp_parried_danger            Float?  @db.Real
   save_keeper                   Float?  @db.Real
   opp_save_keeper               Float?  @db.Real
+  xg                            Float?  @db.Real
+  opp_xg                        Float?  @db.Real
   year                          Int     @db.SmallInt
   tournament                    String
 
