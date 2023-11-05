@@ -1,52 +1,53 @@
-class Rating:
-    def __init__(self, team_id, rating, date) -> None:
-        self.team_id = team_id
-        self.rating = rating
-        self.date = date
-
-class DefaultEloModel:
-    def __init__(self):
-        self.k = 15
-        self.p = 320
-        self.h = 0.17
-
-class EloImpl:
+if __name__ == "__main__":
     """
-    Uses computed variables, includes home strength parameter.
+    Code used for total model updates.
+
+    Ratings are modelled as joint probability so we have to iterate through matches over
+    time. We cannot break this up by team or season (because we have tournaments that
+    involve teams across tournaments, we cannot do season).
     """
-    expected_margin = lambda x_rating, y_rating, p, home_adv: ((x_rating-y_rating)/p) + home_adv
-    rating_change = lambda actual_margin, expected_margin, k: k*(actual_margin-expected_margin)
+    import psycopg2
+    import os
+    from common import EloImpl
 
-    def __init__(self, model):
-        self.ratings = {}
-        self.team_match_count = {}
-        self.rating_record = []
-        self.model = model
-        self.rating_burn = 5
+    conn = psycopg2.connect(os.getenv("DB_CONN"))
+    with conn:
+        with conn.cursor() as cur:
 
-    ## Must update rating for both teams at once, if we don't do this then we update one
-    ## team and then the updated rating will be used again.
-    def update(self, t1, t2, t1_goals, t2_goals, start_date):
-        if t1 not in self.ratings:
-            self.ratings[t1] = 1500
-            self.team_match_count[t1] = 0
-            self.rating_record.append(Rating(t1, 1500, start_date))
+            cur.execute("select distinct(start_date) from match where start_date < extract(epoch from now()) order by start_date asc")
+            dates = [row[0] for row in cur.fetchall()]
+            for date in dates:
+                print(date)
+                cur.execute(f"select id, start_date, home_id, away_id from match where start_date = {date}")
+                date_matches = [row for row in cur.fetchall()]
+                for match_id, start_date, home_id, away_id in date_matches:
+                    home_goals = -1
+                    away_goals = -1
+                    cur.execute(f"select team_id, goal from team_stats where match_id={match_id}")
+                    team_stats = cur.fetchall()
+                    for team_id, goal in team_stats:
+                        if team_id == home_id:
+                            home_goals = goal
+                        else:
+                            away_goals = goal
 
-        if t2 not in self.ratings:
-            self.ratings[t2] = 1500
-            self.team_match_count[t2] = 0
-            self.rating_record.append(Rating(t2, 1500, start_date))
+                    if home_goals == -1 or away_goals == -1:
+                        continue
 
-        t1_x_margin = EloImpl.expected_margin(self.ratings[t1], self.ratings[t2], self.model.p, self.model.h)
-        t1_rating_change = EloImpl.rating_change(t1_goals - t2_goals, t1_x_margin, self.model.k)
+                    home_rating = EloImpl.default_rating()
+                    cur.execute(f"select rating from elo_ratings where team_id={home_id} and date < {start_date} order by date desc limit 1")
+                    home_rating_previous = cur.fetchone()
+                    if home_rating_previous:
+                        home_rating = home_rating_previous[0]
 
-        t2_x_margin = EloImpl.expected_margin(self.ratings[t2], self.ratings[t1], self.model.p, -self.model.h)
-        t2_rating_change = EloImpl.rating_change(t2_goals - t1_goals, t2_x_margin, self.model.k)
- 
-        self.ratings[t1] += t1_rating_change
-        self.ratings[t2] += t2_rating_change
-        self.rating_record.append(Rating(t1, self.ratings[t1], start_date))
-        self.rating_record.append(Rating(t2, self.ratings[t2], start_date))
-        self.team_match_count[t1] += 1
-        self.team_match_count[t2] += 1
+                    away_rating = EloImpl.default_rating()
+                    cur.execute(f"select rating from elo_ratings where team_id={away_id} and date < {start_date} order by date desc limit 1")
+                    away_rating_previous = cur.fetchone()
+                    if away_rating_previous:
+                        away_rating = away_rating_previous[0]
 
+                    ##We should never have 1500 committed, if both are 1500 then we update from there
+                    home_rating_new, away_rating_new = EloImpl.ratings(home_id, away_id, home_goals, away_goals, home_rating, away_rating)
+                    ##Must update the rows rather than cache as they will be needed for next computations in row
+                    cur.execute(f"insert into elo_ratings(team_id, date, rating) values ({home_id}, {start_date}, {home_rating_new}), ({away_id}, {start_date}, {away_rating_new}) on conflict do nothing")
+                    conn.commit()
