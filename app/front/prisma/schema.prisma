@@ -292,6 +292,13 @@ model seasons {
   curr  Boolean?
 }
 
+model elo_pred {
+  match_id Int    @id
+  home_win Float? @db.Real
+  away_win Float? @db.Real
+  draw     Float? @db.Real
+}
+
 view player_stats_full {
   player_id                 Int
   team_id                   Int?
@@ -395,6 +402,7 @@ view player_stats_full {
   position                  String?
   opp_id                    Int?    @db.SmallInt
   team                      String?
+  opp                       String?
   player                    String?
   year                      Int?    @db.SmallInt
   tournament                String?
@@ -630,6 +638,7 @@ view team_stats_full {
   big_chance_conversion         Float?   @db.Real
   opp_big_chance_conversion     Float?   @db.Real
   xg                            Float?   @db.Real
+  opp_xg                        Float?   @db.Real
   team                          String?
   opp                           String?
   year                          Int?     @db.SmallInt
@@ -675,4 +684,341 @@ view elo_live {
   date    Int
 
   @@id([date, team_id])
+}
+
+view poiss_rolling_average {
+  team_id    Int
+  date       Int
+  off_rating Float? @db.Real
+  def_rating Float? @db.Real
+
+  @@id([date, team_id])
+}
+
+view elo_rolling_average {
+  team_id Int
+  date    Int
+  rating  Float? @db.Real
+
+  @@id([date, team_id])
+}
+
+view wei_rolling_average {
+  team_id           Int
+  date              Int
+  off_rating        Float? @db.Real
+  off_rating_spread Float? @db.Real
+  def_rating        Float? @db.Real
+  def_rating_spread Float? @db.Real
+
+  @@id([date, team_id])
+}
+
+view team_stats_avg_by_season {
+  team_id                           Int
+  team                              String?
+  pass_avg                          Float?  @db.Real
+  opp_pass_avg                      Float?  @db.Real
+  pass_corner_avg                   Float?  @db.Real
+  opp_pass_corner_avg               Float?  @db.Real
+  pass_longball_avg                 Float?  @db.Real
+  opp_pass_longball_avg             Float?  @db.Real
+  pass_cross_avg                    Float?  @db.Real
+  opp_pass_cross_avg                Float?  @db.Real
+  pass_back_avg                     Float?  @db.Real
+  opp_pass_back_avg                 Float?  @db.Real
+  pass_forward_avg                  Float?  @db.Real
+  opp_pass_forward_avg              Float?  @db.Real
+  pass_left_avg                     Float?  @db.Real
+  opp_pass_left_avg                 Float?  @db.Real
+  pass_right_avg                    Float?  @db.Real
+  opp_pass_right_avg                Float?  @db.Real
+  pass_short_avg                    Float?  @db.Real
+  opp_pass_short_avg                Float?  @db.Real
+  pass_throughball_avg              Float?  @db.Real
+  opp_pass_throughball_avg          Float?  @db.Real
+  pass_accurate_avg                 Float?  @db.Real
+  opp_pass_accurate_avg             Float?  @db.Real
+  pass_short_accurate_avg           Float?  @db.Real
+  opp_pass_short_accurate_avg       Float?  @db.Real
+  pass_corner_accurate_avg          Float?  @db.Real
+  opp_pass_corner_accurate_avg      Float?  @db.Real
+  pass_longball_accurate_avg        Float?  @db.Real
+  opp_pass_longball_accurate_avg    Float?  @db.Real
+  pass_cross_accurate_avg           Float?  @db.Real
+  opp_pass_cross_accurate_avg       Float?  @db.Real
+  pass_throughball_accurate_avg     Float?  @db.Real
+  opp_pass_throughball_accurate_avg Float?  @db.Real
+  pass_key_avg                      Float?  @db.Real
+  opp_pass_key_avg                  Float?  @db.Real
+  pass_key_cross_avg                Float?  @db.Real
+  opp_pass_key_cross_avg            Float?  @db.Real
+  pass_key_freekick_avg             Float?  @db.Real
+  opp_pass_key_freekick_avg         Float?  @db.Real
+  pass_key_corner_avg               Float?  @db.Real
+  opp_pass_key_corner_avg           Float?  @db.Real
+  pass_key_throughball_avg          Float?  @db.Real
+  opp_pass_key_throughball_avg      Float?  @db.Real
+  shot_avg                          Float?  @db.Real
+  opp_shot_avg                      Float?  @db.Real
+  shot_on_target_avg                Float?  @db.Real
+  opp_shot_on_target_avg            Float?  @db.Real
+  shot_off_target_avg               Float?  @db.Real
+  opp_shot_off_target_avg           Float?  @db.Real
+  shot_blocked_avg                  Float?  @db.Real
+  opp_shot_blocked_avg              Float?  @db.Real
+  shot_open_play_avg                Float?  @db.Real
+  opp_shot_open_play_avg            Float?  @db.Real
+  shot_set_piece_avg                Float?  @db.Real
+  opp_shot_set_piece_avg            Float?  @db.Real
+  shot_on_post_avg                  Float?  @db.Real
+  opp_shot_on_post_avg              Float?  @db.Real
+  shot_six_yard_box_avg             Float?  @db.Real
+  opp_shot_six_yard_box_avg         Float?  @db.Real
+  shot_penalty_area_avg             Float?  @db.Real
+  opp_shot_penalty_area_avg         Float?  @db.Real
+  shot_box_avg                      Float?  @db.Real
+  opp_shot_box_avg                  Float?  @db.Real
+  shot_counter_avg                  Float?  @db.Real
+  opp_shot_counter_avg              Float?  @db.Real
+  shot_head_avg                     Float?  @db.Real
+  opp_shot_head_avg                 Float?  @db.Real
+  shot_foot_avg                     Float?  @db.Real
+  opp_shot_foot_avg                 Float?  @db.Real
+  shot_0bp_avg                      Float?  @db.Real
+  opp_shot_0bp_avg                  Float?  @db.Real
+  goal_avg                          Float?  @db.Real
+  opp_goal_avg                      Float?  @db.Real
+  goal_normal_avg                   Float?  @db.Real
+  opp_goal_normal_avg               Float?  @db.Real
+  goal_head_avg                     Float?  @db.Real
+  opp_goal_head_avg                 Float?  @db.Real
+  goal_foot_avg                     Float?  @db.Real
+  opp_goal_foot_avg                 Float?  @db.Real
+  goal_set_piece_avg                Float?  @db.Real
+  opp_goal_set_piece_avg            Float?  @db.Real
+  goal_own_avg                      Float?  @db.Real
+  opp_goal_own_avg                  Float?  @db.Real
+  goal_counter_avg                  Float?  @db.Real
+  opp_goal_counter_avg              Float?  @db.Real
+  goal_open_play_avg                Float?  @db.Real
+  opp_goal_open_play_avg            Float?  @db.Real
+  goal_0bp_avg                      Float?  @db.Real
+  opp_goal_0bp_avg                  Float?  @db.Real
+  goal_0box_avg                     Float?  @db.Real
+  opp_goal_0box_avg                 Float?  @db.Real
+  goal_six_yard_box_avg             Float?  @db.Real
+  opp_goal_six_yard_box_avg         Float?  @db.Real
+  goal_penalty_area_avg             Float?  @db.Real
+  opp_goal_penalty_area_avg         Float?  @db.Real
+  assist_avg                        Float?  @db.Real
+  opp_assist_avg                    Float?  @db.Real
+  assist_cross_avg                  Float?  @db.Real
+  opp_assist_cross_avg              Float?  @db.Real
+  assist_corner_avg                 Float?  @db.Real
+  opp_assist_corner_avg             Float?  @db.Real
+  assist_throughball_avg            Float?  @db.Real
+  opp_assist_throughball_avg        Float?  @db.Real
+  aerial_duel_avg                   Float?  @db.Real
+  opp_aerial_duel_avg               Float?  @db.Real
+  red_card_avg                      Float?  @db.Real
+  opp_red_card_avg                  Float?  @db.Real
+  yellow_card_avg                   Float?  @db.Real
+  opp_yellow_card_avg               Float?  @db.Real
+  second_yellow_card_avg            Float?  @db.Real
+  opp_second_yellow_card_avg        Float?  @db.Real
+  save_avg                          Float?  @db.Real
+  opp_save_avg                      Float?  @db.Real
+  duel_avg                          Float?  @db.Real
+  opp_duel_avg                      Float?  @db.Real
+  duel_offensive_avg                Float?  @db.Real
+  opp_duel_offensive_avg            Float?  @db.Real
+  duel_defensive_avg                Float?  @db.Real
+  opp_duel_defensive_avg            Float?  @db.Real
+  dispossessed_avg                  Float?  @db.Real
+  opp_dispossessed_avg              Float?  @db.Real
+  turnover_avg                      Float?  @db.Real
+  opp_turnover_avg                  Float?  @db.Real
+  dribble_avg                       Float?  @db.Real
+  opp_dribble_avg                   Float?  @db.Real
+  dribble_won_avg                   Float?  @db.Real
+  opp_dribble_won_avg               Float?  @db.Real
+  dribble_lost_avg                  Float?  @db.Real
+  opp_dribble_lost_avg              Float?  @db.Real
+  dribble_last_man_avg              Float?  @db.Real
+  opp_dribble_last_man_avg          Float?  @db.Real
+  challenge_lost_avg                Float?  @db.Real
+  opp_challenge_lost_avg            Float?  @db.Real
+  blocked_cross_avg                 Float?  @db.Real
+  opp_blocked_cross_avg             Float?  @db.Real
+  block_outfielder_avg              Float?  @db.Real
+  opp_block_outfielder_avg          Float?  @db.Real
+  block_six_yard_avg                Float?  @db.Real
+  opp_block_six_yard_avg            Float?  @db.Real
+  block_pass_outfielder_avg         Float?  @db.Real
+  opp_block_pass_outfielder_avg     Float?  @db.Real
+  interception_avg                  Float?  @db.Real
+  opp_interception_avg              Float?  @db.Real
+  interception_won_avg              Float?  @db.Real
+  opp_interception_won_avg          Float?  @db.Real
+  interception_in_box_avg           Float?  @db.Real
+  opp_interception_in_box_avg       Float?  @db.Real
+  tackle_avg                        Float?  @db.Real
+  opp_tackle_avg                    Float?  @db.Real
+  tackle_won_avg                    Float?  @db.Real
+  opp_tackle_won_avg                Float?  @db.Real
+  tackle_lost_avg                   Float?  @db.Real
+  opp_tackle_lost_avg               Float?  @db.Real
+  tackle_last_man_avg               Float?  @db.Real
+  opp_tackle_last_man_avg           Float?  @db.Real
+  offside_given_avg                 Float?  @db.Real
+  opp_offside_given_avg             Float?  @db.Real
+  offside_provoked_avg              Float?  @db.Real
+  opp_offside_provoked_avg          Float?  @db.Real
+  ball_recovery_avg                 Float?  @db.Real
+  opp_ball_recovery_avg             Float?  @db.Real
+  clearance_avg                     Float?  @db.Real
+  opp_clearance_avg                 Float?  @db.Real
+  clearance_effective_avg           Float?  @db.Real
+  opp_clearance_effective_avg       Float?  @db.Real
+  clearance_off_line_avg            Float?  @db.Real
+  opp_clearance_off_line_avg        Float?  @db.Real
+  error_leads_to_goal_avg           Float?  @db.Real
+  opp_error_leads_to_goal_avg       Float?  @db.Real
+  error_leads_to_shot_avg           Float?  @db.Real
+  opp_error_leads_to_shot_avg       Float?  @db.Real
+  touch_avg                         Float?  @db.Real
+  opp_touch_avg                     Float?  @db.Real
+  penalty_won_avg                   Float?  @db.Real
+  opp_penalty_won_avg               Float?  @db.Real
+  penalty_conceded_avg              Float?  @db.Real
+  opp_penalty_conceded_avg          Float?  @db.Real
+  penalty_scored_avg                Float?  @db.Real
+  opp_penalty_scored_avg            Float?  @db.Real
+  big_chance_missed_avg             Float?  @db.Real
+  opp_big_chance_missed_avg         Float?  @db.Real
+  big_chance_scored_avg             Float?  @db.Real
+  opp_big_chance_scored_avg         Float?  @db.Real
+  big_chance_created_avg            Float?  @db.Real
+  opp_big_chance_created_avg        Float?  @db.Real
+  parried_safe_avg                  Float?  @db.Real
+  opp_parried_safe_avg              Float?  @db.Real
+  parried_danger_avg                Float?  @db.Real
+  opp_parried_danger_avg            Float?  @db.Real
+  save_keeper_avg                   Float?  @db.Real
+  opp_save_keeper_avg               Float?  @db.Real
+  xg_avg                            Float?  @db.Real
+  opp_xg_avg                        Float?  @db.Real
+  year                              Int     @db.SmallInt
+  tournament                        String
+
+  @@id([team_id, year, tournament])
+}
+
+view player_stats_per_ninety_by_season_team {
+  player_id                     Int
+  player                        String?
+  team_id                       Int
+  team                          String?
+  minutes                       Float?  @db.Real
+  pass_avg                      Float?
+  pass_corner_avg               Float?
+  pass_longball_avg             Float?
+  pass_cross_avg                Float?
+  pass_back_avg                 Float?
+  pass_forward_avg              Float?
+  pass_left_avg                 Float?
+  pass_right_avg                Float?
+  pass_short_avg                Float?
+  pass_throughball_avg          Float?
+  pass_accurate_avg             Float?
+  pass_short_accurate_avg       Float?
+  pass_corner_accurate_avg      Float?
+  pass_longball_accurate_avg    Float?
+  pass_cross_accurate_avg       Float?
+  pass_throughball_accurate_avg Float?
+  pass_key_avg                  Float?
+  pass_key_cross_avg            Float?
+  pass_key_freekick_avg         Float?
+  pass_key_corner_avg           Float?
+  pass_key_throughball_avg      Float?
+  shot_avg                      Float?
+  shot_on_target_avg            Float?
+  shot_off_target_avg           Float?
+  shot_blocked_avg              Float?
+  shot_open_play_avg            Float?
+  shot_set_piece_avg            Float?
+  shot_on_post_avg              Float?
+  shot_six_yard_box_avg         Float?
+  shot_penalty_area_avg         Float?
+  shot_box_avg                  Float?
+  shot_counter_avg              Float?
+  shot_head_avg                 Float?
+  shot_foot_avg                 Float?
+  shot_0bp_avg                  Float?
+  goal_avg                      Float?
+  goal_normal_avg               Float?
+  goal_head_avg                 Float?
+  goal_foot_avg                 Float?
+  goal_set_piece_avg            Float?
+  goal_own_avg                  Float?
+  goal_counter_avg              Float?
+  goal_open_play_avg            Float?
+  goal_0bp_avg                  Float?
+  goal_0box_avg                 Float?
+  goal_six_yard_box_avg         Float?
+  goal_penalty_area_avg         Float?
+  assist_avg                    Float?
+  assist_cross_avg              Float?
+  assist_corner_avg             Float?
+  assist_throughball_avg        Float?
+  aerial_duel_avg               Float?
+  red_card_avg                  Float?
+  yellow_card_avg               Float?
+  second_yellow_card_avg        Float?
+  save_avg                      Float?
+  duel_avg                      Float?
+  duel_offensive_avg            Float?
+  duel_defensive_avg            Float?
+  dispossessed_avg              Float?
+  turnover_avg                  Float?
+  dribble_avg                   Float?
+  dribble_won_avg               Float?
+  dribble_lost_avg              Float?
+  dribble_last_man_avg          Float?
+  challenge_lost_avg            Float?
+  blocked_cross_avg             Float?
+  block_outfielder_avg          Float?
+  block_six_yard_avg            Float?
+  block_pass_outfielder_avg     Float?
+  interception_avg              Float?
+  interception_won_avg          Float?
+  interception_in_box_avg       Float?
+  tackle_avg                    Float?
+  tackle_won_avg                Float?
+  tackle_lost_avg               Float?
+  tackle_last_man_avg           Float?
+  offside_given_avg             Float?
+  offside_provoked_avg          Float?
+  ball_recovery_avg             Float?
+  clearance_avg                 Float?
+  clearance_effective_avg       Float?
+  clearance_off_line_avg        Float?
+  error_leads_to_goal_avg       Float?
+  error_leads_to_shot_avg       Float?
+  touch_avg                     Float?
+  penalty_won_avg               Float?
+  penalty_conceded_avg          Float?
+  penalty_scored_avg            Float?
+  big_chance_missed_avg         Float?
+  big_chance_scored_avg         Float?
+  big_chance_created_avg        Float?
+  parried_safe_avg              Float?
+  parried_danger_avg            Float?
+  save_keeper_avg               Float?
+  xg_avg                        Float?
+  year                          Int     @db.SmallInt
+  tournament                    String
+
+  @@id([player_id, team_id, year, tournament])
 }

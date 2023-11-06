@@ -2,7 +2,9 @@ import React from "react";
 
 import prisma from "@/lib/prisma";
 import { TeamStatsTeamPage } from "@/lib/components";
-import { getRoute, getTeamStatsByTeam } from "@/lib/functions";
+import { getAresRatingOverLastTwoYearsByTeam, getArtemisRatingOverLastTwoYearsByTeam, getCurrentAresRatingByTeam, getCurrentArtemisRatingByTeam, getPlayerStatsPer90SeasonByTeamAndYear, getRoute, getTeamStatsByTeam, getTeamStatsSeasonAvgsByTeam, getTeamStatsSeasonTotalsByTeam, roundNumber } from "@/lib/functions";
+import { AresRatingChart, ArtemisRatingChart } from "@/lib/components/chart";
+import { TeamSeasonStatsTeamPage, PlayerSeasonStatsTeamPage } from "@/lib/components/team";
 
 export async function generateStaticParams() {
   const teams = await prisma.team.findMany({});
@@ -17,10 +19,39 @@ interface Team {
 
 export default async function Page(input: Team) {
   const teamStats = await getTeamStatsByTeam(input.params.id);
+  const artemisRatingHistory = await getArtemisRatingOverLastTwoYearsByTeam(input.params.id);
+  const aresRatingHistory = await getAresRatingOverLastTwoYearsByTeam(input.params.id);
+  const artemisRatingCurrent = await getCurrentArtemisRatingByTeam(input.params.id);
+  const aresRatingCurrent = await getCurrentAresRatingByTeam(input.params.id);
+  const teamSeasonAvgs = await getTeamStatsSeasonAvgsByTeam(input.params.id);
+  const playerSeasonAvgs = await getPlayerStatsPer90SeasonByTeamAndYear(input.params.id, teamStats[0].year)
 
   return (
     <main>
-      <TeamStatsTeamPage team_stats={teamStats} />
+      <h4>{teamStats[0].team}</h4>
+      <div>
+        <h4>Ares Rating:</h4>
+        <p>{aresRatingCurrent.rating}</p>
+      </div>
+      <div>
+        <h4>Artemis Rating:</h4>
+        <p><em>Off/Def</em></p>
+        <p>{roundNumber(artemisRatingCurrent.off_rating)} / {roundNumber(artemisRatingCurrent.def_rating)}</p>
+      </div>
+      <div>
+        <h4>Per Game Season Stats</h4>
+        <TeamSeasonStatsTeamPage team_stats={teamSeasonAvgs} />
+      </div>
+      <div>
+        <h4>Last 20 Matches</h4>
+        <TeamStatsTeamPage team_stats={teamStats} />
+      </div>
+      <div>
+        <h4>Per 90 Player Stats for current season</h4>
+        <PlayerSeasonStatsTeamPage player_stats={playerSeasonAvgs} />
+      </div>
+      <AresRatingChart rating_data={aresRatingHistory} />
+      <ArtemisRatingChart rating_data={artemisRatingHistory} />
     </main>
   )
 }

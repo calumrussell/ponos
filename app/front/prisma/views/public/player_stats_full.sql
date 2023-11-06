@@ -112,6 +112,7 @@ SELECT
   player_stats."position",
   player_stats.opp_id,
   team.name AS team,
+  opp.name AS opp,
   player.name AS player,
   MATCH.year,
   tournament.name AS tournament,
@@ -126,8 +127,11 @@ FROM
       (
         (
           (
-            player_stats
-            LEFT JOIN team ON ((team.id = player_stats.team_id))
+            (
+              player_stats
+              LEFT JOIN team ON ((team.id = player_stats.team_id))
+            )
+            LEFT JOIN team opp ON ((opp.id = player_stats.opp_id))
           )
           LEFT JOIN player ON ((player.id = player_stats.player_id))
         )
