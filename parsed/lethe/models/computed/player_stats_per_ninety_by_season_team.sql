@@ -2,7 +2,7 @@
     config(
         materialized='view',
         indexes = [
-            {'columns': ['team_id', 'year', 'tournament'], 'unique': True},
+            {'columns': ['player_id','team_id','year', 'tournament'], 'unique': True},
         ],
     ) 
 }}
@@ -106,15 +106,15 @@
 ] %}
 
 select 
+    player_id,
+    player,
     team_id,
     team,
     {% for stat in stat_groups %}
-    sum({{stat}})::real / count(match_id)::real as {{stat}}_avg,
-    sum(opp_{{stat}})::real / count(match_id)::real as opp_{{stat}}_avg,
+    (sum({{stat}})::real / sum(minutes))*90::real as {{stat}}_avg,
     {% endfor %}
-    sum(xg)::real / count(match_id)::real as xg_avg,
-    sum(opp_xg)::real / count(match_id)::real as opp_xg_avg,
+    (sum(xg)::real / sum(minutes))*90::real as xg_avg,
     year,
     tournament
-from {{ref('team_stats_full')}}
-group by(team_id, team, year, tournament)
+from {{ref('player_stats_full')}}
+group by(team, team_id, player_id, player, year, tournament)

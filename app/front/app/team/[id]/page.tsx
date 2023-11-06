@@ -38,11 +38,11 @@ export default async function Page(input: Team) {
         <p>{roundNumber(artemisRatingCurrent.off_rating)} / {roundNumber(artemisRatingCurrent.def_rating)}</p>
       </div>
       <div>
-        <h4>Season Stats</h4>
+        <h4>Per Game Season Stats</h4>
         <TeamSeasonStatsTeamPage team_stats={teamSeasonTotals} />
       </div>
       <div>
-        <h4>Last 20 Matches Team Stats </h4>
+        <h4>Last 20 Matches</h4>
         <TeamStatsTeamPage team_stats={teamStats} />
       </div>
       <AresRatingChart rating_data={aresRatingHistory} />

@@ -111,6 +111,27 @@ export async function getPlayerStats(id: string) {
   return requestFormatter(player_stats);
 }
 
+export async function getPlayerStatsPer90SeasonByPlayer(id: string) {
+  const team_stats = await prisma.player_stats_per_ninety_by_season_team.findMany({
+    where: {
+      AND: [
+        {
+          player_id: parseInt(findRoute(id)),
+        },
+        {
+          year: {
+            gte: 2020
+          }
+        }
+      ]
+    },
+    orderBy: {
+      year: 'desc',
+    },
+  });
+  return requestFormatter(team_stats);
+}
+
 export async function getCurrentArtemisRatingByTeam(team_id: string) {
   const rating = await prisma.poiss_ratings.findFirst({
     where: {
@@ -240,7 +261,7 @@ export async function getPlayerStatsByPlayer(id: string) {
     orderBy: {
       start_date: 'desc'
     },
-    take: 10,
+    take: 20,
   });
   return requestFormatter(player_stats);
 }

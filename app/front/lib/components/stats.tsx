@@ -1,5 +1,5 @@
 import React from "react";
-import { player_stats_full, team_stats_full, team_stats_avg_by_season } from "@prisma/client";
+import { player_stats_full, team_stats_full, team_stats_avg_by_season, player_stats_per_ninety_by_season_team } from "@prisma/client";
 
 type supportedStats = 
   'goal' |
@@ -18,40 +18,53 @@ type supportedStats =
   'interception_won' |
   'clearance_effective' |
   'assist' |
-  'goal_sum' |
-  'opp_goal_sum' |
-  'xg_sum' |
-  'opp_xg_sum' |
-  'pass_sum' |
-  'opp_pass_sum' |
-  'pass_key_sum' |
-  'opp_pass_key_sum' |
-  'shot_sum' |
-  'opp_shot_sum' |
-  'shot_on_target_sum' |
-  'opp_shot_on_target_sum' |
-  'tackle_won_sum' |
-  'interception_won_sum' |
-  'clearance_effective_sum' |
-  'assist_sum'
+  'goal_avg' |
+  'opp_goal_avg' |
+  'xg_avg' |
+  'opp_xg_avg' |
+  'pass_avg' |
+  'opp_pass_avg' |
+  'pass_key_avg' |
+  'opp_pass_key_avg' |
+  'shot_avg' |
+  'opp_shot_avg' |
+  'shot_on_target_avg' |
+  'opp_shot_on_target_avg' |
+  'tackle_won_avg' |
+  'interception_won_avg' |
+  'clearance_effective_avg' |
+  'assist_avg'
+
+const playerSeasonStats: supportedStats[] = [
+  'goal_avg',
+  'xg_avg',
+  'assist_avg',
+  'pass_avg',
+  'pass_key_avg',
+  'shot_avg',
+  'shot_on_target_avg',
+  'tackle_won_avg',
+  'interception_won_avg',
+  'clearance_effective_avg',
+];
 
 const teamSeasonStats: supportedStats[] = [
-  'goal_sum',
-  'opp_goal_sum',
-  'xg_sum',
-  'opp_xg_sum',
-  'pass_sum',
-  'opp_pass_sum',
-  'pass_key_sum',
-  'opp_pass_key_sum',
-  'shot_sum',
-  'opp_shot_sum',
-  'shot_on_target_sum',
-  'opp_shot_on_target_sum',
-  'tackle_won_sum',
-  'interception_won_sum',
-  'clearance_effective_sum',
-  'assist_sum'
+  'goal_avg',
+  'opp_goal_avg',
+  'xg_avg',
+  'opp_xg_avg',
+  'assist_avg',
+  'pass_avg',
+  'opp_pass_avg',
+  'pass_key_avg',
+  'opp_pass_key_avg',
+  'shot_avg',
+  'opp_shot_avg',
+  'shot_on_target_avg',
+  'opp_shot_on_target_avg',
+  'tackle_won_avg',
+  'interception_won_avg',
+  'clearance_effective_avg',
 ];
 
 const matchStats: supportedStats[] = [
@@ -104,22 +117,22 @@ const titleMap: StatMap = {
   'tackle_won': 'TWN',
   'interception_won': 'IWN',
   'clearance_effective': 'CWN',
-  'goal_sum': 'GOL',
-  'opp_goal_sum': 'oGOL',
-  'xg_sum': 'xGOL',
-  'opp_xg_sum': 'oxGOL',
-  'assist_sum': 'AST',
-  'pass_sum': 'PAS',
-  'opp_pass_sum': 'oPAS',
-  'pass_key_sum': 'kPAS',
-  'opp_pass_key_sum': 'okPAS',
-  'shot_sum': 'SHO',
-  'opp_shot_sum': 'oSHO',
-  'shot_on_target_sum': 'SON',
-  'opp_shot_on_target_sum': 'oSON',
-  'tackle_won_sum': 'TWN',
-  'interception_won_sum': 'IWN',
-  'clearance_effective_sum': 'CWN',
+  'goal_avg': 'GOL',
+  'opp_goal_avg': 'oGOL',
+  'xg_avg': 'xGOL',
+  'opp_xg_avg': 'oxGOL',
+  'assist_avg': 'AST',
+  'pass_avg': 'PAS',
+  'opp_pass_avg': 'oPAS',
+  'pass_key_avg': 'kPAS',
+  'opp_pass_key_avg': 'okPAS',
+  'shot_avg': 'SHO',
+  'opp_shot_avg': 'oSHO',
+  'shot_on_target_avg': 'SON',
+  'opp_shot_on_target_avg': 'oSON',
+  'tackle_won_avg': 'TWN',
+  'interception_won_avg': 'IWN',
+  'clearance_effective_avg': 'CWN',
 };
 
 const tooltipMap: StatMap = {
@@ -139,43 +152,43 @@ const tooltipMap: StatMap = {
   'tackle_won': 'Tackle won',
   'interception_won': 'Interception won',
   'clearance_effective': 'Clearance effective',
-  'goal_sum': 'Goal',
-  'opp_goal_sum': 'Opposition goal',
-  'xg_sum': 'Expected goal',
-  'opp_xg_sum': 'Opposition expected goal',
-  'assist_sum': 'Assist',
-  'pass_sum': 'Pass',
-  'opp_pass_sum': 'Opposition pass',
-  'pass_key_sum': 'Key pass',
-  'opp_pass_key_sum': 'Opposition key pass',
-  'shot_sum': 'Shot',
-  'opp_shot_sum': 'Opposition shot',
-  'shot_on_target_sum': 'Shot on target',
-  'opp_shot_on_target_sum': 'Opposition shot on target',
-  'tackle_won_sum': 'Tackle won',
-  'interception_won_sum': 'Interception won',
-  'clearance_effective_sum': 'Clearance effective',
+  'goal_avg': 'Goal',
+  'opp_goal_avg': 'Opposition goal',
+  'xg_avg': 'Expected goal',
+  'opp_xg_avg': 'Opposition expected goal',
+  'assist_avg': 'Assist',
+  'pass_avg': 'Pass',
+  'opp_pass_avg': 'Opposition pass',
+  'pass_key_avg': 'Key pass',
+  'opp_pass_key_avg': 'Opposition key pass',
+  'shot_avg': 'Shot',
+  'opp_shot_avg': 'Opposition shot',
+  'shot_on_target_avg': 'Shot on target',
+  'opp_shot_on_target_avg': 'Opposition shot on target',
+  'tackle_won_avg': 'Tackle won',
+  'interception_won_avg': 'Interception won',
+  'clearance_effective_avg': 'Clearance effective',
 };
 
 const decimal = [
   'xg',
   'opp_xg',
-  'goal_sum',
-  'opp_goal_sum',
-  'xg_sum',
-  'opp_xg_sum',
-  'pass_sum',
-  'opp_pass_sum',
-  'pass_key_sum',
-  'opp_pass_key_sum',
-  'shot_sum',
-  'opp_shot_sum',
-  'shot_on_target_sum',
-  'opp_shot_on_target_sum',
-  'tackle_won_sum',
-  'interception_won_sum',
-  'clearance_effective_sum',
-  'assist_sum'
+  'goal_avg',
+  'opp_goal_avg',
+  'xg_avg',
+  'opp_xg_avg',
+  'pass_avg',
+  'opp_pass_avg',
+  'pass_key_avg',
+  'opp_pass_key_avg',
+  'shot_avg',
+  'opp_shot_avg',
+  'shot_on_target_avg',
+  'opp_shot_on_target_avg',
+  'tackle_won_avg',
+  'interception_won_avg',
+  'clearance_effective_avg',
+  'assist_avg'
 ]
 
 const buildTitles = (stats: supportedStats[]) => {
@@ -200,6 +213,10 @@ export const buildMatchTitles = () => {
 
 export const buildTeamSeasonTitles = () => {
   return buildTitles(teamSeasonStats);
+}
+
+export const buildPlayerSeasonTitles = () => {
+  return buildTitles(playerSeasonStats);
 }
 
 const buildValues = (stats: supportedStats[], row: player_stats_full | team_stats_full) => {
@@ -230,4 +247,8 @@ export const buildMatchValues = (row: player_stats_full | team_stats_full) => {
 
 export const buildTeamSeasonValues = (row: team_stats_avg_by_season) => {
   return buildValues(teamSeasonStats, row);
+}
+
+export const buildPlayerSeasonValues = (row: player_stats_per_ninety_by_season_team) => {
+  return buildValues(playerSeasonStats, row);
 }
