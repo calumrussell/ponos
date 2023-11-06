@@ -110,10 +110,11 @@ select
     player,
     team_id,
     team,
+    sum(minutes)::real as minutes,
     {% for stat in stat_groups %}
-    (sum({{stat}})::real / sum(minutes))*90::real as {{stat}}_avg,
+    case when sum(minutes) != 0 then (sum({{stat}})::real / sum(minutes))*90::real else 0 end as {{stat}}_avg,
     {% endfor %}
-    (sum(xg)::real / sum(minutes))*90::real as xg_avg,
+    case when sum(minutes) != 0 then (sum(xg)::real / sum(minutes))*90::real else 0 end as xg_avg,
     year,
     tournament
 from {{ref('player_stats_full')}}

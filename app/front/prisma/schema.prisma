@@ -920,6 +920,7 @@ view player_stats_per_ninety_by_season_team {
   player                        String?
   team_id                       Int
   team                          String?
+  minutes                       Float?  @db.Real
   pass_avg                      Float?
   pass_corner_avg               Float?
   pass_longball_avg             Float?

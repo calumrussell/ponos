@@ -51,22 +51,20 @@ export const PlayerStatsPlayerPage = ({ player_stats }: { player_stats: player_s
   )
 }
 
-
-
 export const PlayerStatsSeasonPlayerPage = ({ player_stats }: { player_stats: player_stats_per_ninety_by_season_team[] }) => {
-  console.log(player_stats)
-
   const Row = (row: player_stats_per_ninety_by_season_team) => {
     const  {
       year,
       team,
       team_id,
+      minutes,
     } = row;
     
     return (
       <tr>
         <td>{year}</td>
         <td><Link href={`/team/${team_id}`}>{team}</Link></td>
+        <td>{minutes}</td>
         { buildPlayerSeasonValues(row) }
       </tr>
     )
@@ -78,6 +76,7 @@ export const PlayerStatsSeasonPlayerPage = ({ player_stats }: { player_stats: pl
         <tr>
           <th>Year</th>
           <th>Team</th>
+          <th>MIN</th>
           { buildPlayerSeasonTitles() }
         </tr>
       </thead>

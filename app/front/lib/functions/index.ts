@@ -81,7 +81,7 @@ export async function getTeamStats(id: string) {
   return requestFormatter(team_stats);
 };
 
-export async function getTeamStatsSeasonTotalsByTeam(id: string) {
+export async function getTeamStatsSeasonAvgsByTeam(id: string) {
   const team_stats = await prisma.team_stats_avg_by_season.findMany({
     where: {
       team_id: parseInt(findRoute(id))
@@ -109,6 +109,25 @@ export async function getPlayerStats(id: string) {
     ]
   });
   return requestFormatter(player_stats);
+}
+
+export async function getPlayerStatsPer90SeasonByTeamAndYear(id: string, year: number) {
+  const team_stats = await prisma.player_stats_per_ninety_by_season_team.findMany({
+    where: {
+      AND: [
+        {
+          team_id: parseInt(findRoute(id)),
+        },
+        {
+          year: year
+        }
+      ]
+    },
+    orderBy: {
+      minutes: 'desc'
+    }
+  });
+  return requestFormatter(team_stats);
 }
 
 export async function getPlayerStatsPer90SeasonByPlayer(id: string) {
