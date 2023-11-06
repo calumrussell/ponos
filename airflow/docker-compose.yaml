@@ -82,7 +82,7 @@ x-airflow-common:
     - ../parsed/ares:/packages/ares
     - ../parsed/artemis:/packages/artemis
     - ../parsed/athena:/packages/athena
-    - /run/user/1000/docker.sock:/var/run/docker.sock
+    - ${XDG_RUNTIME_DIR}/docker.sock:/var/run/docker.sock
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on

@@ -29,6 +29,7 @@ with DAG(
         process = subprocess.run(
             ['docker', 'run', '--rm', 'puppet', 'bash', '-c', 'npm install --silent --no-progress && node match.js \'' + match_str + '\''], 
             capture_output=True)
+        print(process)
 
         raw_match = process.stdout.decode('utf-8')
         if not raw_match:
