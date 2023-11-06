@@ -1,6 +1,6 @@
 {{ 
     config(
-        materialized='view',
+        materialized='table',
         indexes = [
             {'columns': ['id'], 'unique': True},
         ]

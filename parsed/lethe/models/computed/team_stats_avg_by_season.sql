@@ -1,6 +1,6 @@
 {{ 
     config(
-        materialized='view',
+        materialized='table',
         indexes = [
             {'columns': ['team_id', 'year', 'tournament'], 'unique': True},
         ],

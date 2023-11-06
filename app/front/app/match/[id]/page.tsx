@@ -3,7 +3,6 @@ import React from "react";
 import prisma from "@/lib/prisma";
 import { PlayerStatsMatchPage, TeamStatsMatchPage } from "@/lib/components";
 import { getMatch, getPlayerStats, getTeamStats, sortByPosition, getRoute, getEloPredictionByMatch, convertDatesWithTime, roundNumber, getLastAresRatingByDateAndTeam, getLastArtemisRatingByDateAndTeam } from "@/lib/functions";
-import { match_full, player_stats_full, team_stats_full, elo_pred } from "@prisma/client";
 
 export async function generateStaticParams() {
   const matches = await prisma.match_front.findMany({});
