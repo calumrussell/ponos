@@ -1,6 +1,6 @@
 import React from "react";
 
-import { player_stats_full } from "@prisma/client";
+import { player_stats_full, player_stats_per_ninety_by_season_team } from "@prisma/client";
 import { buildPlayerSeasonTitles, buildPlayerSeasonValues, buildStackedTitles, buildStackedValues } from "./stats";
 import Link from "next/link";
 import { convertDates } from "../functions";

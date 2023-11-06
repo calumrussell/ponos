@@ -18,8 +18,13 @@ interface Match {
 }
 
 export default async function Page(input: Match) {
-  const playerStats = await getPlayerStatsByPlayer(input.params.id);
-  const playerStatsAvgs = await getPlayerStatsPer90SeasonByPlayer(input.params.id);
+  const [
+    playerStats,
+    playerStatsAvgs
+  ] = await Promise.all([
+    getPlayerStatsByPlayer(input.params.id),
+    getPlayerStatsPer90SeasonByPlayer(input.params.id),
+  ]);
 
   return (
     <main>

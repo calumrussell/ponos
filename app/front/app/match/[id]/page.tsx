@@ -17,30 +17,46 @@ interface Match {
 }
 
 export default async function Page(input: Match) {
-  const match = await getMatch(input.params.id) as match_full;
-  const prediction = await getEloPredictionByMatch(input.params.id) as elo_pred;
-
-  const playerStats = await getPlayerStats(input.params.id) as player_stats_full[];
-  const teamStats = await getTeamStats(input.params.id) as team_stats_full[];
-
-  const homeAresRating = await getLastAresRatingByDateAndTeam(match.start_date, match.home_id);
-  const awayAresRating = await getLastAresRatingByDateAndTeam(match.start_date, match.away_id);
-
-  const homeArtemisRating = await getLastArtemisRatingByDateAndTeam(match.start_date, match.home_id);
-  const awayArtemisRating = await getLastArtemisRatingByDateAndTeam(match.start_date, match.away_id);
+  const [
+    match,
+    prediction,
+    playerStats,
+    teamStats,
+  ] = await Promise.all([
+    getMatch(input.params.id),
+    getEloPredictionByMatch(input.params.id),
+    getPlayerStats(input.params.id),
+    getTeamStats(input.params.id),
+  ]);
+  
+  const [
+    homeAresRating,
+    awayAresRating,
+    homeArtemisRating,
+    awayArtemisRating,
+  ] = await Promise.all([
+    getLastAresRatingByDateAndTeam(match.start_date as number, match.home_id as number),
+    getLastAresRatingByDateAndTeam(match.start_date as number, match.away_id as number),
+    getLastArtemisRatingByDateAndTeam(match.start_date as number, match.home_id as number),
+    getLastArtemisRatingByDateAndTeam(match.start_date as number, match.away_id as number),
+  ]);
 
   const homeSide = match?.home;
   const awaySide = match?.away;
 
-  const homePlayerStats = playerStats.length > 0 ? sortByPosition(playerStats.filter((v) => v.team_id == match?.home_id)) : null;
-  const awayPlayerStats = playerStats.length > 0 ? sortByPosition(playerStats.filter((v) => v.team_id == match?.away_id)) : null;
+  const homePlayerStats = playerStats.length > 0 ? sortByPosition(playerStats.filter((v: any) => v.team_id == match?.home_id)) : null;
+  const awayPlayerStats = playerStats.length > 0 ? sortByPosition(playerStats.filter((v: any) => v.team_id == match?.away_id)) : null;
 
-  const homeTeamStats = teamStats.length > 0 ? teamStats.filter((v) => v.team_id == match?.home_id)[0] : null;
-  const awayTeamStats = teamStats.length > 0 ? teamStats.filter((v) => v.team_id == match?.away_id)[0] : null;
+  const homeTeamStats = teamStats.length > 0 ? teamStats.filter((v: any) => v.team_id == match?.home_id)[0] : null;
+  const awayTeamStats = teamStats.length > 0 ? teamStats.filter((v: any) => v.team_id == match?.away_id)[0] : null;
 
   //Zero is falsey value
   const homeGoal = homeTeamStats ? homeTeamStats.goal : null;
   const awayGoal = awayTeamStats ? awayTeamStats.goal : null;
+
+  const homeWin = prediction ? prediction.home_win * 100 : 0.0;
+  const awayWin = prediction ? prediction.away_win * 100 : 0.0;
+  const draw = prediction ? prediction.draw * 100 : 0.0;
 
   return (
     <main>
@@ -55,9 +71,9 @@ export default async function Page(input: Match) {
       }
       <div>
         <h4>Prediction: </h4>
-        <p>Home win: {roundNumber(prediction.home_win * 100)}% <em>{roundNumber(1/prediction.home_win)}</em></p>
-        <p>Draw: {roundNumber(prediction.draw * 100)}% <em>{roundNumber(1/prediction.draw)}</em></p>
-        <p>Away win: {roundNumber(prediction.away_win * 100)}% <em>{roundNumber(1/prediction.away_win)}</em></p>
+        <p>Home win: {roundNumber(homeWin)}% <em>{roundNumber(1/homeWin)}</em></p>
+        <p>Draw: {roundNumber(draw)}% <em>{roundNumber(1/draw)}</em></p>
+        <p>Away win: {roundNumber(awayWin)}% <em>{roundNumber(1/awayWin)}</em></p>
       </div>
       <div>
         <h4>Ares rating: </h4>

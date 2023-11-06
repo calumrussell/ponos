@@ -219,7 +219,7 @@ export const buildPlayerSeasonTitles = () => {
   return buildTitles(playerSeasonStats);
 }
 
-const buildValues = (stats: supportedStats[], row: player_stats_full | team_stats_full) => {
+const buildValues = (stats: supportedStats[], row: player_stats_full | team_stats_full | team_stats_avg_by_season | player_stats_per_ninety_by_season_team) => {
   return (
     <React.Fragment>
       {

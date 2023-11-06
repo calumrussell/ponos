@@ -45,7 +45,7 @@ export const ArtemisRatingChart = ({rating_data}: {rating_data: poiss_ratings[]}
     ],
   };
 
-  const options = {
+  const options: any = {
     plugins: {
       title: {
         display: true,
@@ -86,7 +86,7 @@ export const AresRatingChart = ({rating_data}: {rating_data: elo_ratings[]}) => 
     ],
   };
 
-  const options = {
+  const options: any = {
     plugins: {
       title: {
         display: true,

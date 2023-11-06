@@ -2,7 +2,7 @@ import React from "react";
 
 import prisma from "@/lib/prisma";
 import { TeamStatsTeamPage } from "@/lib/components";
-import { getAresRatingOverLastTwoYearsByTeam, getArtemisRatingOverLastTwoYearsByTeam, getCurrentAresRatingByTeam, getCurrentArtemisRatingByTeam, getPlayerStatsPer90SeasonByTeamAndYear, getRoute, getTeamStatsByTeam, getTeamStatsSeasonAvgsByTeam, getTeamStatsSeasonTotalsByTeam, roundNumber } from "@/lib/functions";
+import { getAresRatingOverLastTwoYearsByTeam, getArtemisRatingOverLastTwoYearsByTeam, getCurrentAresRatingByTeam, getCurrentArtemisRatingByTeam, getPlayerStatsPer90SeasonByTeamAndYear, getRoute, getTeamStatsByTeam, getTeamStatsSeasonAvgsByTeam, roundNumber } from "@/lib/functions";
 import { AresRatingChart, ArtemisRatingChart } from "@/lib/components/chart";
 import { TeamSeasonStatsTeamPage, PlayerSeasonStatsTeamPage } from "@/lib/components/team";
 
@@ -18,12 +18,22 @@ interface Team {
 }
 
 export default async function Page(input: Team) {
-  const teamStats = await getTeamStatsByTeam(input.params.id);
-  const artemisRatingHistory = await getArtemisRatingOverLastTwoYearsByTeam(input.params.id);
-  const aresRatingHistory = await getAresRatingOverLastTwoYearsByTeam(input.params.id);
-  const artemisRatingCurrent = await getCurrentArtemisRatingByTeam(input.params.id);
-  const aresRatingCurrent = await getCurrentAresRatingByTeam(input.params.id);
-  const teamSeasonAvgs = await getTeamStatsSeasonAvgsByTeam(input.params.id);
+  const [
+    teamStats,
+    artemisRatingHistory,
+    aresRatingHistory,
+    artemisRatingCurrent,
+    aresRatingCurrent,
+    teamSeasonAvgs
+  ] = await Promise.all([
+    getTeamStatsByTeam(input.params.id),
+    getArtemisRatingOverLastTwoYearsByTeam(input.params.id),
+    getAresRatingOverLastTwoYearsByTeam(input.params.id),
+    getCurrentArtemisRatingByTeam(input.params.id),
+    getCurrentAresRatingByTeam(input.params.id),
+    getTeamStatsSeasonAvgsByTeam(input.params.id),
+  ]);
+
   const playerSeasonAvgs = await getPlayerStatsPer90SeasonByTeamAndYear(input.params.id, teamStats[0].year)
 
   return (

@@ -186,7 +186,7 @@ export async function getArtemisRatingOverLastTwoYearsByTeam(team_id: string) {
   return requestFormatter(rating);
 }
 
-export async function getLastArtemisRatingByDateAndTeam(match_date: number, team_id: string) {
+export async function getLastArtemisRatingByDateAndTeam(match_date: number, team_id: number) {
   const rating = await prisma.poiss_rolling_average.findFirst({
     where: {
       AND: [
@@ -196,7 +196,7 @@ export async function getLastArtemisRatingByDateAndTeam(match_date: number, team
           }
         },
         {
-          team_id: parseInt(findRoute(team_id)),
+          team_id: parseInt(findRoute(team_id.toString())),
         }
       ]
     },
@@ -242,7 +242,7 @@ export async function getAresRatingOverLastTwoYearsByTeam(team_id: string) {
   return requestFormatter(rating);
 }
 
-export async function getLastAresRatingByDateAndTeam(match_date: number, team_id: string) {
+export async function getLastAresRatingByDateAndTeam(match_date: number, team_id: number) {
   const rating = await prisma.elo_ratings.findFirst({
     where: {
       AND: [
@@ -252,7 +252,7 @@ export async function getLastAresRatingByDateAndTeam(match_date: number, team_id
           }
         },
         {
-          team_id: parseInt(findRoute(team_id)),
+          team_id: parseInt(findRoute(team_id.toString())),
         }
       ]
     },
@@ -269,7 +269,7 @@ export async function getEloPredictionByMatch(id: string) {
       match_id: parseInt(findRoute(id))
     }
   })
-  return prediction;
+  return requestFormatter(prediction);
 }
 
 export async function getPlayerStatsByPlayer(id: string) {

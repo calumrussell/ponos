@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-import { team_stats_full, team_stats_avg_by_season } from "@prisma/client"
+import { team_stats_full, team_stats_avg_by_season, player_stats_per_ninety_by_season_team } from "@prisma/client"
 import { convertDates } from "../functions";
 import { buildMatchTitles, buildMatchValues, buildPlayerSeasonTitles, buildPlayerSeasonValues, buildTeamSeasonTitles, buildTeamSeasonValues } from "./stats";
 
@@ -49,7 +49,7 @@ export const TeamStatsTeamPage = ({ team_stats }: { team_stats: team_stats_full[
 
 //Should be in single row so will use match
 export const TeamSeasonStatsTeamPage = ({ team_stats }: { team_stats: team_stats_avg_by_season[] }) => {
-  const Row = (row: team_stats_full) => {
+  const Row = (row: team_stats_avg_by_season) => {
     const  {
       year
     } = row;
