@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
 
-import { team_stats_full, team_stats_sum_by_season } from "@prisma/client"
+import { team_stats_full, team_stats_avg_by_season } from "@prisma/client"
 import { convertDates } from "../functions";
-import { buildMatchTitles, buildMatchValues } from "./stats";
+import { buildMatchTitles, buildMatchValues, buildTeamSeasonTitles, buildTeamSeasonValues } from "./stats";
 
 const TeamStatsRow = (row: team_stats_full) => {
   const  {
@@ -56,19 +56,19 @@ const TeamSeasonStatsRow = (row: team_stats_full) => {
   return (
     <tr>
       <td>{year}</td>
-      { buildMatchValues(row) }
+      { buildTeamSeasonValues(row) }
     </tr>
   )
 }
 
 //Should be in single row so will use match
-export const TeamSeasonStatsTeamPage = ({ team_stats }: { team_stats: team_stats_sum_by_season[] }) => {
+export const TeamSeasonStatsTeamPage = ({ team_stats }: { team_stats: team_stats_avg_by_season[] }) => {
   return (
     <table>
       <thead>
         <tr>
           <th>Year</th>
-          { buildMatchTitles() }
+          { buildTeamSeasonTitles() }
         </tr>
       </thead>
       <tbody>

@@ -82,7 +82,7 @@ export async function getTeamStats(id: string) {
 };
 
 export async function getTeamStatsSeasonTotalsByTeam(id: string) {
-  const team_stats = await prisma.team_stats_sum_by_season.findMany({
+  const team_stats = await prisma.team_stats_avg_by_season.findMany({
     where: {
       team_id: parseInt(findRoute(id))
     },

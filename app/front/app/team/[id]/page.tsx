@@ -2,7 +2,7 @@ import React from "react";
 
 import prisma from "@/lib/prisma";
 import { TeamStatsTeamPage } from "@/lib/components";
-import { getAresRatingOverLastTwoYearsByTeam, getArtemisRatingOverLastTwoYearsByTeam, getCurrentAresRatingByTeam, getCurrentArtemisRatingByTeam, getRoute, getSeasonTotalsByTeam, getTeamStatsByTeam, getTeamStatsSeasonTotalsByTeam } from "@/lib/functions";
+import { getAresRatingOverLastTwoYearsByTeam, getArtemisRatingOverLastTwoYearsByTeam, getCurrentAresRatingByTeam, getCurrentArtemisRatingByTeam, getRoute, getTeamStatsByTeam, getTeamStatsSeasonTotalsByTeam, roundNumber } from "@/lib/functions";
 import { AresRatingChart, ArtemisRatingChart } from "@/lib/components/chart";
 import { TeamSeasonStatsTeamPage } from "@/lib/components/team";
 
@@ -35,7 +35,7 @@ export default async function Page(input: Team) {
       <div>
         <h4>Artemis Rating:</h4>
         <p><em>Off/Def</em></p>
-        <p>{artemisRatingCurrent.off_rating} / {artemisRatingCurrent.def_rating}</p>
+        <p>{roundNumber(artemisRatingCurrent.off_rating)} / {roundNumber(artemisRatingCurrent.def_rating)}</p>
       </div>
       <div>
         <h4>Season Stats</h4>
