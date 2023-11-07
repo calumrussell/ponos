@@ -2,3 +2,4 @@ raw/data
 .env
 venv/*
 build-front
+build-db

@@ -24,8 +24,7 @@ with DAG(
             away_id
             from
             match
-            where start_date < (extract(epoch from now()) + (86400*7))
-            and (year=2024 or year=2023)"""
+            where year=2024 or year=2023"""
         vals = []
         recs = hook.get_records(sql_query)
         for rec in recs:
@@ -35,17 +34,20 @@ with DAG(
             away_id = rec[3]
 
             hook = PostgresHook(postgres_conn_id="ponos")
-            sql_query = f"select rating from elo_ratings where team_id={home_id} and date < {start_date} limit 1"
+            sql_query = f"select rating from elo_ratings where team_id={home_id} and date < {start_date} order by date desc limit 1"
             home_rating_recs = hook.get_records(sql_query)
             if len(home_rating_recs) == 0:
-                continue
-            home_rating = home_rating_recs[0][0]
+                home_rating = 1500
+            else:
+                home_rating = home_rating_recs[0][0]
 
-            sql_query = f"select rating from elo_ratings where team_id={away_id} and date < {start_date} limit 1"
+            sql_query = f"select rating from elo_ratings where team_id={away_id} and date < {start_date} order by date desc limit 1"
             away_rating_recs = hook.get_records(sql_query)
             if len(away_rating_recs) == 0:
-                continue
-            away_rating = away_rating_recs[0][0]
+                away_rating = 1500
+            else:
+                away_rating = away_rating_recs[0][0]
+            print(home_rating, away_rating)
             vals.append(f"{mid}, {home_rating}, {away_rating}")
             
         process = subprocess.Popen(

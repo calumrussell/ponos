@@ -34,16 +34,18 @@ if __name__ == "__main__":
                 sql_query = f"select rating from elo_ratings where team_id={home_id} and date < {start_date} order by date desc limit 1"
                 cur.execute(sql_query)
                 home_rating_row = cur.fetchone()
-                if not home_rating_row:
-                    continue
-                home_rating = home_rating_row[0]
+                if len(home_rating_row) == 0:
+                    home_rating = 1500
+                else:
+                    home_rating = home_rating_row[0][0]
 
                 sql_query = f"select rating from elo_ratings where team_id={away_id} and date < {start_date} order by date desc limit 1"
                 cur.execute(sql_query)
                 away_rating_row = cur.fetchone()
-                if not away_rating_row:
-                    continue
-                away_rating = away_rating_row[0]
+                if len(away_rating_row) == 0:
+                    away_rating = 1500
+                else:
+                    away_rating = away_rating_row[0][0]
 
                 x_margin = EloImpl.margin(home_rating, away_rating, True)
                 margins.append([x_margin])
