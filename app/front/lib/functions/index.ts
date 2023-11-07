@@ -204,6 +204,11 @@ export async function getLastArtemisRatingByDateAndTeam(match_date: number, team
       date: 'desc'
     }
   });
+  //Because of the contruction of artemis ratings, it is possible to have a valid empty result so
+  //we need to return a value if empty too, this should only impact 1 or 2 games a season
+  if (rating == null) {
+    return requestFormatter({team_id: team_id, date: match_date, off_rating: 0.0, def_rating: 0.0})
+  }
   return requestFormatter(rating);
 }
 
