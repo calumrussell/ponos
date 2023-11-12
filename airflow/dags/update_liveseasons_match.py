@@ -11,6 +11,7 @@ with DAG(
     "update_liveseasons_match",
     start_date=datetime(2021, 1, 1),
     schedule=timedelta(days=1),
+    execution_timeout=timedelta(minutes=20),
     catchup=False,
 ) as dag:
 

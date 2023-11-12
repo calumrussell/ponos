@@ -12,6 +12,7 @@ with DAG(
     "update_last24hours_match",
     start_date=datetime(2021, 1, 1),
     schedule=timedelta(minutes=30),
+    execution_timeout=timedelta(minutes=10),
     catchup=False,
     concurrency=5,
 ) as dag:

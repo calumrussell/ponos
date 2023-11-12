@@ -12,6 +12,7 @@ with DAG(
     "update_missing_match",
     start_date=datetime(2021, 1, 1),
     schedule=timedelta(hours=2),
+    execution_timeout=timedelta(minutes=20),
     catchup=False,
     concurrency=5,
 ) as dag:
