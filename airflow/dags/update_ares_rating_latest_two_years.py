@@ -7,11 +7,10 @@ with DAG(
     "update_ares_rating_latest_two_years",
     start_date=datetime(2021, 1, 1),
     schedule=timedelta(hours=3),
-    execution_timeout=timedelta(minutes=10),
     catchup=False,
 ) as dag:
 
-    @task.virtualenv(task_id="update_ares_rating", requirements=["scikit-learn==1.3.2"])
+    @task.virtualenv(task_id="update_ares_rating", requirements=["scikit-learn==1.3.2"], execution_timeout=timedelta(minutes=10))
     def update_ares_rating():
         from ares.common import EloImpl
         from airflow.providers.postgres.hooks.postgres import PostgresHook

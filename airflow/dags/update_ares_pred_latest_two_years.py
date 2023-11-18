@@ -10,11 +10,10 @@ with DAG(
     "update_ares_pred_latest_two_years",
     start_date=datetime(2021, 1, 1),
     schedule=timedelta(hours=3),
-    execution_timeout=timedelta(minutes=10),
     catchup=False,
 ) as dag:
 
-    @task(task_id="get_match_pred")
+    @task(task_id="get_match_pred", execution_timeout=timedelta(minutes=10))
     def get_match_pred():
         hook = PostgresHook(postgres_conn_id="ponos")
         sql_query = """

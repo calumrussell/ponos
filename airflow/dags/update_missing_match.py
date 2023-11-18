@@ -12,7 +12,6 @@ with DAG(
     "update_missing_match",
     start_date=datetime(2021, 1, 1),
     schedule=timedelta(hours=2),
-    execution_timeout=timedelta(minutes=20),
     catchup=False,
     concurrency=5,
 ) as dag:
@@ -23,7 +22,7 @@ with DAG(
         sql_query = "SELECT json_build_object('match_id', id) from match where start_date < extract(epoch from now()) and id not in (select id from match_data);"
         return hook.get_records(sql_query)
 
-    @task(task_id="get_and_insert_raw_match")
+    @task(task_id="get_and_insert_raw_match", execution_timeout=timedelta(minutes=2))
     def get_match_data(match_id):
         mid = match_id[0]['match_id']
         match_str = json.dumps(match_id[0])
@@ -48,7 +47,7 @@ with DAG(
             conn.commit()
         return
 
-    @task(task_id="fetch_and_parse_matches")
+    @task(task_id="fetch_and_parse_matches", execution_timeout=timedelta(minutes=2))
     def match_load():
         hook = PostgresHook(postgres_conn_id="ponos")
         sql_query = "SELECT data FROM match_data where id in (select id from match where start_date < extract(epoch from now())) and id not in (select distinct(match_id) from team_stats) limit 100"
@@ -64,7 +63,7 @@ with DAG(
         print(res.status_code)
         return 
 
-    @task(task_id="fetch_and_parse_shots")
+    @task(task_id="fetch_and_parse_shots", execution_timeout=timedelta(minutes=2))
     def shots_load():
         hook = PostgresHook(postgres_conn_id="ponos")
         sql_query = "SELECT data FROM match_data where id in (select id from match where start_date < extract(epoch from now())) and id not in (select distinct(match_id) from xg) limit 100"

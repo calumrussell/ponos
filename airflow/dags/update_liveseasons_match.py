@@ -11,7 +11,6 @@ with DAG(
     "update_liveseasons_match",
     start_date=datetime(2021, 1, 1),
     schedule=timedelta(days=1),
-    execution_timeout=timedelta(minutes=20),
     catchup=False,
 ) as dag:
 
@@ -21,7 +20,7 @@ with DAG(
         sql_query = "SELECT path from seasons where curr='t';"
         return hook.get_records(sql_query)
 
-    @task(task_id="get_season_matches")
+    @task(task_id="get_season_matches", execution_timeout=timedelta(minutes=5))
     def get_season_matches(season_str):
         season_row = season_str[0]
         process = subprocess.run(
