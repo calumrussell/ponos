@@ -36,7 +36,7 @@ if __name__ == "__main__":
                 if len(home_rating_row) == 0:
                     home_rating = 1500
                 else:
-                    home_rating = home_rating_row[0][0]
+                    home_rating = home_rating_row[0]
 
                 sql_query = f"select rating from elo_ratings where team_id={away_id} and date < {start_date} order by date desc limit 1"
                 cur.execute(sql_query)
@@ -44,7 +44,7 @@ if __name__ == "__main__":
                 if len(away_rating_row) == 0:
                     away_rating = 1500
                 else:
-                    away_rating = away_rating_row[0][0]
+                    away_rating = away_rating_row[0]
 
                 x_margin = EloImpl.margin(home_rating, away_rating, True)
                 margins.append([x_margin])

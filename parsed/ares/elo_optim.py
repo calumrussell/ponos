@@ -119,7 +119,7 @@ if __name__ == "__main__":
                     on home.team_id=match.home_id and home.match_id=match.id
                 left join team_stats_full as away
                     on away.team_id=match.away_id and away.match_id=match.id
-                where year=2021 or year=2022
+                where match.year=2021 or match.year=2022
                 order by match.start_date asc"""
             cur.execute(query)
             

@@ -3,8 +3,8 @@ from dataclasses import dataclass, asdict
 class DefaultEloModel:
     def __init__(self):
         self.k = 15
-        self.p = 320
-        self.h = 0.17
+        self.p = 176
+        self.h = 0.2
 
 class EloImpl:
     """
