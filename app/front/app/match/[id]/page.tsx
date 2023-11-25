@@ -59,7 +59,7 @@ export default async function Page(input: Match) {
 
   return (
     <main>
-      <h4>Home: {match.home}</h4>
+    <h4>Home: {match.home}</h4>
       <h4>Away: {match.away}</h4>
       <h4>Tournament: {match.tournament}</h4>
       <h4>Date: {convertDatesWithTime(match.start_date)}</h4>
@@ -70,9 +70,9 @@ export default async function Page(input: Match) {
       }
       <div>
         <h4>Prediction: </h4>
-        <p>Home win: {roundNumber(homeWin)}% <em>{roundNumber(1/homeWin)}</em></p>
-        <p>Draw: {roundNumber(draw)}% <em>{roundNumber(1/draw)}</em></p>
-        <p>Away win: {roundNumber(awayWin)}% <em>{roundNumber(1/awayWin)}</em></p>
+        <p>Home win: {roundNumber(homeWin)}% <em>{roundNumber(1/(homeWin/100))}</em></p>
+        <p>Draw: {roundNumber(draw)}% <em>{roundNumber(1/(draw/100))}</em></p>
+        <p>Away win: {roundNumber(awayWin)}% <em>{roundNumber(1/(awayWin/100))}</em></p>
       </div>
       <div>
         <h4>Ares rating: </h4>
