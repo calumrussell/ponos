@@ -30,22 +30,24 @@ if __name__ == "__main__":
 
                     home_x_margin = EloImpl.margin(home_rating, away_rating, True)
 
-                    cur.execute(f"select goal from team_stats where team_id={home_id} and match_id={match_id}")
+                    cur.execute(f"select goal, goal_own from team_stats where team_id={home_id} and match_id={match_id}")
                     home_goals_row = cur.fetchone()
                     if not home_goals_row:
                         continue
                     home_goals = home_goals_row[0]
+                    home_own_goals = home_goals_row[1]
 
-                    cur.execute(f"select goal from team_stats where team_id={away_id} and match_id={match_id}")
+                    cur.execute(f"select goal, goal_own from team_stats where team_id={away_id} and match_id={match_id}")
                     away_goals_row = cur.fetchone()
                     if not away_goals_row:
                         continue
                     away_goals = away_goals_row[0]
+                    away_own_goals = away_goals_row[1]
 
                     x.append([home_x_margin])
-                    if home_goals > away_goals:
+                    if home_goals + away_own_goals > away_goals + home_own_goals:
                         y.append('win')
-                    elif home_goals == away_goals:
+                    elif home_goals + away_own_goals == away_goals + home_own_goals:
                         y.append('draw')
                     else:
                         y.append('lose')

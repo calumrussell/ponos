@@ -21,8 +21,8 @@ with DAG(
             match.start_date,
             match.home_id,
             match.away_id,
-            home.goal as home_goal,
-            away.goal as away_goal,
+            home.goal + away.goal_own as home_goal,
+            away.goal + home.goal_own as away_goal,
             match.year
             from match
             left join team_stats_full as home

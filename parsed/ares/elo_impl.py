@@ -23,13 +23,17 @@ if __name__ == "__main__":
                 for match_id, start_date, home_id, away_id in date_matches:
                     home_goals = -1
                     away_goals = -1
-                    cur.execute(f"select team_id, goal from team_stats where match_id={match_id}")
+                    home_own_goals = 0
+                    away_own_goals = 0
+                    cur.execute(f"select team_id, goal, goal_own from team_stats where match_id={match_id}")
                     team_stats = cur.fetchall()
-                    for team_id, goal in team_stats:
+                    for team_id, goal, goal_own in team_stats:
                         if team_id == home_id:
                             home_goals = goal
+                            home_own_goals = goal_own
                         else:
                             away_goals = goal
+                            away_own_goals = goal_own
 
                     if home_goals == -1 or away_goals == -1:
                         continue
@@ -51,7 +55,7 @@ if __name__ == "__main__":
                     else:
                         cur.execute(f"insert into elo_ratings(team_id, date, rating) values ({away_id}, {start_date-86400}, 1500)")
 
-                    home_rating_new, away_rating_new = EloImpl.ratings(home_id, away_id, home_goals, away_goals, home_rating, away_rating)
+                    home_rating_new, away_rating_new = EloImpl.ratings(home_id, away_id, home_goals + away_own_goals, away_goals + home_own_goals, home_rating, away_rating)
                     ##Must update the rows rather than cache as they will be needed for next computations in row
                     cur.execute(f"insert into elo_ratings(team_id, date, rating) values ({home_id}, {start_date}, {home_rating_new}), ({away_id}, {start_date}, {away_rating_new}) on conflict do nothing")
                     conn.commit()

@@ -270,7 +270,6 @@ public class Event {
                 "goalCounter",
                 "goalSetPiece",
                 "penaltyScored",
-                "goalOwn",
                 "goalNormal",
                 "goalRightFoot",
                 "goalLeftFoot",
