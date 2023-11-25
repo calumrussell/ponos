@@ -63,9 +63,9 @@ with DAG(
                 continue
             json_row = json.loads(row)
             match_id = json_row['match_id']
-            home_win = round(float(json_row['home_win']), 2)
-            away_win = round(float(json_row['away_win']), 2)
-            draw = round(float(json_row['draw']), 2)
+            home_win = float(json_row['home_win'])
+            away_win = float(json_row['away_win'])
+            draw = float(json_row['draw'])
             vals.append(f"({match_id},{home_win},{away_win},{draw})")
         if not vals:
             return
