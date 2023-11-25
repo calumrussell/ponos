@@ -50,8 +50,8 @@ export default async function Page(input: Match) {
   const awayTeamStats = teamStats.length > 0 ? teamStats.filter((v: any) => v.team_id == match?.away_id)[0] : null;
 
   //Zero is falsey value
-  const homeGoal = homeTeamStats ? homeTeamStats.goal + awayTeamStats.goalOwn : null;
-  const awayGoal = awayTeamStats ? awayTeamStats.goal + homeTeamStats.goalOwn : null;
+  const homeGoal = homeTeamStats ? homeTeamStats.goal + awayTeamStats.goal_own : null;
+  const awayGoal = awayTeamStats ? awayTeamStats.goal + homeTeamStats.goal_own : null;
 
   const homeWin = prediction ? prediction.home_win * 100 : 0.0;
   const awayWin = prediction ? prediction.away_win * 100 : 0.0;
