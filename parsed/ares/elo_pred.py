@@ -7,7 +7,6 @@ if __name__ == "__main__":
     import os
     from common import EloImpl, pred
     import pickle
-    import json
 
     with open("model.pkl", 'rb') as f:
         model = pickle.load(f)
