@@ -4,15 +4,15 @@ from airflow import DAG
 from airflow.decorators import task
       
 with DAG(
-    "update_artemis",
+    "update_artemis_rating_latest_two_years",
     start_date=datetime(2021, 1, 1),
     schedule=timedelta(days=1),
     catchup=False,
 ) as dag:
 
-    @task.virtualenv(task_id="update_artemis", requirements=["scipy==1.9.0", "numpy==1.24.0"])
-    def update_artemis():
-        from artemis.poiss_impl import Poisson 
+    @task.virtualenv(task_id="update_artemis_rating", requirements=["scipy==1.9.0", "numpy==1.24.0"])
+    def update_artemis_rating():
+        from artemis.common import Poisson 
         from airflow.providers.postgres.hooks.postgres import PostgresHook
 
         hook = PostgresHook(postgres_conn_id="ponos")
@@ -39,10 +39,7 @@ with DAG(
                 continue
             poiss.update(row[1], row[2], row[3], row[4], row[5], row[0])
         query = "insert into poiss_ratings(team_id, off_rating, def_rating, date) VALUES "
-        values = []
-        for rating in poiss.rating_records:
-            values.append(f"({rating.team_id}, {rating.off_rating}, {rating.def_rating}, {rating.date})")
-        query += ",".join(values)
+        query += ",".join(poiss.rating_records)
         query += " on conflict(team_id, date) do update set off_rating=excluded.off_rating, def_rating=excluded.def_rating;"
 
         conn = hook.get_conn()
@@ -51,5 +48,6 @@ with DAG(
         conn.commit()
         return
 
-    update_artemis()
+    update_artemis_rating()
  
+
