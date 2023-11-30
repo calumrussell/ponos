@@ -38,7 +38,8 @@ with DAG(
             if row[1] == -1 or row[2] == -1 or row[3] == None or row[4] == None:
                 continue
             poiss.update(row[1], row[2], row[3], row[4], row[5], row[0])
-        query = "insert into poiss_ratings(team_id, off_rating, def_rating, date) VALUES "
+        print(poiss.rating_records)
+        query = "insert into poiss_ratings(team_id, date, off_rating, def_rating) VALUES "
         query += ",".join(poiss.rating_records)
         query += " on conflict(team_id, date) do update set off_rating=excluded.off_rating, def_rating=excluded.def_rating;"
 
@@ -49,5 +50,3 @@ with DAG(
         return
 
     update_artemis_rating()
- 
-
