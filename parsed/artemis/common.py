@@ -11,7 +11,7 @@ class prediction:
     draw: float
 
     def __str__(self):
-        return f"({self.match_id}, {self.home_win}, {self.away_win}, {self.draw})"
+        return f"({self.match_id}, {round(self.home_win, 4)}, {round(self.away_win, 4)}, {round(self.draw, 4)})"
 
 @dataclass
 class rating:

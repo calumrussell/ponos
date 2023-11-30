@@ -21,9 +21,6 @@ if __name__ == "__main__":
                 away_id
                 from
                 match
-                where 
-                id not in (select match_id from poiss_pred)
-                and start_date < (extract(epoch from now()) + (86400*7))
                 order by start_date asc"""
             cur.execute(sql_query)
             matches = [row for row in cur.fetchall()]
