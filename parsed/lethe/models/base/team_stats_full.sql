@@ -119,7 +119,7 @@ select
     team_stats.{{stat}} as {{stat}},
     opp_stats.{{stat}} as opp_{{stat}},
     {% endfor %}
-    team_stats.touch/opp_stats.touch as posession,
+    case when opp_stats.touch != 0 then team_stats.touch::real/opp_stats.touch::real else 0 end as posession,
     case when team_stats.pass != 0 then team_stats.pass_accurate::real/team_stats.pass::real else 0 end as pass_accuracy,
     case when opp_stats.pass != 0 then opp_stats.pass_accurate::real/opp_stats.pass::real else 0 end as opp_pass_accuracy,
     case when team_stats.pass_short != 0 then team_stats.pass_short_accurate::real/team_stats.pass_short::real else 0 end as pass_short_accuracy,
