@@ -378,28 +378,12 @@ public class MatchWrapper {
         for (Integer playerId: this.homePlayerIds.keySet()) {
             this.playerMinutes.put(playerId, 0);
         }
+
         for (Integer playerId: this.awayPlayerIds.keySet()) {
             this.playerMinutes.put(playerId, 0);
         }
 
-        JSONArray events = matchCentre.getJSONArray("events");
-        for (Object eventRaw : events) {
-            Event event = new Event((JSONObject) eventRaw);
-            if (event.isSubbedOn()) {
-                Optional<Integer> playerSubbedOn = event.getPlayerId();
-                if (playerSubbedOn.isPresent() && event.getMinute().isPresent()) {
-                    this.playerMinutes.put(playerSubbedOn.get(), this.maxMinute - event.getMinute().get());
-                }
-            }
-
-            if (event.isSubbedOff()) {
-                Optional<Integer> playerSubbedOff = event.getPlayerId();
-                if (playerSubbedOff.isPresent() && event.getMinute().isPresent()) {
-                    this.playerMinutes.put(playerSubbedOff.get(), event.getMinute().get());
-                }
-            }
-        }
-
+	//Initialize starting eleven with maxMinute before doing substitues
         JSONObject home = matchCentre.getJSONObject("home");
         JSONArray home_players = home.getJSONArray("players");
         for (Object playerRaw: home_players) {
@@ -417,6 +401,25 @@ public class MatchWrapper {
             if (player.has("isFirstEleven") && player.getBoolean("isFirstEleven")) {
                 Integer playerId = player.getInt("playerId");
                 this.playerMinutes.put(playerId, this.maxMinute);
+            }
+        }
+
+
+        JSONArray events = matchCentre.getJSONArray("events");
+        for (Object eventRaw : events) {
+            Event event = new Event((JSONObject) eventRaw);
+            if (event.isSubbedOn()) {
+                Optional<Integer> playerSubbedOn = event.getPlayerId();
+                if (playerSubbedOn.isPresent() && event.getMinute().isPresent()) {
+                    this.playerMinutes.put(playerSubbedOn.get(), this.maxMinute - event.getMinute().get());
+                }
+            }
+
+            if (event.isSubbedOff()) {
+                Optional<Integer> playerSubbedOff = event.getPlayerId();
+                if (playerSubbedOff.isPresent() && event.getMinute().isPresent()) {
+                    this.playerMinutes.put(playerSubbedOff.get(), event.getMinute().get());
+                }
             }
         }
     }
