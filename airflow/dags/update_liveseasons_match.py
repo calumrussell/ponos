@@ -10,8 +10,9 @@ from airflow.decorators import task
 with DAG(
     "update_liveseasons_match",
     start_date=datetime(2021, 1, 1),
-    schedule=timedelta(days=1),
+    schedule_interval="0 */6 * * *",
     catchup=False,
+    concurrency=2,
 ) as dag:
 
     @task(task_id="get_current_seasons")
@@ -44,7 +45,7 @@ with DAG(
             tmp['year'] = int(row_json['year'])
             matches.append(tmp)
 
-        res = requests.post('http://100.111.31.32:8080/bulk_matches', json = {"matches": matches})
+        res = requests.post('http://100.96.98.54:8080/bulk_matches', json = {"matches": matches})
         print(res.status_code)
         return
 

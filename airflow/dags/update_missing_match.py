@@ -11,9 +11,9 @@ from airflow.decorators import task
 with DAG(
     "update_missing_match",
     start_date=datetime(2021, 1, 1),
-    schedule=timedelta(hours=2),
+    schedule_interval=None,
     catchup=False,
-    concurrency=5,
+    concurrency=2,
 ) as dag:
 
     @task(task_id="get_missing_matches")
@@ -22,15 +22,14 @@ with DAG(
         sql_query = "SELECT json_build_object('match_id', id) from match where start_date < extract(epoch from now()) and id not in (select id from match_data);"
         return hook.get_records(sql_query)
 
-    @task(task_id="get_and_insert_raw_match", execution_timeout=timedelta(minutes=2))
+    @task(task_id="get_and_insert_raw_match", execution_timeout=timedelta(seconds=20))
     def get_match_data(match_id):
         mid = match_id[0]['match_id']
         match_str = json.dumps(match_id[0])
         process = subprocess.run(
-            ['docker', 'run', '--rm', 'puppet', 'bash', '-c', 'npm install --silent --no-progress && node match.js \'' + match_str + '\''], 
+            ['docker', 'run', '--rm', 'puppet', 'node', 'match.js', match_str], 
             capture_output=True)
-        print(process)
-
+ 
         raw_match = process.stdout.decode('utf-8')
         if not raw_match:
             return
@@ -59,7 +58,7 @@ with DAG(
                 stdout=subprocess.PIPE,
                 text=True)
         output, err = process.communicate(vals)
-        res = requests.post('http://100.111.31.32:8080/bulk_input', json = json.loads(output))
+        res = requests.post('http://100.96.98.54:8080/bulk_input', json = json.loads(output))
         print(res.status_code)
         return 
 
@@ -78,8 +77,9 @@ with DAG(
 
         values = ast.literal_eval(res)
         if len(values) > 0:
+            remove_dups = list(set(values))
             conn = hook.get_conn()
-            sql_values = ",".join(ast.literal_eval(res))
+            sql_values = ",".join(remove_dups)
             sql_query = f"INSERT INTO xg(match_id, player_id, event_id, prob) VALUES {sql_values} on conflict(match_id, player_id, event_id) do update set prob=excluded.prob"
             cur = conn.cursor();
             cur.execute(sql_query)

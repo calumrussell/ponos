@@ -9,7 +9,7 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 with DAG(
     "update_ares_pred_latest_two_years",
     start_date=datetime(2021, 1, 1),
-    schedule=timedelta(hours=3),
+    schedule_interval="15 23 * * *",
     catchup=False,
 ) as dag:
 

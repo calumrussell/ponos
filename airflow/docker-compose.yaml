@@ -123,7 +123,7 @@ services:
     <<: *airflow-common
     command: webserver
     ports:
-      - "100.111.31.32:14000:8080"
+      - "100.96.98.54:14000:8080"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
