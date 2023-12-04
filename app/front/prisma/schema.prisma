@@ -8,6 +8,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model elo_pred {
+  match_id Int    @id
+  home_win Float? @db.Real
+  away_win Float? @db.Real
+  draw     Float? @db.Real
+}
+
+model elo_ratings {
+  team_id Int
+  rating  Int?
+  date    Int
+
+  @@id([team_id, date])
+}
+
 model match {
   id            Int      @id
   home_id       Int
@@ -17,6 +32,25 @@ model match {
   tournament_id Int?     @db.SmallInt
   season_id     Int?     @db.SmallInt
   year          Int?     @db.SmallInt
+}
+
+model match_data {
+  id   Int   @id
+  data Json?
+}
+
+model match_full {
+  id            Int      @unique(map: "9d54bbd1f503a329ed01cec03acef2ad")
+  home_id       Int?
+  away_id       Int?
+  start_date    Int?
+  broken        Boolean?
+  tournament_id Int?     @db.SmallInt
+  season_id     Int?     @db.SmallInt
+  year          Int?     @db.SmallInt
+  home          String?
+  away          String?
+  tournament    String?
 }
 
 model player {
@@ -130,176 +164,7 @@ model player_stats {
   @@id([player_id, match_id])
 }
 
-model team {
-  id   Int     @id
-  name String?
-}
-
-model team_stats {
-  team_id                   Int
-  match_id                  Int
-  is_home                   Boolean
-  pass                      Int     @db.SmallInt
-  pass_corner               Int     @db.SmallInt
-  pass_longball             Int     @db.SmallInt
-  pass_cross                Int     @db.SmallInt
-  pass_back                 Int     @db.SmallInt
-  pass_forward              Int     @db.SmallInt
-  pass_left                 Int     @db.SmallInt
-  pass_right                Int     @db.SmallInt
-  pass_short                Int     @db.SmallInt
-  pass_throughball          Int     @db.SmallInt
-  pass_accurate             Int     @db.SmallInt
-  pass_short_accurate       Int     @db.SmallInt
-  pass_corner_accurate      Int     @db.SmallInt
-  pass_longball_accurate    Int     @db.SmallInt
-  pass_cross_accurate       Int     @db.SmallInt
-  pass_throughball_accurate Int     @db.SmallInt
-  pass_key                  Int     @db.SmallInt
-  pass_key_cross            Int     @db.SmallInt
-  pass_key_freekick         Int     @db.SmallInt
-  pass_key_corner           Int     @db.SmallInt
-  pass_key_throughball      Int     @db.SmallInt
-  shot                      Int     @db.SmallInt
-  shot_on_target            Int     @db.SmallInt
-  shot_off_target           Int     @db.SmallInt
-  shot_blocked              Int     @db.SmallInt
-  shot_open_play            Int     @db.SmallInt
-  shot_set_piece            Int     @db.SmallInt
-  shot_on_post              Int     @db.SmallInt
-  shot_six_yard_box         Int     @db.SmallInt
-  shot_penalty_area         Int     @db.SmallInt
-  shot_box                  Int     @db.SmallInt
-  shot_counter              Int     @db.SmallInt
-  shot_head                 Int     @db.SmallInt
-  shot_foot                 Int     @db.SmallInt
-  shot_0bp                  Int     @db.SmallInt
-  goal                      Int     @db.SmallInt
-  goal_normal               Int     @db.SmallInt
-  goal_head                 Int     @db.SmallInt
-  goal_foot                 Int     @db.SmallInt
-  goal_set_piece            Int     @db.SmallInt
-  goal_own                  Int     @db.SmallInt
-  goal_counter              Int     @db.SmallInt
-  goal_open_play            Int     @db.SmallInt
-  goal_0bp                  Int     @db.SmallInt
-  goal_0box                 Int     @db.SmallInt
-  goal_six_yard_box         Int     @db.SmallInt
-  goal_penalty_area         Int     @db.SmallInt
-  assist                    Int     @db.SmallInt
-  assist_cross              Int     @db.SmallInt
-  assist_corner             Int     @db.SmallInt
-  assist_throughball        Int     @db.SmallInt
-  aerial_duel               Int     @db.SmallInt
-  red_card                  Int     @db.SmallInt
-  yellow_card               Int     @db.SmallInt
-  second_yellow_card        Int     @db.SmallInt
-  save                      Int     @db.SmallInt
-  duel                      Int     @db.SmallInt
-  duel_offensive            Int     @db.SmallInt
-  duel_defensive            Int     @db.SmallInt
-  dispossessed              Int     @db.SmallInt
-  turnover                  Int     @db.SmallInt
-  dribble                   Int     @db.SmallInt
-  dribble_won               Int     @db.SmallInt
-  dribble_lost              Int     @db.SmallInt
-  dribble_last_man          Int     @db.SmallInt
-  challenge_lost            Int     @db.SmallInt
-  blocked_cross             Int     @db.SmallInt
-  block_outfielder          Int     @db.SmallInt
-  block_six_yard            Int     @db.SmallInt
-  block_pass_outfielder     Int     @db.SmallInt
-  interception              Int     @db.SmallInt
-  interception_won          Int     @db.SmallInt
-  interception_in_box       Int     @db.SmallInt
-  tackle                    Int     @db.SmallInt
-  tackle_won                Int     @db.SmallInt
-  tackle_lost               Int     @db.SmallInt
-  tackle_last_man           Int     @db.SmallInt
-  offside_given             Int     @db.SmallInt
-  offside_provoked          Int     @db.SmallInt
-  ball_recovery             Int     @db.SmallInt
-  clearance                 Int     @db.SmallInt
-  clearance_effective       Int     @db.SmallInt
-  clearance_off_line        Int     @db.SmallInt
-  error_leads_to_goal       Int     @db.SmallInt
-  error_leads_to_shot       Int     @db.SmallInt
-  touch                     Int     @db.SmallInt
-  penalty_won               Int     @db.SmallInt
-  penalty_conceded          Int     @db.SmallInt
-  penalty_scored            Int     @db.SmallInt
-  big_chance_missed         Int     @db.SmallInt
-  big_chance_scored         Int     @db.SmallInt
-  big_chance_created        Int     @db.SmallInt
-  parried_safe              Int     @db.SmallInt
-  parried_danger            Int     @db.SmallInt
-  save_keeper               Int     @db.SmallInt
-  opp_id                    Int?    @db.SmallInt
-
-  @@id([team_id, match_id])
-}
-
-model match_data {
-  id   Int   @id
-  data Json?
-}
-
-model tournament {
-  id   Int     @id(map: "tournaments_pkey") @db.SmallInt
-  name String?
-}
-
-model elo_ratings {
-  team_id Int
-  rating  Int?
-  date    Int
-
-  @@id([team_id, date])
-}
-
-model poiss_ratings {
-  team_id    Int
-  date       Int
-  off_rating Float? @db.Real
-  def_rating Float? @db.Real
-
-  @@id([team_id, date])
-}
-
-model wei_ratings {
-  team_id           Int
-  off_rating        Float? @db.Real
-  off_rating_spread Float? @db.Real
-  def_rating        Float? @db.Real
-  def_rating_spread Float? @db.Real
-  date              Int
-
-  @@id([team_id, date])
-}
-
-model xg {
-  match_id  Int
-  player_id Int
-  event_id  Int
-  prob      Float? @db.Real
-
-  @@id([match_id, player_id, event_id])
-}
-
-model seasons {
-  path  String   @id
-  tourn String?
-  curr  Boolean?
-}
-
-model elo_pred {
-  match_id Int    @id
-  home_win Float? @db.Real
-  away_win Float? @db.Real
-  draw     Float? @db.Real
-}
-
-view player_stats_full {
+model player_stats_full {
   player_id                 Int
   team_id                   Int?
   match_id                  Int
@@ -409,312 +274,249 @@ view player_stats_full {
   start_date                Int?
   xg                        Float?  @db.Real
 
-  @@id([player_id, match_id])
+  @@unique([player_id, match_id], map: "cca88d7147dddc4c841119f15c4c485f")
 }
 
-view match_full {
-  id            Int      @id
-  home_id       Int?
-  away_id       Int?
-  start_date    Int?
-  broken        Boolean?
-  tournament_id Int?     @db.SmallInt
-  season_id     Int?     @db.SmallInt
-  year          Int?     @db.SmallInt
-  home          String?
-  away          String?
-  tournament    String?
-}
-
-view team_stats_full {
-  start_date                    Int?
+model player_stats_per_ninety_by_season_team {
+  player_id                     Int
+  player                        String?
   team_id                       Int
-  opp_id                        Int?     @db.SmallInt
-  match_id                      Int
-  is_home                       Boolean?
-  pass                          Int?     @db.SmallInt
-  opp_pass                      Int?     @db.SmallInt
-  pass_corner                   Int?     @db.SmallInt
-  opp_pass_corner               Int?     @db.SmallInt
-  pass_longball                 Int?     @db.SmallInt
-  opp_pass_longball             Int?     @db.SmallInt
-  pass_cross                    Int?     @db.SmallInt
-  opp_pass_cross                Int?     @db.SmallInt
-  pass_back                     Int?     @db.SmallInt
-  opp_pass_back                 Int?     @db.SmallInt
-  pass_forward                  Int?     @db.SmallInt
-  opp_pass_forward              Int?     @db.SmallInt
-  pass_left                     Int?     @db.SmallInt
-  opp_pass_left                 Int?     @db.SmallInt
-  pass_right                    Int?     @db.SmallInt
-  opp_pass_right                Int?     @db.SmallInt
-  pass_short                    Int?     @db.SmallInt
-  opp_pass_short                Int?     @db.SmallInt
-  pass_throughball              Int?     @db.SmallInt
-  opp_pass_throughball          Int?     @db.SmallInt
-  pass_accurate                 Int?     @db.SmallInt
-  opp_pass_accurate             Int?     @db.SmallInt
-  pass_short_accurate           Int?     @db.SmallInt
-  opp_pass_short_accurate       Int?     @db.SmallInt
-  pass_corner_accurate          Int?     @db.SmallInt
-  opp_pass_corner_accurate      Int?     @db.SmallInt
-  pass_longball_accurate        Int?     @db.SmallInt
-  opp_pass_longball_accurate    Int?     @db.SmallInt
-  pass_cross_accurate           Int?     @db.SmallInt
-  opp_pass_cross_accurate       Int?     @db.SmallInt
-  pass_throughball_accurate     Int?     @db.SmallInt
-  opp_pass_throughball_accurate Int?     @db.SmallInt
-  pass_key                      Int?     @db.SmallInt
-  opp_pass_key                  Int?     @db.SmallInt
-  pass_key_cross                Int?     @db.SmallInt
-  opp_pass_key_cross            Int?     @db.SmallInt
-  pass_key_freekick             Int?     @db.SmallInt
-  opp_pass_key_freekick         Int?     @db.SmallInt
-  pass_key_corner               Int?     @db.SmallInt
-  opp_pass_key_corner           Int?     @db.SmallInt
-  pass_key_throughball          Int?     @db.SmallInt
-  opp_pass_key_throughball      Int?     @db.SmallInt
-  shot                          Int?     @db.SmallInt
-  opp_shot                      Int?     @db.SmallInt
-  shot_on_target                Int?     @db.SmallInt
-  opp_shot_on_target            Int?     @db.SmallInt
-  shot_off_target               Int?     @db.SmallInt
-  opp_shot_off_target           Int?     @db.SmallInt
-  shot_blocked                  Int?     @db.SmallInt
-  opp_shot_blocked              Int?     @db.SmallInt
-  shot_open_play                Int?     @db.SmallInt
-  opp_shot_open_play            Int?     @db.SmallInt
-  shot_set_piece                Int?     @db.SmallInt
-  opp_shot_set_piece            Int?     @db.SmallInt
-  shot_on_post                  Int?     @db.SmallInt
-  opp_shot_on_post              Int?     @db.SmallInt
-  shot_six_yard_box             Int?     @db.SmallInt
-  opp_shot_six_yard_box         Int?     @db.SmallInt
-  shot_penalty_area             Int?     @db.SmallInt
-  opp_shot_penalty_area         Int?     @db.SmallInt
-  shot_box                      Int?     @db.SmallInt
-  opp_shot_box                  Int?     @db.SmallInt
-  shot_counter                  Int?     @db.SmallInt
-  opp_shot_counter              Int?     @db.SmallInt
-  shot_head                     Int?     @db.SmallInt
-  opp_shot_head                 Int?     @db.SmallInt
-  shot_foot                     Int?     @db.SmallInt
-  opp_shot_foot                 Int?     @db.SmallInt
-  shot_0bp                      Int?     @db.SmallInt
-  opp_shot_0bp                  Int?     @db.SmallInt
-  goal                          Int?     @db.SmallInt
-  opp_goal                      Int?     @db.SmallInt
-  goal_normal                   Int?     @db.SmallInt
-  opp_goal_normal               Int?     @db.SmallInt
-  goal_head                     Int?     @db.SmallInt
-  opp_goal_head                 Int?     @db.SmallInt
-  goal_foot                     Int?     @db.SmallInt
-  opp_goal_foot                 Int?     @db.SmallInt
-  goal_set_piece                Int?     @db.SmallInt
-  opp_goal_set_piece            Int?     @db.SmallInt
-  goal_own                      Int?     @db.SmallInt
-  opp_goal_own                  Int?     @db.SmallInt
-  goal_counter                  Int?     @db.SmallInt
-  opp_goal_counter              Int?     @db.SmallInt
-  goal_open_play                Int?     @db.SmallInt
-  opp_goal_open_play            Int?     @db.SmallInt
-  goal_0bp                      Int?     @db.SmallInt
-  opp_goal_0bp                  Int?     @db.SmallInt
-  goal_0box                     Int?     @db.SmallInt
-  opp_goal_0box                 Int?     @db.SmallInt
-  goal_six_yard_box             Int?     @db.SmallInt
-  opp_goal_six_yard_box         Int?     @db.SmallInt
-  goal_penalty_area             Int?     @db.SmallInt
-  opp_goal_penalty_area         Int?     @db.SmallInt
-  assist                        Int?     @db.SmallInt
-  opp_assist                    Int?     @db.SmallInt
-  assist_cross                  Int?     @db.SmallInt
-  opp_assist_cross              Int?     @db.SmallInt
-  assist_corner                 Int?     @db.SmallInt
-  opp_assist_corner             Int?     @db.SmallInt
-  assist_throughball            Int?     @db.SmallInt
-  opp_assist_throughball        Int?     @db.SmallInt
-  aerial_duel                   Int?     @db.SmallInt
-  opp_aerial_duel               Int?     @db.SmallInt
-  red_card                      Int?     @db.SmallInt
-  opp_red_card                  Int?     @db.SmallInt
-  yellow_card                   Int?     @db.SmallInt
-  opp_yellow_card               Int?     @db.SmallInt
-  second_yellow_card            Int?     @db.SmallInt
-  opp_second_yellow_card        Int?     @db.SmallInt
-  save                          Int?     @db.SmallInt
-  opp_save                      Int?     @db.SmallInt
-  duel                          Int?     @db.SmallInt
-  opp_duel                      Int?     @db.SmallInt
-  duel_offensive                Int?     @db.SmallInt
-  opp_duel_offensive            Int?     @db.SmallInt
-  duel_defensive                Int?     @db.SmallInt
-  opp_duel_defensive            Int?     @db.SmallInt
-  dispossessed                  Int?     @db.SmallInt
-  opp_dispossessed              Int?     @db.SmallInt
-  turnover                      Int?     @db.SmallInt
-  opp_turnover                  Int?     @db.SmallInt
-  dribble                       Int?     @db.SmallInt
-  opp_dribble                   Int?     @db.SmallInt
-  dribble_won                   Int?     @db.SmallInt
-  opp_dribble_won               Int?     @db.SmallInt
-  dribble_lost                  Int?     @db.SmallInt
-  opp_dribble_lost              Int?     @db.SmallInt
-  dribble_last_man              Int?     @db.SmallInt
-  opp_dribble_last_man          Int?     @db.SmallInt
-  challenge_lost                Int?     @db.SmallInt
-  opp_challenge_lost            Int?     @db.SmallInt
-  blocked_cross                 Int?     @db.SmallInt
-  opp_blocked_cross             Int?     @db.SmallInt
-  block_outfielder              Int?     @db.SmallInt
-  opp_block_outfielder          Int?     @db.SmallInt
-  block_six_yard                Int?     @db.SmallInt
-  opp_block_six_yard            Int?     @db.SmallInt
-  block_pass_outfielder         Int?     @db.SmallInt
-  opp_block_pass_outfielder     Int?     @db.SmallInt
-  interception                  Int?     @db.SmallInt
-  opp_interception              Int?     @db.SmallInt
-  interception_won              Int?     @db.SmallInt
-  opp_interception_won          Int?     @db.SmallInt
-  interception_in_box           Int?     @db.SmallInt
-  opp_interception_in_box       Int?     @db.SmallInt
-  tackle                        Int?     @db.SmallInt
-  opp_tackle                    Int?     @db.SmallInt
-  tackle_won                    Int?     @db.SmallInt
-  opp_tackle_won                Int?     @db.SmallInt
-  tackle_lost                   Int?     @db.SmallInt
-  opp_tackle_lost               Int?     @db.SmallInt
-  tackle_last_man               Int?     @db.SmallInt
-  opp_tackle_last_man           Int?     @db.SmallInt
-  offside_given                 Int?     @db.SmallInt
-  opp_offside_given             Int?     @db.SmallInt
-  offside_provoked              Int?     @db.SmallInt
-  opp_offside_provoked          Int?     @db.SmallInt
-  ball_recovery                 Int?     @db.SmallInt
-  opp_ball_recovery             Int?     @db.SmallInt
-  clearance                     Int?     @db.SmallInt
-  opp_clearance                 Int?     @db.SmallInt
-  clearance_effective           Int?     @db.SmallInt
-  opp_clearance_effective       Int?     @db.SmallInt
-  clearance_off_line            Int?     @db.SmallInt
-  opp_clearance_off_line        Int?     @db.SmallInt
-  error_leads_to_goal           Int?     @db.SmallInt
-  opp_error_leads_to_goal       Int?     @db.SmallInt
-  error_leads_to_shot           Int?     @db.SmallInt
-  opp_error_leads_to_shot       Int?     @db.SmallInt
-  touch                         Int?     @db.SmallInt
-  opp_touch                     Int?     @db.SmallInt
-  penalty_won                   Int?     @db.SmallInt
-  opp_penalty_won               Int?     @db.SmallInt
-  penalty_conceded              Int?     @db.SmallInt
-  opp_penalty_conceded          Int?     @db.SmallInt
-  penalty_scored                Int?     @db.SmallInt
-  opp_penalty_scored            Int?     @db.SmallInt
-  big_chance_missed             Int?     @db.SmallInt
-  opp_big_chance_missed         Int?     @db.SmallInt
-  big_chance_scored             Int?     @db.SmallInt
-  opp_big_chance_scored         Int?     @db.SmallInt
-  big_chance_created            Int?     @db.SmallInt
-  opp_big_chance_created        Int?     @db.SmallInt
-  parried_safe                  Int?     @db.SmallInt
-  opp_parried_safe              Int?     @db.SmallInt
-  parried_danger                Int?     @db.SmallInt
-  opp_parried_danger            Int?     @db.SmallInt
-  save_keeper                   Int?     @db.SmallInt
-  opp_save_keeper               Int?     @db.SmallInt
-  posession                     Int?     @db.SmallInt
-  pass_accuracy                 Float?   @db.Real
-  opp_pass_accuracy             Float?   @db.Real
-  pass_short_accuracy           Float?   @db.Real
-  opp_pass_short_accuracy       Float?   @db.Real
-  dribble_conversion            Float?   @db.Real
-  opp_dribble_conversion        Float?   @db.Real
-  interception_conversion       Float?   @db.Real
-  opp_interception_conversion   Float?   @db.Real
-  tackle_conversion             Float?   @db.Real
-  opp_tackle_conversion         Float?   @db.Real
-  clearance_conversion          Float?   @db.Real
-  opp_clearance_conversion      Float?   @db.Real
-  big_chance_conversion         Float?   @db.Real
-  opp_big_chance_conversion     Float?   @db.Real
-  xg                            Float?   @db.Real
-  opp_xg                        Float?   @db.Real
   team                          String?
-  opp                           String?
-  year                          Int?     @db.SmallInt
-  tournament                    String?
+  minutes                       Float?  @db.Real
+  pass_avg                      Float?
+  pass_corner_avg               Float?
+  pass_longball_avg             Float?
+  pass_cross_avg                Float?
+  pass_back_avg                 Float?
+  pass_forward_avg              Float?
+  pass_left_avg                 Float?
+  pass_right_avg                Float?
+  pass_short_avg                Float?
+  pass_throughball_avg          Float?
+  pass_accurate_avg             Float?
+  pass_short_accurate_avg       Float?
+  pass_corner_accurate_avg      Float?
+  pass_longball_accurate_avg    Float?
+  pass_cross_accurate_avg       Float?
+  pass_throughball_accurate_avg Float?
+  pass_key_avg                  Float?
+  pass_key_cross_avg            Float?
+  pass_key_freekick_avg         Float?
+  pass_key_corner_avg           Float?
+  pass_key_throughball_avg      Float?
+  shot_avg                      Float?
+  shot_on_target_avg            Float?
+  shot_off_target_avg           Float?
+  shot_blocked_avg              Float?
+  shot_open_play_avg            Float?
+  shot_set_piece_avg            Float?
+  shot_on_post_avg              Float?
+  shot_six_yard_box_avg         Float?
+  shot_penalty_area_avg         Float?
+  shot_box_avg                  Float?
+  shot_counter_avg              Float?
+  shot_head_avg                 Float?
+  shot_foot_avg                 Float?
+  shot_0bp_avg                  Float?
+  goal_avg                      Float?
+  goal_normal_avg               Float?
+  goal_head_avg                 Float?
+  goal_foot_avg                 Float?
+  goal_set_piece_avg            Float?
+  goal_own_avg                  Float?
+  goal_counter_avg              Float?
+  goal_open_play_avg            Float?
+  goal_0bp_avg                  Float?
+  goal_0box_avg                 Float?
+  goal_six_yard_box_avg         Float?
+  goal_penalty_area_avg         Float?
+  assist_avg                    Float?
+  assist_cross_avg              Float?
+  assist_corner_avg             Float?
+  assist_throughball_avg        Float?
+  aerial_duel_avg               Float?
+  red_card_avg                  Float?
+  yellow_card_avg               Float?
+  second_yellow_card_avg        Float?
+  save_avg                      Float?
+  duel_avg                      Float?
+  duel_offensive_avg            Float?
+  duel_defensive_avg            Float?
+  dispossessed_avg              Float?
+  turnover_avg                  Float?
+  dribble_avg                   Float?
+  dribble_won_avg               Float?
+  dribble_lost_avg              Float?
+  dribble_last_man_avg          Float?
+  challenge_lost_avg            Float?
+  blocked_cross_avg             Float?
+  block_outfielder_avg          Float?
+  block_six_yard_avg            Float?
+  block_pass_outfielder_avg     Float?
+  interception_avg              Float?
+  interception_won_avg          Float?
+  interception_in_box_avg       Float?
+  tackle_avg                    Float?
+  tackle_won_avg                Float?
+  tackle_lost_avg               Float?
+  tackle_last_man_avg           Float?
+  offside_given_avg             Float?
+  offside_provoked_avg          Float?
+  ball_recovery_avg             Float?
+  clearance_avg                 Float?
+  clearance_effective_avg       Float?
+  clearance_off_line_avg        Float?
+  error_leads_to_goal_avg       Float?
+  error_leads_to_shot_avg       Float?
+  touch_avg                     Float?
+  penalty_won_avg               Float?
+  penalty_conceded_avg          Float?
+  penalty_scored_avg            Float?
+  big_chance_missed_avg         Float?
+  big_chance_scored_avg         Float?
+  big_chance_created_avg        Float?
+  parried_safe_avg              Float?
+  parried_danger_avg            Float?
+  save_keeper_avg               Float?
+  xg_avg                        Float?
+  year                          Int     @db.SmallInt
+  tournament                    String
+
+  @@unique([player_id, team_id, year, tournament], map: "d3ccbb7b5a0e5cf1c04e550dd8809022")
+}
+
+model poiss_pred {
+  match_id Int    @id
+  home_win Float? @db.Real
+  away_win Float? @db.Real
+  draw     Float? @db.Real
+}
+
+model poiss_ratings {
+  team_id    Int
+  date       Int
+  off_rating Float? @db.Real
+  def_rating Float? @db.Real
+
+  @@id([team_id, date])
+}
+
+model seasons {
+  path  String   @id
+  tourn String?
+  curr  Boolean?
+}
+
+model team {
+  id   Int     @id
+  name String?
+}
+
+model team_stats {
+  team_id                   Int
+  match_id                  Int
+  is_home                   Boolean
+  pass                      Int     @db.SmallInt
+  pass_corner               Int     @db.SmallInt
+  pass_longball             Int     @db.SmallInt
+  pass_cross                Int     @db.SmallInt
+  pass_back                 Int     @db.SmallInt
+  pass_forward              Int     @db.SmallInt
+  pass_left                 Int     @db.SmallInt
+  pass_right                Int     @db.SmallInt
+  pass_short                Int     @db.SmallInt
+  pass_throughball          Int     @db.SmallInt
+  pass_accurate             Int     @db.SmallInt
+  pass_short_accurate       Int     @db.SmallInt
+  pass_corner_accurate      Int     @db.SmallInt
+  pass_longball_accurate    Int     @db.SmallInt
+  pass_cross_accurate       Int     @db.SmallInt
+  pass_throughball_accurate Int     @db.SmallInt
+  pass_key                  Int     @db.SmallInt
+  pass_key_cross            Int     @db.SmallInt
+  pass_key_freekick         Int     @db.SmallInt
+  pass_key_corner           Int     @db.SmallInt
+  pass_key_throughball      Int     @db.SmallInt
+  shot                      Int     @db.SmallInt
+  shot_on_target            Int     @db.SmallInt
+  shot_off_target           Int     @db.SmallInt
+  shot_blocked              Int     @db.SmallInt
+  shot_open_play            Int     @db.SmallInt
+  shot_set_piece            Int     @db.SmallInt
+  shot_on_post              Int     @db.SmallInt
+  shot_six_yard_box         Int     @db.SmallInt
+  shot_penalty_area         Int     @db.SmallInt
+  shot_box                  Int     @db.SmallInt
+  shot_counter              Int     @db.SmallInt
+  shot_head                 Int     @db.SmallInt
+  shot_foot                 Int     @db.SmallInt
+  shot_0bp                  Int     @db.SmallInt
+  goal                      Int     @db.SmallInt
+  goal_normal               Int     @db.SmallInt
+  goal_head                 Int     @db.SmallInt
+  goal_foot                 Int     @db.SmallInt
+  goal_set_piece            Int     @db.SmallInt
+  goal_own                  Int     @db.SmallInt
+  goal_counter              Int     @db.SmallInt
+  goal_open_play            Int     @db.SmallInt
+  goal_0bp                  Int     @db.SmallInt
+  goal_0box                 Int     @db.SmallInt
+  goal_six_yard_box         Int     @db.SmallInt
+  goal_penalty_area         Int     @db.SmallInt
+  assist                    Int     @db.SmallInt
+  assist_cross              Int     @db.SmallInt
+  assist_corner             Int     @db.SmallInt
+  assist_throughball        Int     @db.SmallInt
+  aerial_duel               Int     @db.SmallInt
+  red_card                  Int     @db.SmallInt
+  yellow_card               Int     @db.SmallInt
+  second_yellow_card        Int     @db.SmallInt
+  save                      Int     @db.SmallInt
+  duel                      Int     @db.SmallInt
+  duel_offensive            Int     @db.SmallInt
+  duel_defensive            Int     @db.SmallInt
+  dispossessed              Int     @db.SmallInt
+  turnover                  Int     @db.SmallInt
+  dribble                   Int     @db.SmallInt
+  dribble_won               Int     @db.SmallInt
+  dribble_lost              Int     @db.SmallInt
+  dribble_last_man          Int     @db.SmallInt
+  challenge_lost            Int     @db.SmallInt
+  blocked_cross             Int     @db.SmallInt
+  block_outfielder          Int     @db.SmallInt
+  block_six_yard            Int     @db.SmallInt
+  block_pass_outfielder     Int     @db.SmallInt
+  interception              Int     @db.SmallInt
+  interception_won          Int     @db.SmallInt
+  interception_in_box       Int     @db.SmallInt
+  tackle                    Int     @db.SmallInt
+  tackle_won                Int     @db.SmallInt
+  tackle_lost               Int     @db.SmallInt
+  tackle_last_man           Int     @db.SmallInt
+  offside_given             Int     @db.SmallInt
+  offside_provoked          Int     @db.SmallInt
+  ball_recovery             Int     @db.SmallInt
+  clearance                 Int     @db.SmallInt
+  clearance_effective       Int     @db.SmallInt
+  clearance_off_line        Int     @db.SmallInt
+  error_leads_to_goal       Int     @db.SmallInt
+  error_leads_to_shot       Int     @db.SmallInt
+  touch                     Int     @db.SmallInt
+  penalty_won               Int     @db.SmallInt
+  penalty_conceded          Int     @db.SmallInt
+  penalty_scored            Int     @db.SmallInt
+  big_chance_missed         Int     @db.SmallInt
+  big_chance_scored         Int     @db.SmallInt
+  big_chance_created        Int     @db.SmallInt
+  parried_safe              Int     @db.SmallInt
+  parried_danger            Int     @db.SmallInt
+  save_keeper               Int     @db.SmallInt
+  opp_id                    Int?    @db.SmallInt
 
   @@id([team_id, match_id])
 }
 
-view poiss_live {
-  team_id    Int
-  off_rating Float? @db.Real
-  def_rating Float? @db.Real
-  date       Int
-
-  @@id([date, team_id])
-}
-
-view match_front {
-  id            Int      @unique
-  home_id       Int?
-  away_id       Int?
-  start_date    Int?
-  broken        Boolean?
-  tournament_id Int?     @db.SmallInt
-  season_id     Int?     @db.SmallInt
-  year          Int?     @db.SmallInt
-}
-
-view wei_live {
-  team_id           Int
-  off_rating        Float? @db.Real
-  off_rating_spread Float? @db.Real
-  def_rating        Float? @db.Real
-  def_rating_spread Float? @db.Real
-  date              Int
-
-  @@id([date, team_id])
-}
-
-view elo_live {
-  team_id Int
-  rating  Int?
-  date    Int
-
-  @@id([date, team_id])
-}
-
-view poiss_rolling_average {
-  team_id    Int
-  date       Int
-  off_rating Float? @db.Real
-  def_rating Float? @db.Real
-
-  @@id([date, team_id])
-}
-
-view elo_rolling_average {
-  team_id Int
-  date    Int
-  rating  Float? @db.Real
-
-  @@id([date, team_id])
-}
-
-view wei_rolling_average {
-  team_id           Int
-  date              Int
-  off_rating        Float? @db.Real
-  off_rating_spread Float? @db.Real
-  def_rating        Float? @db.Real
-  def_rating_spread Float? @db.Real
-
-  @@id([date, team_id])
-}
-
-view team_stats_avg_by_season {
+model team_stats_avg_by_season {
   team_id                           Int
   team                              String?
   pass_avg                          Float?  @db.Real
@@ -912,113 +714,325 @@ view team_stats_avg_by_season {
   year                              Int     @db.SmallInt
   tournament                        String
 
-  @@id([team_id, year, tournament])
+  @@unique([team_id, year, tournament], map: "95ec8b150031600bce2924e3179c7b0f")
 }
 
-view player_stats_per_ninety_by_season_team {
-  player_id                     Int
-  player                        String?
+model team_stats_full {
+  start_date                    Int?
   team_id                       Int
+  opp_id                        Int?     @db.SmallInt
+  match_id                      Int
+  is_home                       Boolean?
+  pass                          Int?     @db.SmallInt
+  opp_pass                      Int?     @db.SmallInt
+  pass_corner                   Int?     @db.SmallInt
+  opp_pass_corner               Int?     @db.SmallInt
+  pass_longball                 Int?     @db.SmallInt
+  opp_pass_longball             Int?     @db.SmallInt
+  pass_cross                    Int?     @db.SmallInt
+  opp_pass_cross                Int?     @db.SmallInt
+  pass_back                     Int?     @db.SmallInt
+  opp_pass_back                 Int?     @db.SmallInt
+  pass_forward                  Int?     @db.SmallInt
+  opp_pass_forward              Int?     @db.SmallInt
+  pass_left                     Int?     @db.SmallInt
+  opp_pass_left                 Int?     @db.SmallInt
+  pass_right                    Int?     @db.SmallInt
+  opp_pass_right                Int?     @db.SmallInt
+  pass_short                    Int?     @db.SmallInt
+  opp_pass_short                Int?     @db.SmallInt
+  pass_throughball              Int?     @db.SmallInt
+  opp_pass_throughball          Int?     @db.SmallInt
+  pass_accurate                 Int?     @db.SmallInt
+  opp_pass_accurate             Int?     @db.SmallInt
+  pass_short_accurate           Int?     @db.SmallInt
+  opp_pass_short_accurate       Int?     @db.SmallInt
+  pass_corner_accurate          Int?     @db.SmallInt
+  opp_pass_corner_accurate      Int?     @db.SmallInt
+  pass_longball_accurate        Int?     @db.SmallInt
+  opp_pass_longball_accurate    Int?     @db.SmallInt
+  pass_cross_accurate           Int?     @db.SmallInt
+  opp_pass_cross_accurate       Int?     @db.SmallInt
+  pass_throughball_accurate     Int?     @db.SmallInt
+  opp_pass_throughball_accurate Int?     @db.SmallInt
+  pass_key                      Int?     @db.SmallInt
+  opp_pass_key                  Int?     @db.SmallInt
+  pass_key_cross                Int?     @db.SmallInt
+  opp_pass_key_cross            Int?     @db.SmallInt
+  pass_key_freekick             Int?     @db.SmallInt
+  opp_pass_key_freekick         Int?     @db.SmallInt
+  pass_key_corner               Int?     @db.SmallInt
+  opp_pass_key_corner           Int?     @db.SmallInt
+  pass_key_throughball          Int?     @db.SmallInt
+  opp_pass_key_throughball      Int?     @db.SmallInt
+  shot                          Int?     @db.SmallInt
+  opp_shot                      Int?     @db.SmallInt
+  shot_on_target                Int?     @db.SmallInt
+  opp_shot_on_target            Int?     @db.SmallInt
+  shot_off_target               Int?     @db.SmallInt
+  opp_shot_off_target           Int?     @db.SmallInt
+  shot_blocked                  Int?     @db.SmallInt
+  opp_shot_blocked              Int?     @db.SmallInt
+  shot_open_play                Int?     @db.SmallInt
+  opp_shot_open_play            Int?     @db.SmallInt
+  shot_set_piece                Int?     @db.SmallInt
+  opp_shot_set_piece            Int?     @db.SmallInt
+  shot_on_post                  Int?     @db.SmallInt
+  opp_shot_on_post              Int?     @db.SmallInt
+  shot_six_yard_box             Int?     @db.SmallInt
+  opp_shot_six_yard_box         Int?     @db.SmallInt
+  shot_penalty_area             Int?     @db.SmallInt
+  opp_shot_penalty_area         Int?     @db.SmallInt
+  shot_box                      Int?     @db.SmallInt
+  opp_shot_box                  Int?     @db.SmallInt
+  shot_counter                  Int?     @db.SmallInt
+  opp_shot_counter              Int?     @db.SmallInt
+  shot_head                     Int?     @db.SmallInt
+  opp_shot_head                 Int?     @db.SmallInt
+  shot_foot                     Int?     @db.SmallInt
+  opp_shot_foot                 Int?     @db.SmallInt
+  shot_0bp                      Int?     @db.SmallInt
+  opp_shot_0bp                  Int?     @db.SmallInt
+  goal                          Int?     @db.SmallInt
+  opp_goal                      Int?     @db.SmallInt
+  goal_normal                   Int?     @db.SmallInt
+  opp_goal_normal               Int?     @db.SmallInt
+  goal_head                     Int?     @db.SmallInt
+  opp_goal_head                 Int?     @db.SmallInt
+  goal_foot                     Int?     @db.SmallInt
+  opp_goal_foot                 Int?     @db.SmallInt
+  goal_set_piece                Int?     @db.SmallInt
+  opp_goal_set_piece            Int?     @db.SmallInt
+  goal_own                      Int?     @db.SmallInt
+  opp_goal_own                  Int?     @db.SmallInt
+  goal_counter                  Int?     @db.SmallInt
+  opp_goal_counter              Int?     @db.SmallInt
+  goal_open_play                Int?     @db.SmallInt
+  opp_goal_open_play            Int?     @db.SmallInt
+  goal_0bp                      Int?     @db.SmallInt
+  opp_goal_0bp                  Int?     @db.SmallInt
+  goal_0box                     Int?     @db.SmallInt
+  opp_goal_0box                 Int?     @db.SmallInt
+  goal_six_yard_box             Int?     @db.SmallInt
+  opp_goal_six_yard_box         Int?     @db.SmallInt
+  goal_penalty_area             Int?     @db.SmallInt
+  opp_goal_penalty_area         Int?     @db.SmallInt
+  assist                        Int?     @db.SmallInt
+  opp_assist                    Int?     @db.SmallInt
+  assist_cross                  Int?     @db.SmallInt
+  opp_assist_cross              Int?     @db.SmallInt
+  assist_corner                 Int?     @db.SmallInt
+  opp_assist_corner             Int?     @db.SmallInt
+  assist_throughball            Int?     @db.SmallInt
+  opp_assist_throughball        Int?     @db.SmallInt
+  aerial_duel                   Int?     @db.SmallInt
+  opp_aerial_duel               Int?     @db.SmallInt
+  red_card                      Int?     @db.SmallInt
+  opp_red_card                  Int?     @db.SmallInt
+  yellow_card                   Int?     @db.SmallInt
+  opp_yellow_card               Int?     @db.SmallInt
+  second_yellow_card            Int?     @db.SmallInt
+  opp_second_yellow_card        Int?     @db.SmallInt
+  save                          Int?     @db.SmallInt
+  opp_save                      Int?     @db.SmallInt
+  duel                          Int?     @db.SmallInt
+  opp_duel                      Int?     @db.SmallInt
+  duel_offensive                Int?     @db.SmallInt
+  opp_duel_offensive            Int?     @db.SmallInt
+  duel_defensive                Int?     @db.SmallInt
+  opp_duel_defensive            Int?     @db.SmallInt
+  dispossessed                  Int?     @db.SmallInt
+  opp_dispossessed              Int?     @db.SmallInt
+  turnover                      Int?     @db.SmallInt
+  opp_turnover                  Int?     @db.SmallInt
+  dribble                       Int?     @db.SmallInt
+  opp_dribble                   Int?     @db.SmallInt
+  dribble_won                   Int?     @db.SmallInt
+  opp_dribble_won               Int?     @db.SmallInt
+  dribble_lost                  Int?     @db.SmallInt
+  opp_dribble_lost              Int?     @db.SmallInt
+  dribble_last_man              Int?     @db.SmallInt
+  opp_dribble_last_man          Int?     @db.SmallInt
+  challenge_lost                Int?     @db.SmallInt
+  opp_challenge_lost            Int?     @db.SmallInt
+  blocked_cross                 Int?     @db.SmallInt
+  opp_blocked_cross             Int?     @db.SmallInt
+  block_outfielder              Int?     @db.SmallInt
+  opp_block_outfielder          Int?     @db.SmallInt
+  block_six_yard                Int?     @db.SmallInt
+  opp_block_six_yard            Int?     @db.SmallInt
+  block_pass_outfielder         Int?     @db.SmallInt
+  opp_block_pass_outfielder     Int?     @db.SmallInt
+  interception                  Int?     @db.SmallInt
+  opp_interception              Int?     @db.SmallInt
+  interception_won              Int?     @db.SmallInt
+  opp_interception_won          Int?     @db.SmallInt
+  interception_in_box           Int?     @db.SmallInt
+  opp_interception_in_box       Int?     @db.SmallInt
+  tackle                        Int?     @db.SmallInt
+  opp_tackle                    Int?     @db.SmallInt
+  tackle_won                    Int?     @db.SmallInt
+  opp_tackle_won                Int?     @db.SmallInt
+  tackle_lost                   Int?     @db.SmallInt
+  opp_tackle_lost               Int?     @db.SmallInt
+  tackle_last_man               Int?     @db.SmallInt
+  opp_tackle_last_man           Int?     @db.SmallInt
+  offside_given                 Int?     @db.SmallInt
+  opp_offside_given             Int?     @db.SmallInt
+  offside_provoked              Int?     @db.SmallInt
+  opp_offside_provoked          Int?     @db.SmallInt
+  ball_recovery                 Int?     @db.SmallInt
+  opp_ball_recovery             Int?     @db.SmallInt
+  clearance                     Int?     @db.SmallInt
+  opp_clearance                 Int?     @db.SmallInt
+  clearance_effective           Int?     @db.SmallInt
+  opp_clearance_effective       Int?     @db.SmallInt
+  clearance_off_line            Int?     @db.SmallInt
+  opp_clearance_off_line        Int?     @db.SmallInt
+  error_leads_to_goal           Int?     @db.SmallInt
+  opp_error_leads_to_goal       Int?     @db.SmallInt
+  error_leads_to_shot           Int?     @db.SmallInt
+  opp_error_leads_to_shot       Int?     @db.SmallInt
+  touch                         Int?     @db.SmallInt
+  opp_touch                     Int?     @db.SmallInt
+  penalty_won                   Int?     @db.SmallInt
+  opp_penalty_won               Int?     @db.SmallInt
+  penalty_conceded              Int?     @db.SmallInt
+  opp_penalty_conceded          Int?     @db.SmallInt
+  penalty_scored                Int?     @db.SmallInt
+  opp_penalty_scored            Int?     @db.SmallInt
+  big_chance_missed             Int?     @db.SmallInt
+  opp_big_chance_missed         Int?     @db.SmallInt
+  big_chance_scored             Int?     @db.SmallInt
+  opp_big_chance_scored         Int?     @db.SmallInt
+  big_chance_created            Int?     @db.SmallInt
+  opp_big_chance_created        Int?     @db.SmallInt
+  parried_safe                  Int?     @db.SmallInt
+  opp_parried_safe              Int?     @db.SmallInt
+  parried_danger                Int?     @db.SmallInt
+  opp_parried_danger            Int?     @db.SmallInt
+  save_keeper                   Int?     @db.SmallInt
+  opp_save_keeper               Int?     @db.SmallInt
+  posession                     Float?   @db.Real
+  pass_accuracy                 Float?   @db.Real
+  opp_pass_accuracy             Float?   @db.Real
+  pass_short_accuracy           Float?   @db.Real
+  opp_pass_short_accuracy       Float?   @db.Real
+  dribble_conversion            Float?   @db.Real
+  opp_dribble_conversion        Float?   @db.Real
+  interception_conversion       Float?   @db.Real
+  opp_interception_conversion   Float?   @db.Real
+  tackle_conversion             Float?   @db.Real
+  opp_tackle_conversion         Float?   @db.Real
+  clearance_conversion          Float?   @db.Real
+  opp_clearance_conversion      Float?   @db.Real
+  big_chance_conversion         Float?   @db.Real
+  opp_big_chance_conversion     Float?   @db.Real
+  xg                            Float?   @db.Real
+  opp_xg                        Float?   @db.Real
   team                          String?
-  minutes                       Float?  @db.Real
-  pass_avg                      Float?
-  pass_corner_avg               Float?
-  pass_longball_avg             Float?
-  pass_cross_avg                Float?
-  pass_back_avg                 Float?
-  pass_forward_avg              Float?
-  pass_left_avg                 Float?
-  pass_right_avg                Float?
-  pass_short_avg                Float?
-  pass_throughball_avg          Float?
-  pass_accurate_avg             Float?
-  pass_short_accurate_avg       Float?
-  pass_corner_accurate_avg      Float?
-  pass_longball_accurate_avg    Float?
-  pass_cross_accurate_avg       Float?
-  pass_throughball_accurate_avg Float?
-  pass_key_avg                  Float?
-  pass_key_cross_avg            Float?
-  pass_key_freekick_avg         Float?
-  pass_key_corner_avg           Float?
-  pass_key_throughball_avg      Float?
-  shot_avg                      Float?
-  shot_on_target_avg            Float?
-  shot_off_target_avg           Float?
-  shot_blocked_avg              Float?
-  shot_open_play_avg            Float?
-  shot_set_piece_avg            Float?
-  shot_on_post_avg              Float?
-  shot_six_yard_box_avg         Float?
-  shot_penalty_area_avg         Float?
-  shot_box_avg                  Float?
-  shot_counter_avg              Float?
-  shot_head_avg                 Float?
-  shot_foot_avg                 Float?
-  shot_0bp_avg                  Float?
-  goal_avg                      Float?
-  goal_normal_avg               Float?
-  goal_head_avg                 Float?
-  goal_foot_avg                 Float?
-  goal_set_piece_avg            Float?
-  goal_own_avg                  Float?
-  goal_counter_avg              Float?
-  goal_open_play_avg            Float?
-  goal_0bp_avg                  Float?
-  goal_0box_avg                 Float?
-  goal_six_yard_box_avg         Float?
-  goal_penalty_area_avg         Float?
-  assist_avg                    Float?
-  assist_cross_avg              Float?
-  assist_corner_avg             Float?
-  assist_throughball_avg        Float?
-  aerial_duel_avg               Float?
-  red_card_avg                  Float?
-  yellow_card_avg               Float?
-  second_yellow_card_avg        Float?
-  save_avg                      Float?
-  duel_avg                      Float?
-  duel_offensive_avg            Float?
-  duel_defensive_avg            Float?
-  dispossessed_avg              Float?
-  turnover_avg                  Float?
-  dribble_avg                   Float?
-  dribble_won_avg               Float?
-  dribble_lost_avg              Float?
-  dribble_last_man_avg          Float?
-  challenge_lost_avg            Float?
-  blocked_cross_avg             Float?
-  block_outfielder_avg          Float?
-  block_six_yard_avg            Float?
-  block_pass_outfielder_avg     Float?
-  interception_avg              Float?
-  interception_won_avg          Float?
-  interception_in_box_avg       Float?
-  tackle_avg                    Float?
-  tackle_won_avg                Float?
-  tackle_lost_avg               Float?
-  tackle_last_man_avg           Float?
-  offside_given_avg             Float?
-  offside_provoked_avg          Float?
-  ball_recovery_avg             Float?
-  clearance_avg                 Float?
-  clearance_effective_avg       Float?
-  clearance_off_line_avg        Float?
-  error_leads_to_goal_avg       Float?
-  error_leads_to_shot_avg       Float?
-  touch_avg                     Float?
-  penalty_won_avg               Float?
-  penalty_conceded_avg          Float?
-  penalty_scored_avg            Float?
-  big_chance_missed_avg         Float?
-  big_chance_scored_avg         Float?
-  big_chance_created_avg        Float?
-  parried_safe_avg              Float?
-  parried_danger_avg            Float?
-  save_keeper_avg               Float?
-  xg_avg                        Float?
-  year                          Int     @db.SmallInt
-  tournament                    String
+  opp                           String?
+  year                          Int?     @db.SmallInt
+  tournament                    String?
 
-  @@id([player_id, team_id, year, tournament])
+  @@unique([team_id, match_id], map: "67271bfdfe83833acebe51900a2300a6")
+}
+
+model tournament {
+  id   Int     @id(map: "tournaments_pkey") @db.SmallInt
+  name String?
+}
+
+model wei_pred {
+  match_id Int    @id
+  home_win Float? @db.Real
+  away_win Float? @db.Real
+  draw     Float? @db.Real
+}
+
+model wei_ratings {
+  team_id           Int
+  off_rating        Float? @db.Real
+  off_rating_spread Float? @db.Real
+  def_rating        Float? @db.Real
+  def_rating_spread Float? @db.Real
+  date              Int
+
+  @@id([team_id, date])
+}
+
+model xg {
+  match_id  Int
+  player_id Int
+  event_id  Int
+  prob      Float? @db.Real
+
+  @@id([match_id, player_id, event_id])
+}
+
+view poiss_live {
+  team_id    Int
+  off_rating Float? @db.Real
+  def_rating Float? @db.Real
+  date       Int
+
+  @@id([team_id, date])
+}
+
+view poiss_rolling_average {
+  team_id    Int
+  date       Int
+  off_rating Float? @db.Real
+  def_rating Float? @db.Real
+
+  @@id([team_id, date])
+}
+
+view elo_rolling_average {
+  team_id Int
+  date    Int
+  rating  Float? @db.Real
+
+  @@id([team_id, date])
+}
+
+view wei_live {
+  team_id           Int
+  off_rating        Float? @db.Real
+  off_rating_spread Float? @db.Real
+  def_rating        Float? @db.Real
+  def_rating_spread Float? @db.Real
+  date              Int
+
+  @@id([team_id, date])
+}
+
+view elo_live {
+  team_id Int
+  rating  Int?
+  date    Int
+
+  @@id([team_id, date])
+}
+
+view wei_rolling_average {
+  team_id           Int
+  date              Int
+  off_rating        Float? @db.Real
+  off_rating_spread Float? @db.Real
+  def_rating        Float? @db.Real
+  def_rating_spread Float? @db.Real
+
+  @@id([team_id, date])
+}
+
+view match_front {
+  id            Int      @id
+  home_id       Int?
+  away_id       Int?
+  start_date    Int?
+  broken        Boolean?
+  tournament_id Int?     @db.SmallInt
+  season_id     Int?     @db.SmallInt
+  year          Int?     @db.SmallInt
 }

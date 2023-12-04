@@ -3,7 +3,8 @@
         materialized='table',
         indexes = [
             {'columns': ['id'], 'unique': True},
-        ]
+        ],
+        post_hook = "alter table match_full alter column id set not null;"
     )
 }}
 

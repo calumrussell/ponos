@@ -12,9 +12,7 @@ FROM
 WHERE
   (
     (
-      (MATCH.year = 2021)
-      OR (MATCH.year = 2022)
-      OR (MATCH.year = 2023)
+      (MATCH.year = 2023)
       OR (MATCH.year = 2024)
     )
     AND (

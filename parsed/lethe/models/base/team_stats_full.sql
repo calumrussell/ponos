@@ -4,6 +4,7 @@
         indexes = [
             {'columns': ['team_id', 'match_id'], 'unique': True},
         ],
+        post_hook = "alter table team_stats_full alter column team_id set not null; alter table team_stats_full alter column match_id set not null;"
     ) 
 }}
 

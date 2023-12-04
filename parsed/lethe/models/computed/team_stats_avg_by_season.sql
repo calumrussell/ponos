@@ -4,6 +4,7 @@
         indexes = [
             {'columns': ['team_id', 'year', 'tournament'], 'unique': True},
         ],
+        post_hook = "alter table team_stats_avg_by_season alter column team_id set not null; alter table team_stats_avg_by_season alter column year set not null; alter table team_stats_avg_by_season alter column tournament set not null"
     ) 
 }}
 
