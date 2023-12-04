@@ -2,7 +2,7 @@ import React from "react";
 
 import prisma from "@/lib/prisma";
 import { PlayerStatsMatchPage, TeamStatsMatchPage } from "@/lib/components";
-import { getMatch, getPlayerStats, getTeamStats, sortByPosition, getRoute, getEloPredictionByMatch, convertDatesWithTime, roundNumber, getLastAresRatingByDateAndTeam, getLastArtemisRatingByDateAndTeam } from "@/lib/functions";
+import { getMatch, getPlayerStats, getTeamStats, sortByPosition, getRoute, getEloPredictionByMatch, getArtemisPredictionByMatch, getAthenaPredictionByMatch, convertDatesWithTime, roundNumber, getLastAresRatingByDateAndTeam, getLastArtemisRatingByDateAndTeam } from "@/lib/functions";
 
 export async function generateStaticParams() {
   const matches = await prisma.match_front.findMany({});
@@ -18,12 +18,16 @@ interface Match {
 export default async function Page(input: Match) {
   const [
     match,
-    prediction,
+    aresPrediction,
+    artemisPrediction,
+    athenaPrediction,
     playerStats,
     teamStats,
   ] = await Promise.all([
     getMatch(input.params.id),
     getEloPredictionByMatch(input.params.id),
+    getArtemisPredictionByMatch(input.params.id),
+    getAthenaPredictionByMatch(input.params.id),
     getPlayerStats(input.params.id),
     getTeamStats(input.params.id),
   ]);
@@ -53,9 +57,17 @@ export default async function Page(input: Match) {
   const homeGoal = homeTeamStats ? homeTeamStats.goal + awayTeamStats.goal_own : null;
   const awayGoal = awayTeamStats ? awayTeamStats.goal + homeTeamStats.goal_own : null;
 
-  const homeWin = prediction ? prediction.home_win * 100 : 0.0;
-  const awayWin = prediction ? prediction.away_win * 100 : 0.0;
-  const draw = prediction ? prediction.draw * 100 : 0.0;
+  const aresHomeWin = aresPrediction ? aresPrediction.home_win * 100 : 0.0;
+  const aresAwayWin = aresPrediction ? aresPrediction.away_win * 100 : 0.0;
+  const aresDraw = aresPrediction ? aresPrediction.draw * 100 : 0.0;
+
+  const artemisHomeWin = artemisPrediction ? artemisPrediction.home_win * 100 : 0.0;
+  const artemisAwayWin = artemisPrediction ? artemisPrediction.away_win * 100 : 0.0;
+  const artemisDraw = artemisPrediction ? artemisPrediction.draw * 100 : 0.0;
+
+  const athenaHomeWin = athenaPrediction ? athenaPrediction.home_win * 100 : 0.0;
+  const athenaAwayWin = athenaPrediction ? athenaPrediction.away_win * 100 : 0.0;
+  const athenaDraw = athenaPrediction ? athenaPrediction.draw * 100 : 0.0;
 
   return (
     <main>
@@ -69,10 +81,10 @@ export default async function Page(input: Match) {
         )
       }
       <div>
-        <h4>Prediction: </h4>
-        <p>Home win: {roundNumber(homeWin)}% <em>{roundNumber(1/(homeWin/100))}</em></p>
-        <p>Draw: {roundNumber(draw)}% <em>{roundNumber(1/(draw/100))}</em></p>
-        <p>Away win: {roundNumber(awayWin)}% <em>{roundNumber(1/(awayWin/100))}</em></p>
+        <h4>Ares Prediction: </h4>
+        <p>Home win: {roundNumber(aresHomeWin)}% <em>{roundNumber(1/(aresHomeWin/100))}</em></p>
+        <p>Draw: {roundNumber(aresDraw)}% <em>{roundNumber(1/(aresDraw/100))}</em></p>
+        <p>Away win: {roundNumber(aresAwayWin)}% <em>{roundNumber(1/(aresAwayWin/100))}</em></p>
       </div>
       <div>
         <h4>Ares rating: </h4>
@@ -80,11 +92,27 @@ export default async function Page(input: Match) {
         <p>Away Rating: {awayAresRating.rating}</p>
       </div>
       <div>
+        <h4>Artemis Prediction: </h4>
+        <p>Home win: {roundNumber(artemisHomeWin)}% <em>{roundNumber(1/(artemisHomeWin/100))}</em></p>
+        <p>Draw: {roundNumber(artemisDraw)}% <em>{roundNumber(1/(artemisDraw/100))}</em></p>
+        <p>Away win: {roundNumber(artemisAwayWin)}% <em>{roundNumber(1/(artemisAwayWin/100))}</em></p>
+      </div>
+      <div>
         <h4>Artemis rating: </h4>
         <p><em>Off/Def</em></p>
         <p>Home Rating: {roundNumber(homeArtemisRating.off_rating)} / {roundNumber(homeArtemisRating.def_rating)} </p>
         <p>Away Rating: {roundNumber(awayArtemisRating.off_rating)} / {roundNumber(awayArtemisRating.def_rating)} </p>
       </div>
+      {
+        athenaHomeWin != 0.0 && athenaDraw != 0.0 && athenaAwayWin && (
+          <div>
+            <h4>Athena Prediction: </h4>
+            <p>Home win: {roundNumber(athenaHomeWin)}% <em>{roundNumber(1/(athenaHomeWin/100))}</em></p>
+            <p>Draw: {roundNumber(athenaDraw)}% <em>{roundNumber(1/(athenaDraw/100))}</em></p>
+            <p>Away win: {roundNumber(athenaAwayWin)}% <em>{roundNumber(1/(athenaAwayWin/100))}</em></p>
+          </div>
+        )
+      }
       {
         homeTeamStats && awayTeamStats && (
           <TeamStatsMatchPage team_stats={[homeTeamStats, awayTeamStats]} />

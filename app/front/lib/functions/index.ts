@@ -1,5 +1,6 @@
 const { createCipheriv, createDecipheriv } = require('crypto');
 import prisma from '@/lib/prisma';
+import { request } from 'http';
 
 export const getRoute = (id: string) => {
   const key = process.env.ROUTE_KEY;
@@ -16,6 +17,10 @@ export const findRoute = (id: string) => {
 }
 
 const requestFormatter = (vals: any): any => {
+  if (vals === undefined || vals === null) {
+    return vals;
+  }
+
   const format = (v: any) => {
     if (Object.hasOwn(v, 'id')) {
       const existing = v.id;
@@ -270,6 +275,24 @@ export async function getLastAresRatingByDateAndTeam(match_date: number, team_id
 
 export async function getEloPredictionByMatch(id: string) {
   const prediction = await prisma.elo_pred.findUnique({
+    where: {
+      match_id: parseInt(findRoute(id))
+    }
+  })
+  return requestFormatter(prediction);
+}
+
+export async function getArtemisPredictionByMatch(id: string) {
+  const prediction = await prisma.poiss_pred.findUnique({
+    where : {
+      match_id: parseInt(findRoute(id))
+    }
+  })
+  return requestFormatter(prediction);
+}
+
+export async function getAthenaPredictionByMatch(id: string) {
+  const prediction = await prisma.wei_pred.findUnique({
     where: {
       match_id: parseInt(findRoute(id))
     }
