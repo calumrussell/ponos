@@ -32,10 +32,11 @@ if __name__ == "__main__":
 
                 values = ast.literal_eval(res)
                 if len(values) > 0:
-                    sql_values = ",".join(ast.literal_eval(res))
+
+                    remove_dups = list(set(values))
+                    sql_values = ",".join(remove_dups)
                     sql_query = f"INSERT INTO xg(match_id, player_id, event_id, prob) VALUES {sql_values} on conflict(match_id, player_id, event_id) do update set prob=excluded.prob"
                     cur = conn.cursor();
                     cur.execute(sql_query)
                     conn.commit()
-
                 print("Inserted: " + str(len(values)) + " shots")
