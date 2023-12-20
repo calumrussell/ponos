@@ -6,6 +6,8 @@ import { getPlayerStatsByPlayer, getPlayerStatsPer90SeasonByPlayer, getRoute } f
 import { PlayerStatsSeasonPlayerPage } from "@/lib/components/player";
 import Link from "next/link";
 
+export const revalidate = 10;
+
 export async function generateStaticParams() {
   const players = await prisma.player.findMany({});
   return players.map(player => ({id: getRoute(player.id.toString())}))

@@ -2,6 +2,8 @@ import { GroupedMatches } from '@/lib/components';
 import { getRecentMatches } from '@/lib/functions';
 import { match_full } from '@prisma/client';
 
+export const revalidate = 10;
+
 export default async function Home() {
   const matches = await getRecentMatches();
 

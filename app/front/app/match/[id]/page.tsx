@@ -4,6 +4,8 @@ import prisma from "@/lib/prisma";
 import { PlayerStatsMatchPage, TeamStatsMatchPage } from "@/lib/components";
 import { getMatch, getPlayerStats, getTeamStats, sortByPosition, getRoute, getEloPredictionByMatch, getArtemisPredictionByMatch, getAthenaPredictionByMatch, convertDatesWithTime, roundNumber, getLastAresRatingByDateAndTeam, getLastArtemisRatingByDateAndTeam } from "@/lib/functions";
 
+export const revalidate = 10;
+
 export async function generateStaticParams() {
   const matches = await prisma.match_front.findMany({});
   return matches.map(match => ({id: getRoute(match.id.toString())}))

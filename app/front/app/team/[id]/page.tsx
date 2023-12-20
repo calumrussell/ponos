@@ -6,6 +6,8 @@ import { getAresRatingOverLastTwoYearsByTeam, getArtemisRatingOverLastTwoYearsBy
 import { AresRatingChart, ArtemisRatingChart } from "@/lib/components/chart";
 import { TeamSeasonStatsTeamPage, PlayerSeasonStatsTeamPage } from "@/lib/components/team";
 
+export const revalidate = 10;
+
 export async function generateStaticParams() {
   const teams = await prisma.team.findMany({});
   return teams.map(team => ({id: getRoute(team.id.toString())}))
