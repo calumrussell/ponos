@@ -23,5 +23,5 @@ if __name__ == "__main__":
                 tmp['year'] = int(row_json['year'])
                 matches.append(tmp)
 
-    res = requests.post('http://100.96.98.54:8080/bulk_matches', json = {"matches": matches})
+    res = requests.post('http://100.107.250.86:8080/bulk_matches', json = {"matches": matches})
     print(res.status_code)
