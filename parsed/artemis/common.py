@@ -1,6 +1,7 @@
 import numpy as np
-from math import factorial
 from scipy.optimize import minimize
+from scipy.special import binom
+from scipy.special import factorial
 from dataclasses import dataclass, asdict
 
 @dataclass
@@ -22,6 +23,17 @@ class rating:
 
     def __str__(self):
         return f"({self.team_id}, {self.date}, {self.off_rating}, {self.def_rating})"
+
+def bipoiss_pmf(x, y, a, b, c, acc=50):
+    if x < 0 or y < 0:
+        raise ValueError
+
+    first = np.exp(-(a+b+c)) * ((a**x)/factorial(x) * (b**y)/factorial(y)) 
+    vals = []
+    vals.append(binom(x, 0) * binom(y, 0) * factorial(0) * (c/(a*b)) ** 0)
+    for k in range(1, min(x,y)):
+        vals.append(binom(x, k) * binom(y, k) * factorial(k) * (c/(a*b)) ** k)
+    return first * sum(vals)
 
 def poiss_pmf(x, a):
     return ((a**x) * (np.exp(-a))) / factorial(x)
@@ -94,14 +106,18 @@ class Poisson:
         return
     
     def prediction(match_id, home_off_rating, home_def_rating, away_off_rating, away_def_rating):
-        home_exp = np.exp(home_off_rating - away_def_rating)
-        away_exp = np.exp(away_off_rating - home_def_rating)
 
-        home_probs = [poiss_pmf(i, home_exp) for i in range(15)]
-        away_probs = [poiss_pmf(i, away_exp) for i in range(15)]
+        home_exp = home_off_rating * away_def_rating
+        away_exp = away_off_rating * home_def_rating
 
-        probs = np.outer(home_probs, away_probs)
-        draw = (np.sum(np.diag(probs)))
-        home_win = (np.sum(np.tril(probs, -1)))
-        away_win = (np.sum(np.triu(probs, 1)))
+        probs = []
+        for i in range(0, 10):
+            for j in range(0, 10):
+                probs.append(bipoiss_pmf(i, j, home_exp, away_exp, 0))
+
+        split = [probs[i:i+10] for i in range(0,len(probs),10)]
+
+        draw = (np.sum(np.diag(split)))
+        home_win = (np.sum(np.tril(split, -1)))
+        away_win = (np.sum(np.triu(split, 1)))
         return str(prediction(match_id, home_win, away_win, draw))
