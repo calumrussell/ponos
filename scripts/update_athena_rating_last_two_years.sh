@@ -1,0 +1,1 @@
+python scripts/insert_athena_rating.py

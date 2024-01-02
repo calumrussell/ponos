@@ -8,7 +8,7 @@ services:
     volumes:
        - ponosdb_data:/pg
     ports:
-      - 100.96.98.54:12000:5432
+      - 100.107.250.86:12000:5432
     restart: unless-stopped
   
   ponosfront:
@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile
       context: ./app/front
     ports:
-      - 100.96.98.54:3000:3000
+      - 100.107.250.86:3000:3000
     restart: unless-stopped
 
   ponosapi:
@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
       context: ./app/api
     ports:
-      - 100.96.98.54:8080:8080
+      - 100.107.250.86:8080:8080
     restart: unless-stopped
 
   ponostunnel:
