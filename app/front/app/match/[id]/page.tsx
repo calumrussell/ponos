@@ -6,11 +6,6 @@ import { getMatch, getPlayerStats, getTeamStats, sortByPosition, getRoute, getEl
 
 export const revalidate = 10;
 
-export async function generateStaticParams() {
-  const matches = await prisma.match_front.findMany({});
-  return matches.map(match => ({id: getRoute(match.id.toString())}))
-}
-
 interface Match {
   params: {
     id: string
