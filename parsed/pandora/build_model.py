@@ -2,8 +2,30 @@ import os
 import pickle
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.model_selection import train_test_split
+import xgboost as xgb
 
 from common import Shot
+
+class ShotXGBoost:
+    def predict(self, x):
+        if not self.model:
+            raise ValueError("Model hasn't been initialized")
+        return self.model.predict_proba(x)
+
+    def score(self, x, y):
+        if not self.model:
+            raise ValueError("Model hasn't been initialized")
+        return self.model.score(x, y)
+
+    def run(self, x, y):
+
+        x_train, x_test, y_train, y_test = train_test_split(x, y, stratify=y, random_state=94)
+        self.model = xgb.XGBClassifier(tree_method='hist', early_stopping_rounds=2).fit(x_train, y_train, eval_set=[(x_test, y_test)])
+        return
+
+    def __init__(self):
+        self.model = None
 
 class ShotLogisticRegression:
     def predict(self, x):
@@ -100,7 +122,7 @@ if __name__ == "__main__":
     import psycopg2
     conn = psycopg2.connect(os.getenv("DB_CONN"))
 
-    model = ShotModel(ShotLogisticRegression())
+    model = ShotModel(ShotXGBoost())
     with conn:
         with conn.cursor() as cur:
             query = """
