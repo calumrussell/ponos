@@ -11,7 +11,7 @@ Basic Logistic Model: 0.9010
         * Shot body part (categorical)
 
 Logistic Model #2: 0.9009
-    Hash: 
+    Hash: 958386d
     Params:
         << Basic
         * Max iter increased to 500
