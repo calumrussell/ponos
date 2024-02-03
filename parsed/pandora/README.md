@@ -10,8 +10,8 @@ Basic Logistic Model: 0.9010
         * Shot play (categorical) - type of play which generated the shot
         * Shot body part (categorical)
 
-Logistic Model #2: 0.9009
-    Hash: 958386d
+Logistic Model #2: 0.9030
+    Hash: a549a7f
     Params:
         << Basic
         * Max iter increased to 500

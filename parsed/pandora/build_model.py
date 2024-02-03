@@ -17,7 +17,7 @@ class ShotLogisticRegression:
         return [self.model.intercept_[0], *list(self.model.coef_[0])]
 
     def run(self, x, y):
-        self.model = LogisticRegression(max_iter=500).fit(x, y)
+        self.model = LogisticRegression(max_iter=1000).fit(x, y)
         return
 
     def score(self, x, y):
@@ -72,10 +72,10 @@ class ShotModel:
         vals = [i[0] for i in self.y]
         return 1 - (sum(vals) / len(vals))
     
-    def predict(self, distance, angle, location, play, body_part, big_chance):
+    def predict(self, distance, angle, location, play, body_part, big_chance, fast_break, first_touch, assisted):
         one_hot = [[location, play, body_part]]
         one_hot_x = self.encoder.transform(one_hot).toarray()
-        x = [[distance, angle, big_chance, *one_hot_x[0]]]
+        x = [[distance, angle, distance * angle, big_chance, fast_break, first_touch, assisted, *one_hot_x[0]]]
         return self.model.predict(x)
     
     def params(self):
@@ -83,18 +83,18 @@ class ShotModel:
 
     def run(self):
         self.encoder = OneHotEncoder(handle_unknown='ignore', categories=[ShotModel.location, ShotModel.play, ShotModel.body_part])
-        one_hot = [i[3:] for i in self.x]
+        one_hot = [i[7:] for i in self.x]
         self.encoder.fit(one_hot)
         one_hot_x = self.encoder.transform(one_hot).toarray()
-        self.x_formatted = [[i[0], i[1], i[2], *j] for i, j in zip(self.x, one_hot_x)]
+        self.x_formatted = [[i[0], i[1], i[2], i[3], i[4], i[5], i[6], *j] for i, j in zip(self.x, one_hot_x)]
         self.model.run(self.x_formatted, self.y)
     
     def score(self):
         return self.model.score(self.x_formatted, self. y)
 
-    def add_shot(self, distance, angle, location, play, body_part, big_chance, result):
+    def add_shot(self, distance, angle, location, play, body_part, big_chance, fast_break, first_touch, assisted, result):
         self.y.append([result])
-        self.x.append([distance, angle, big_chance, location, play, body_part])
+        self.x.append([distance, angle, distance * angle, big_chance, fast_break, first_touch, assisted, location, play, body_part])
 
 if __name__ == "__main__":
     import psycopg2
@@ -118,7 +118,7 @@ if __name__ == "__main__":
                         types = event['satisfiedEventsTypes']
                         if 10 in types:
                             shot = Shot(event)
-                            model.add_shot(shot.distance, shot.angle, shot.shot_location, shot.shot_play, shot.body_part, shot.big_chance, shot.result)
+                            model.add_shot(shot.distance, shot.angle, shot.shot_location, shot.shot_play, shot.body_part, shot.big_chance, shot.fast_break, shot.first_touch, shot.assisted, shot.result)
             model.run()
             print(model.score(), model.baseline())
     

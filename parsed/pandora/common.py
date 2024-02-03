@@ -3,6 +3,10 @@ import math
 class Shot:
 
     big_chance = [214]
+    fast_break = [23]
+    ## Assist event is 29 but intentional_assist is 154
+    assisted = [154]
+    first_touch = [328]
 
     body_parts = [20,72,15,21]
     pattern_of_plays = [22,23,24,25,26,9,160,241]
@@ -64,6 +68,27 @@ class Shot:
             return 1
         return 0
 
+    def _calc_fast_break(self):
+        for qualifier in self.qualifiers:
+            qual_type = qualifier.get("type")
+            if qual_type.get('value') in Shot.fast_break:
+                return 1
+        return 0
+
+    def _calc_assisted(self):
+        for qualifier in self.qualifiers:
+            qual_type = qualifier.get("type")
+            if qual_type.get('value') in Shot.assisted:
+                return 1
+        return 0
+
+    def _calc_first_touch(self):
+        for qualifier in self.qualifiers:
+            qual_type = qualifier.get("type")
+            if qual_type.get('value') in Shot.first_touch:
+                return 1
+        return 0
+
     def __init__(self, event):
         self.event = event
         self.x = event['x']
@@ -77,5 +102,8 @@ class Shot:
         self.body_part = self._calc_body_part()
         self.shot_play = self._calc_shot_play()
         self.big_chance = self._calc_big_chance()
+        self.fast_break = self._calc_fast_break()
+        self.assisted = self._calc_assisted()
+        self.first_touch = self._calc_first_touch()
         self.result = self._calc_shot_result()
 
