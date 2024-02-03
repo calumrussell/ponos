@@ -13,14 +13,15 @@ class ShotXGBoost:
             raise ValueError("Model hasn't been initialized")
         return self.model.predict_proba(x)
 
-    def score(self, x, y):
+    def score(self):
         if not self.model:
             raise ValueError("Model hasn't been initialized")
-        return self.model.score(x, y)
+        return self.model.score(self.x_test, self.y_test)
 
     def run(self, x, y):
-
         x_train, x_test, y_train, y_test = train_test_split(x, y, stratify=y, random_state=94)
+        self.y_test = y_test
+        self.x_test = x_test
         self.model = xgb.XGBClassifier(tree_method='hist', early_stopping_rounds=2).fit(x_train, y_train, eval_set=[(x_test, y_test)])
         return
 
@@ -39,13 +40,16 @@ class ShotLogisticRegression:
         return [self.model.intercept_[0], *list(self.model.coef_[0])]
 
     def run(self, x, y):
-        self.model = LogisticRegression(max_iter=1000).fit(x, y)
+        x_train, x_test, y_train, y_test = train_test_split(x, y, stratify=y, random_state=94)
+        self.y_test = y_test
+        self.x_test = x_test
+        self.model = LogisticRegression(max_iter=2000).fit(x_train, y_train)
         return
 
-    def score(self, x, y):
+    def score(self):
         if not self.model:
             raise ValueError("Model hasn't been initialized")
-        return self.model.score(x, y)
+        return self.model.score(self.x_test, self.y_test)
 
     def __init__(self):
         self.model = None
@@ -112,7 +116,7 @@ class ShotModel:
         self.model.run(self.x_formatted, self.y)
     
     def score(self):
-        return self.model.score(self.x_formatted, self. y)
+        return self.model.score()
 
     def add_shot(self, distance, angle, location, play, body_part, big_chance, fast_break, first_touch, assisted, result):
         self.y.append([result])
@@ -130,7 +134,7 @@ if __name__ == "__main__":
                 data
                 from 
                 match_data
-                where id in (select id from match where tournament_id=2 and (year=2023 or year=2022 or year=2021))
+                where id in (select id from match where tournament_id=2 and (year=2023 or year=2022 or year=2021 or year=2020 or year=2019))
                 """
             cur.execute(query)
             for row in cur:
