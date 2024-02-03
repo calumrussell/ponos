@@ -19,13 +19,21 @@ Logistic Model #2: 0.9030
         << Basic
         * Big chance (boolean)
 
+Logistic Model #3: 0.9034
+    Hash: c41db07
+    Params:
+        << #2
+        * Max iter increased to 1000
+    Features:
+        << #2
+        * Distance * Angle
+        * fastBreak (boolean)
+        * assisted (boolean)
+        * firstTouch (boolean)
+
 Future:
-    * distance * angle
     * day of month
     * day of week
-    * fastBreak
-    * firstTouch
-    * isAssisted
     * isOppositionError
     * dark arts would be to include categorical variable for team, basically cheating but...possible?
     * another dark art would be to include opposition for categorical...again, feels like cheating
