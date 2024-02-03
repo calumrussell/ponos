@@ -86,7 +86,7 @@ class ShotModel:
         one_hot = [i[3:] for i in self.x]
         self.encoder.fit(one_hot)
         one_hot_x = self.encoder.transform(one_hot).toarray()
-        self.x_formatted = [[i[0], i[1], *j] for i, j in zip(self.x, one_hot_x)]
+        self.x_formatted = [[i[0], i[1], i[2], *j] for i, j in zip(self.x, one_hot_x)]
         self.model.run(self.x_formatted, self.y)
     
     def score(self):
