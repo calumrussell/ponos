@@ -31,6 +31,12 @@ Logistic Model #3: 0.9034
         * assisted (boolean)
         * firstTouch (boolean)
 
+XGBoost Model #1: 0.9092
+    Hash: c8ba969
+    Features:
+        << Logistic Model #3
+    
+
 Future:
     * day of month
     * day of week
