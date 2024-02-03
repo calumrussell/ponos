@@ -31,6 +31,6 @@ if __name__ == "__main__":
                 types = event['satisfiedEventsTypes']
                 if 10 in types:
                     shot = Shot(event)
-                    shot_prob = model.predict(shot.distance, shot.angle, shot.shot_location, shot.shot_play, shot.body_part)[0][1]
+                    shot_prob = model.predict(shot.distance, shot.angle, shot.shot_location, shot.shot_play, shot.body_part, shot.big_chance)[0][1]
                     to_add.append(str(xg(match_id, shot.player_id, shot.event_id, round(shot_prob, 3))))
     print(to_add)

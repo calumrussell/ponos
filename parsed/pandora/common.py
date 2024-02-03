@@ -2,6 +2,8 @@ import math
 
 class Shot:
 
+    big_chance = [214]
+
     body_parts = [20,72,15,21]
     pattern_of_plays = [22,23,24,25,26,9,160,241]
     shot_locations = [60,61,62,63,64,65,66,67,68,69,70,71,16,17,18,19]
@@ -50,6 +52,13 @@ class Shot:
                 return qual_type['displayName']
         return None
 
+    def _calc_big_chance(self):
+        for qualifier in self.qualifiers:
+            qual_type = qualifier.get("type")
+            if qual_type.get('value') in Shot.big_chance:
+                return 1
+        return 0
+
     def _calc_shot_result(self):
         if self.event.get('isGoal'):
             return 1
@@ -67,5 +76,6 @@ class Shot:
         self.shot_location = self._calc_shot_location()
         self.body_part = self._calc_body_part()
         self.shot_play = self._calc_shot_play()
+        self.big_chance = self._calc_big_chance()
         self.result = self._calc_shot_result()
 
