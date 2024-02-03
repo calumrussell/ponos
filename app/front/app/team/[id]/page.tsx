@@ -8,11 +8,6 @@ import { TeamSeasonStatsTeamPage, PlayerSeasonStatsTeamPage } from "@/lib/compon
 
 export const revalidate = 10;
 
-export async function generateStaticParams() {
-  const teams = await prisma.team.findMany({});
-  return teams.map(team => ({id: getRoute(team.id.toString())}))
-}
-
 interface Team {
   params: {
     id: string

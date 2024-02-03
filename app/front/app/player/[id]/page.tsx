@@ -8,11 +8,6 @@ import Link from "next/link";
 
 export const revalidate = 10;
 
-export async function generateStaticParams() {
-  const players = await prisma.player.findMany({});
-  return players.map(player => ({id: getRoute(player.id.toString())}))
-}
-
 interface Match {
   params: {
     id: string

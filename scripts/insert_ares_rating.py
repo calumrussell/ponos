@@ -38,7 +38,8 @@ if __name__ == "__main__":
                 home_goals = row[3]
                 away_goals = row[4]
 
-                if not home_goals or not away_goals:
+                ## Goals can be zero this was a not before so skipped all matches with zero goals
+                if home_goals == None or away_goals == None:
                     continue
 
                 home_rating = EloImpl.default_rating()
