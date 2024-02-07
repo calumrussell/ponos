@@ -3,6 +3,8 @@ import pickle
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 import xgboost as xgb
 
 from common import Shot
@@ -19,10 +21,28 @@ class ShotXGBoost:
         return self.model.score(self.x_test, self.y_test)
 
     def run(self, x, y):
-        x_train, x_test, y_train, y_test = train_test_split(x, y, stratify=y, random_state=94)
-        self.y_test = y_test
-        self.x_test = x_test
-        self.model = xgb.XGBClassifier(tree_method='hist', early_stopping_rounds=2).fit(x_train, y_train, eval_set=[(x_test, y_test)])
+        params = {
+            'min_child_weight': [1, 5, 10],
+            'gamma': [0.5, 1, 1.5, 2, 5],
+            'subsample': [0.6, 0.8, 1.0],
+            'colsample_bytree': [0.6, 0.8, 1.0],
+            'max_depth': [3, 4, 5]
+        }
+
+        xgb_model = xgb.XGBClassifier(tree_method='hist')
+        random_search = RandomizedSearchCV(
+                xgb_model, 
+                param_distributions=params, 
+                scoring='roc_auc', 
+                n_jobs=4, 
+                cv=5, 
+                verbose=3, 
+                random_state=1001
+        )
+
+        random_search.fit(x,y)
+        self.model = random_search.best_estimator_
+        print(random_search.best_score_)
         return
 
     def __init__(self):
@@ -40,10 +60,26 @@ class ShotLogisticRegression:
         return [self.model.intercept_[0], *list(self.model.coef_[0])]
 
     def run(self, x, y):
-        x_train, x_test, y_train, y_test = train_test_split(x, y, stratify=y, random_state=94)
-        self.y_test = y_test
-        self.x_test = x_test
-        self.model = LogisticRegression(max_iter=2000).fit(x_train, y_train)
+        params = {
+            'solver': ['newton-cg', 'lbfgs', 'liblinear'],
+            'penalty': ['l2'],
+            'C': [100, 10, 1.0, 0.1, 0.01],
+        }
+
+
+        logistic_model = LogisticRegression(max_iter=2000)
+        random_search = RandomizedSearchCV(
+                logistic_model, 
+                param_distributions=params, 
+                scoring='roc_auc', 
+                n_jobs=4, 
+                cv=5, 
+                verbose=3, 
+                random_state=1001
+        )
+        random_search.fit(x,y)
+        self.model = random_search.best_estimator_
+        print(random_search.best_score_)
         return
 
     def score(self):
@@ -126,7 +162,7 @@ if __name__ == "__main__":
     import psycopg2
     conn = psycopg2.connect(os.getenv("DB_CONN"))
 
-    model = ShotModel(ShotXGBoost())
+    model = ShotModel(ShotLogisticRegression())
     with conn:
         with conn.cursor() as cur:
             query = """
