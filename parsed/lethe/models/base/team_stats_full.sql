@@ -120,6 +120,11 @@ select
     team_stats.{{stat}} as {{stat}},
     opp_stats.{{stat}} as opp_{{stat}},
     {% endfor %}
+    team_stats.goal + opp_stats.goal_own as goal_for,
+    team_stats.goal_own + opp_stats.goal as goal_against,
+    case when team_stats.goal + opp_stats.goal_own > team_stats.goal_own + opp_stats.goal then 1 else 0 end as is_win,
+    case when team_stats.goal + opp_stats.goal_own = team_stats.goal_own + opp_stats.goal then 1 else 0 end as is_draw,
+    case when team_stats.goal + opp_stats.goal_own < team_stats.goal_own + opp_stats.goal then 1 else 0 end as is_loss,
     case when opp_stats.touch != 0 then team_stats.touch::real/opp_stats.touch::real else 0 end as posession,
     case when team_stats.pass != 0 then team_stats.pass_accurate::real/team_stats.pass::real else 0 end as pass_accuracy,
     case when opp_stats.pass != 0 then opp_stats.pass_accurate::real/opp_stats.pass::real else 0 end as opp_pass_accuracy,
